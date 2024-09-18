@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serial Port Control</title>
+</head>
+<body>
+    <h1>Serial Port Control</h1>
+    <button id="connect">Connect</button>
+    <div>
+
+        <button id="setDTR">Set DTR pin 4 +10V</button>
+        <button id="clrDTR">Clear DTR -10V</button>
+     
+<br>
+        <button id="setRTS">Set RTS pin 7 +10V</button>
+        <button id="clrRTS">Clear RTS -10V</button>
+     
+    </div>
+    <div>
+
+        <p>DCD pin 1: <span id="dcd">Unknown</span></p>
+        <p>CTS pin 6: <span id="dsr">Unknown</span></p>
+        <p>CTS pin 8: <span id="cts">Unknown</span></p>
+        <p>RI pin 9: <span id="ri">Unknown</span></p>
+    </div>
+    <div>
+        <p>Meddelande1: <span id="Message">---</span></p>
+        <p>Meddelande2: <span id="Message2">---</span></p>
+        <p>Meddelande3: <span id="Message3">---</span></p>
+    </div>
+
+    <script>
+        let port;
+console.log('Program start');
+const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Din Pushbullet API-nyckel
+
+// Skapa en WebSocket-anslutning till Pushbullet
+const socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
+
+// Lyssna efter WebSocket-anslutningens öppnande
+socket.onopen = function(event) {
+    document.getElementById('Message').textContent = "Ansluten till Pushbullet!";
+
+    console.log("WebSocket ansluten till Pushbullet!");
+};
+
+// Hantera inkommande meddelanden från Pushbullet
+socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+
+    // Kontrollera om det är ett pushmeddelande
+    if (data.type === 'push') {
+        console.log("Pushbullet-meddelande mottaget:", data.push);
+        document.getElementById('Message').textContent = "Meddelande mottaget";
+        document.getElementById('Message2').textContent =  "";
+        document.getElementById('Message3').textContent =  "";
+        // Gör något med meddelandet, t.ex. visa i UI
+        // Exempel:
+        if (data.push.type === 'mirror') {
+            console.log(`Titel: ${data.push.title}`);
+            console.log(`Meddelande: ${data.push.body}`);
+            document.getElementById('Message2').textContent =  `${data.push.title}`;
+            document.getElementById('Message3').textContent =  `${data.push.body}`;
+            
+        }
+    }
+};
+
+// Hantera eventuella fel med WebSocket
+socket.onerror = function(error) {
+    console.error("WebSocket fel:", error);
+};
+
+// Stäng WebSocket-anslutningen när det behövs
+socket.onclose = function(event) {
+    console.log("WebSocket stängd.");
+};
+
+// readSignals();
+
+/*        document.getElementById('connect').addEventListener('click', async () => {
+            try {
+                port = await navigator.serial.requestPort();
+                await port.open({ baudRate: 9600 });
+                console.log('Connected to port');
+                readSignals();
+            } catch (error) {
+                console.error('Error connecting to port:', error);
+            }
+        });
+*/
+
+        document.getElementById('setRTS').addEventListener('click', async () => {
+            if (port) {
+                await port.setSignals({ requestToSend: true }); // Ger +10V på pin 7
+                console.log('RTS set');
+            }
+        });
+
+        document.getElementById('setDTR').addEventListener('click', async () => {
+            if (port) {
+                await port.setSignals({ dataTerminalReady: true });  // Ger +10V på pin 4
+                console.log('DTR set');
+            }
+        });
+
+
+        document.getElementById('clrRTS').addEventListener('click', async () => {
+            if (port) {
+                await port.setSignals({ requestToSend: false }); // Ger -10V på pin 7
+                console.log('RTS clr');
+            }
+        });
+
+        document.getElementById('clrDTR').addEventListener('click', async () => {
+            if (port) {
+                await port.setSignals({ dataTerminalReady: false });  // Ger -10V på pin 4
+                console.log('DTR clr');
+            }
+        });
+
+
+// Turn off Serial Break signal.
+// await port.setSignals({ break: false });
+
+        async function readSignals() {
+const ports = await navigator.serial.getPorts();
+if(ports.length==0) {
+         port = await navigator.serial.requestPort();
+     }else{
+         port=ports[0];
+     }
+     await port.open({ baudRate: 9600 });
+            while (port) {
+                const signals = await port.getSignals();
+                document.getElementById('dcd').textContent = signals.dataCarrierDetect ? 'Active +10V' : 'Inactive 0V';
+                document.getElementById('dsr').textContent = signals.dataSetReady ? 'Active +10V' : 'Inactive 0V';
+                document.getElementById('cts').textContent = signals.clearToSend ? 'Active +10V' : 'Inactive 0V';
+                document.getElementById('ri').textContent = signals.ringIndicator ? 'Active +10V' : 'Inactive 0V';
+
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+        }
+
+
+
+</script>
+</body>
+</html>

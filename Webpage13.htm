@@ -58,6 +58,35 @@ Koppla däreftr in 12V. Tester:
     <script>
         let port;
 console.log('Program start');
+
+// Skapa en WebSocket-anslutning till Python
+const socketPy = new WebSocket(`ws://localhost:8765/`);
+
+// Lyssna efter WebSocket-anslutningens öppnande
+socketPy.onopen = function(event) {
+//    showSocket("Ansluten!","","");
+    console.log("socketPy ansluten till Python!");
+};
+
+// Hantera inkommande meddelanden
+socketPy.onmessage = function(event) {
+    // const data = JSON.parse(event.data);
+    console.log("socketPy.onmessage:", event.data);
+};
+
+// Hantera eventuella fel med WebSocket
+socketPy.onerror = function(error) {
+    console.error("WebSocketPy fel:", error);
+    // showSocket("socket.onerror",error,"");
+};
+
+// Stäng WebSocket-anslutningen när det behövs
+socketPy.onclose = function(event) {
+    console.log("WebSocketPy stängd.");
+    // showSocket("socket.onclose","","");
+};
+
+
 const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Din Pushbullet API-nyckel
 
 // Skapa en WebSocket-anslutning till Pushbullet
@@ -133,6 +162,9 @@ function showSocket(line1,line2,line3) {
 }
 
 document.getElementById('tank1').addEventListener('click', async () =>{
+
+    socketPy.send("$D01\r\n");
+    
    // try {const audio = new Audio('mp3/sound3.mp3'); audio.play(); } catch{};
     document.getElementById('tank1').style.backgroundColor = 'green';
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -191,26 +223,6 @@ function playSound() {
             audio.play();
         }
 
-document.getElementById('sound1').addEventListener('click', async () => {
-    try {
-        const audio = new Audio('mp3/sound1.mp3'); audio.play();
-    } catch{};
-});
-document.getElementById('sound2').addEventListener('click', async () => {
-    try {
-        const audio = new Audio('mp3/sound2.mp3'); audio.play();
-    } catch{};
-});
-document.getElementById('sound3').addEventListener('click', async () => {
-    try {
-        const audio = new Audio('mp3/sound3.mp3'); audio.play();
-    } catch{};
-});
-document.getElementById('sound4').addEventListener('click', async () => {
-    try {
-        const audio = new Audio('mp3/sound4.mp3'); audio.play();
-    } catch{};
-});
 // readSignals();
 /*
 dictionary SerialOptions {

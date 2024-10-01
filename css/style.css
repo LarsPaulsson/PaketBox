@@ -1,0 +1,48 @@
+
+.tbutt {
+    display: inline-block;
+  /* padding: 10px 20px; */  /* Adjusts the space inside the button */
+  font-size: 18px;      /* Increases the size of the text inside */
+  width: 200px;   /* Set button width */
+  height:50px;   /* Set button height */
+    /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
+    margin: 10px 20px 10px 10px; /* Top, Right, Bottom, Left */
+    background-color: #007BFF;
+    color: white;
+    border: black;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    line-height: 50px;   
+    
+  }
+  .navbutt {
+    position: absolute;
+    top: 0px;  /* Adjust the top position */
+    left: 0px;  /* Adjust the left position */
+    display: inline-block;
+  /* padding: 10px 20px; */  /* Adjusts the space inside the button */
+  font-size: 18px;      /* Increases the size of the text inside */
+  width: 100px;   /* Set button width */
+  height:50px;   /* Set button height */
+    /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
+    margin: 0px 0px 0px 0px; /* Top, Right, Bottom, Left */
+    background-color: #5f6169;
+    color: white;
+    border: black;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    line-height: 50px;   
+    
+  }
+.outputpre {
+position: absolute;
+top: 50px;  /* Adjust the top position */
+left: 800px;  /* Adjust the left position */
+background-color: #f4f4f4;
+border: 1px solid #ddd;
+padding: 10px;
+}

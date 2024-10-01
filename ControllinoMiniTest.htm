@@ -3,62 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controllino Mini Test</title>
+  <title>Controllino Test</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <style>
-        .tbutt {
-            display: inline-block;
-          /* padding: 10px 20px; */  /* Adjusts the space inside the button */
-          font-size: 18px;      /* Increases the size of the text inside */
-          width: 200px;   /* Set button width */
-          height:50px;   /* Set button height */
-            /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-            margin: 10px 20px 10px 10px; /* Top, Right, Bottom, Left */
-            background-color: #007BFF;
-            color: white;
-            border: black;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            text-align: center;
-            line-height: 50px;   
-            
-          }
-          .navbutt {
-            position: absolute;
-            top: 0px;  /* Adjust the top position */
-            left: 0px;  /* Adjust the left position */
-            display: inline-block;
-          /* padding: 10px 20px; */  /* Adjusts the space inside the button */
-          font-size: 18px;      /* Increases the size of the text inside */
-          width: 100px;   /* Set button width */
-          height:50px;   /* Set button height */
-            /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-            margin: 10px 20px 10px 10px; /* Top, Right, Bottom, Left */
-            background-color: #5f6169;
-            color: white;
-            border: black;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            text-align: center;
-            line-height: 50px;   
-            
-          }
-    .outputpre {
-      position: absolute;
-      top: 50px;  /* Adjust the top position */
-      left: 800px;  /* Adjust the left position */
-      background-color: #f4f4f4;
-      border: 1px solid #ddd;
-      padding: 10px;
-    }
-  </style>
-    
     <a href="index.html" class="navbutt" >Startsida</a>
-    <center><h2>Controllino Mini Test</h2></center>
+    <center><h2>Controllino Test</h2></center>
 
 <button id="connect">Connect</button>
   <button id="disconnect">Disconnect</button>
@@ -85,8 +36,11 @@
             output.textContent += v+'\n';
     }*/
     function showLogg (v) {
+      const totalHeight = output.clientHeight;
+      if (totalHeight>650) output.textContent="";
             output.textContent += v+'\n';
     }
+
     
     document.getElementById('sd01').addEventListener('click', setD01 ); document.getElementById('sd00').addEventListener('click', setD00 );
     document.getElementById('sd11').addEventListener('click', setD11 ); document.getElementById('sd10').addEventListener('click', setD10 );

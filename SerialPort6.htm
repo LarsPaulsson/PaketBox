@@ -9,7 +9,7 @@
 <body>
 
   <a href="index.html" class="navbutt" >Startsida</a>
-  <center><h2>Serial Port Communication Test</h2></center>
+  <center><h2>Serieport test</h2></center>
 
   <button id="connect">Connect</button>
   <button id="disconnect">Disconnect</button><br>
@@ -26,12 +26,14 @@
   <button id="sd71">D7 on</button><button id="sd70">D7 off</button><br>
  
   <p id="result"></p>
-  <pre id="output"></pre>
+  <pre class="outputpre" id="output"></pre>
 
   <script src="js/SerialPort.js"></script>
   <script>
 
     function showLogg (v) {
+      const totalHeight = output.clientHeight;
+      if (totalHeight>650) output.textContent="";
             output.textContent += v+'\n';
     }
     

@@ -19,27 +19,51 @@
         ]);
     }
 
-    async function connectPort () {
-        try {
+    function logg (level, v) {
+        switch (level) {
+        case 0-9: s=`*:${level} ${v}`;
+        break;
+        case 10-99:  s=`!:${level} ${v}`;
+        break;
+        default:  s=`+${level} ${v}`
+        break;
+        }
+        showLogg (s);   // resides in html document
+        console.log(s);
 
+    }
+
+    function showBuffer (v) {
+        // output.textContent += v+'\n';
+        logg(100,v);
+    }
+
+    /* Must be similar in html document
+    function showLogg (v) {
+        output.textContent += v+'\n';
+    }
+    */
+    async function connectPort () {             // must be async because uses await
+        try {
+            
             const ports = await navigator.serial.getPorts();
             const nports = ports.length;
-            console.log('connectPort: ports.length:'+nports);
+            // logg(100,'Connecting, ports='+nports);
             if (nports==0) {
-                reportStatus("No serialport available");
-                return;
+                // logg(9, "No serialport available");
+                return 9;
             }
             if(nports==1) {
                 port=ports[0];      // No need to ask, try this
             }
             if (port==null) {       // If still no port
-                console.log('port null:'+nports);
+                // logg(10, 'port null:'+nports);
                 port = await navigator.serial.requestPort();  // Ask User for permission and select port
             }
 
             if (port==null) {
-                reportStatus("No serialport available");
-                return;
+                // logg(8, "Serialport null");
+                return 8;
             }
 
                 await port.open({ baudRate: 9600 });
@@ -56,10 +80,11 @@
                 outputStream = textEncoder.writable;
 
                 portstatus=1;
+                return 0;
 
             } catch (error) {
-                reportStatus('Error:'+err);
-                console.error('There was an error opening the serial port:', error);
+                // logg (7, err);
+                return 7;
             }
     };
 
@@ -98,9 +123,6 @@
       }
     }
 
-    function showBuffer (v) {
-            output.textContent += v+'\n';
-    }
 
     async function sendtoPortwithTimeout (inputValue) {
     try {
@@ -166,14 +188,16 @@
     function setD70() { setDigital(7,0); }
     function setD71() { setDigital(7,1); }
     
-    function setDa0() { 
+    async function setDa0() { 
         for (i=0; i<8; i++) {
             setDigital(i,0);
+            await delay(100);
         } 
     }
-    function setDa1() { 
+    async function setDa1() { 
         for (i=0; i<8; i++) {
             setDigital(i,1);
+            await delay(100);
         } 
     }
 
@@ -181,7 +205,7 @@
     let result;
     let i=0;
 
-    globalState=1;          // stop automatic flushing
+    globalState=2;          // stop automatic flushing
     flushBuffer();          // empty buffer
     try {
         result = await sendtoPort(inputValue);
@@ -206,7 +230,7 @@
     } catch (error) {
         console.error(error.message);  // Output: 'Operation timed out'
     }
-    globalState=0;
+    globalState=1;
     }
 /*
     navigator.serial.addEventListener('disconnect', (event) => {
@@ -230,52 +254,80 @@ function reportStatus(txt)
     // result.textContent = txt;
 }
 
+    // Call this from the html document.
+    // Html document must provide showBuffer() for reporting
     // This loop runs forever and is the only place that reads the serial port
+    // It handles connection and reconnection of the serial port
+    // globalBuffer is grown as serial input is received and shrinked according to algorithm
     async function readLoop() {
       let l=0;
-      connectPort();
-      await new Promise(resolve => setTimeout(resolve, 1000)); 
+      let cErrors=0;
+      // await connectPort();
+      // await delay(1000);
+      globalState=0;
       while (true) {
         try {
 
-        const { value, done } = await reader.read();    // waits for a chunk of input
-        if (done) {
-          reader.releaseLock();
-          reportStatus('End of Stream');
-          break;
+        if (globalState>0) {
+            const { value, done } = await reader.read();    // waits for a chunk of input
+            if (done) {
+                reader.releaseLock();
+                logg(9,'Unexpected End of Stream');
+                globalState=0;
+            }
+            else globalBuffer += value;
         }
-        globalBuffer += value;
+        
         switch (globalState) {
-            case 0:                 // Idle,nothing expected
+            case 0:                 // Not connected
+                r = await connectPort();
+                if (r==0) {
+                    logg (100, "Connected");
+                    globalState=1;
+                    cErrors=0;
+                } else {
+                    if (cErrors==0) logg (r, "connectPort");
+                    cErrors++;
+                }
+                await delay(1000);
+                break;
+            case 1:                 // Idle,nothing expected, just keep buffer empty
               flushBuffer();
               l=globalBuffer.length;
               if (l>MAXLEN_GLOBALBUFFER) {
-                showBuffer('Flushed buffer reached:'+MAXLEN_GLOBALBUFFER+' '+globalBuffer);
+                logg(99,'Overrun buffer, reached maxlen:'+MAXLEN_GLOBALBUFFER+' '+globalBuffer);
                 globalBuffer='';
               }
               break;
-            case 1:         // Monitoring buffer elsewhere
+            case 2:         // Monitoring buffer elsewhere
             
               break;
-            case 2: 
-            break;
+            case 3: 
+              break;
         }
 
         } catch (err) {
-                // reportStatus('Error:'+err);
-                console.error('Error:', err);
-                await new Promise(resolve => setTimeout(resolve, 1000));    // cool down loop
-                disconnectPort();
-                const ports = await navigator.serial.getPorts();
+            cErrors++;
+            if (cErrors==1) {
+                logg(9,err);
+                // console.error('Error:', err);
+            }
+            await delay(1000);
+            //    await new Promise(resolve => setTimeout(resolve, 1000));    // cool down loop
+            disconnectPort();
+            await delay(1000);
+            globalState=0;
+/*                const ports = await navigator.serial.getPorts();
                 const nports = ports.length;
                 console.log('Reconnect ports.length:'+nports);
                 if(nports==1) {
                     connectPort();
                     await new Promise(resolve => setTimeout(resolve, 2000));    // cool down loop
                 }
-           }
+                    */
         }
+      }
     }
 
 
-// readLoop();
+// readLoop(); Call like this from the html document

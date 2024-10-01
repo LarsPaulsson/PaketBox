@@ -3,23 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Serial Port Communication</title>
+  <title>Controllino Mini Test</title>
 </head>
 <body>
-  <h1>Serial Port Communication</h1>
-  <button id="connect">Connect</button>
-  <button id="disconnect">Disconnect</button><br>
+  <h1>Controllino Mini Test</h1>
+  <style>
+  .tbutt {
+    /* padding: 10px 20px; */  /* Adjusts the space inside the button */
+    font-size: 18px;      /* Increases the size of the text inside */
+    width: 200px;   /* Set button width */
+    height: 50px;   /* Set button height */
+    }
+  </style>
+<button id="connect">Connect</button>
+  <button id="disconnect">Disconnect</button>
   <input type="text" id="sendid" name="sendname" placeholder="enter message here">
   <button id="send">Send</button><br>
 
-  <button id="sd01">D0 on</button><button id="sd00">D0 off</button><br>
-  <button id="sd11">D1 on</button><button id="sd10">D1 off</button><br>
-  <button id="sd21">D2 on</button><button id="sd20">D2 off</button><br>
-  <button id="sd31">D3 on</button><button id="sd30">D3 off</button><br>
-  <button id="sd41">D4 on</button><button id="sd40">D4 off</button><button id="sp40">D4 pulse</button><br>
-  <button id="sd51">D5 on</button><button id="sd50">D5 off</button><br>
-  <button id="sd61">D6 on</button><button id="sd60">D6 off</button><br>
-  <button id="sd71">D7 on</button><button id="sd70">D7 off</button><br>
+  <button class="tbutt" id="sd01">D0 on</button><button class="tbutt" id="sd00">D0 off</button><br>
+  <button class="tbutt" id="sd11">D1 on</button><button class="tbutt" id="sd10">D1 off</button><br>
+  <button class="tbutt" id="sd21">D2 on</button><button class="tbutt" id="sd20">D2 off</button><br>
+  <button class="tbutt" id="sd31">D3 on</button><button class="tbutt" id="sd30">D3 off</button><br>
+  <button class="tbutt" id="sd41">D4 on</button><button class="tbutt" id="sd40">D4 off</button><button class="tbutt" id="sp40">D4 pulse</button><br>
+  <button class="tbutt" id="sd51">D5 on</button><button class="tbutt" id="sd50">D5 off</button><br>
+  <button class="tbutt" id="sd61">D6 on</button><button class="tbutt" id="sd60">D6 off</button><br>
+  <button class="tbutt" id="sd71">D7 on</button><button class="tbutt" id="sd70">D7 off</button><br>
  
   <p id="result"></p>
   <pre id="output"></pre>

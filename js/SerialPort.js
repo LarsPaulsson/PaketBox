@@ -166,6 +166,16 @@
     function setD70() { setDigital(7,0); }
     function setD71() { setDigital(7,1); }
     
+    function setDa0() { 
+        for (i=0; i<8; i++) {
+            setDigital(i,0);
+        } 
+    }
+    function setDa1() { 
+        for (i=0; i<8; i++) {
+            setDigital(i,1);
+        } 
+    }
 
     async function sendReceivePort (inputValue) {
     let result;

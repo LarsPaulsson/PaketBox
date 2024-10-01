@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Serial Port Communication</title>
+</head>
+<body>
+  <h1>Serial Port Communication</h1>
+  <button id="connect">Connect</button>
+  <button id="disconnect">Disconnect</button>
+  <input type="text" id="sendid" name="sendname" placeholder="enter message here">
+  <button id="send">Send</button>
+  <p id="result"></p>
+  <pre id="output"></pre>
+
+  <script>
+
+    let portstate=0;    // 0 not connected, 1 running
+    let port;
+    let reader;
+    let inputDone;
+    let outputDone;
+    let inputStream;
+    let outputStream;
+    let output = document.getElementById('output');
+    let result = document.getElementById('result');
+
+    async function connectPort () {
+        try {
+
+            const ports = await navigator.serial.getPorts();
+            const nports = ports.length;
+            console.log('connectPort: ports.length:'+nports);
+            if(nports==1) {
+                port=ports[0];      // No need to ask, try this
+            }
+            if (port==null) {       // If still no port
+                port = await navigator.serial.requestPort();  // Ask User for permission and select port
+            }
+                await port.open({ baudRate: 9600 });
+
+                const textDecoder = new TextDecoderStream();
+                inputDone = port.readable.pipeTo(textDecoder.writable);
+                inputStream = textDecoder.readable;
+
+                reader = inputStream.getReader();
+//                readLoop();
+
+                const textEncoder = new TextEncoderStream();
+                outputDone = textEncoder.readable.pipeTo(port.writable);
+                outputStream = textEncoder.writable;
+
+                portstatus=1;
+
+            } catch (error) {
+                result.textContent='Error:'+err;
+                console.error('There was an error opening the serial port:', error);
+            }
+    };
+
+    async function disconnectPort () {
+        console.log('disconnectPort');
+        portstatus=0;
+        try {
+            if (reader) {
+                await reader.cancel();
+                await inputDone.catch(() => {});
+                reader = null;
+                inputDone = null;
+            }
+            if (outputStream) {
+                await outputStream.getWriter().close();
+                await outputDone;
+                outputStream = null;
+                outputDone = null;
+            }
+            await port.close();
+            port = null;
+        } catch (err) {
+            result.textContent='Error:'+err;
+            console.error('Error:', err);
+        }
+    };
+
+    // document.getElementById('connect').addEventListener('click', async () => {
+    document.getElementById('connect').addEventListener('click', connectPort );
+            //    document.getElementById('disconnect').addEventListener('click', async () => {
+    document.getElementById('disconnect').addEventListener('click', disconnectPort );
+
+    document.getElementById('send').addEventListener('click', async () => {
+    try {
+      var inputElement = document.getElementById("sendid");
+      var inputValue = inputElement.value;
+
+      const encoder = new TextEncoder();
+
+      // const writer = port.writable.getWriter();
+      const writer = outputStream.getWriter();
+      // await writer.write(encoder.encode(inputValue+'\r\n'));
+      await writer.write(inputValue+'\r\n');
+      writer.releaseLock();
+        } catch (err) {
+            result.textContent='Error:'+err;
+            console.error('Error:', err);
+        }
+    });
+
+
+    navigator.serial.addEventListener('disconnect', (event) => {
+            if (port === event.target) {
+                console.log('Port disconnected:', event.target);
+                port = null;
+            }
+        });
+
+    navigator.serial.addEventListener('connect', (event) => {
+            console.log('Port connected:', event.target);
+        });
+
+
+    async function readLoop() {
+        await new Promise(resolve => setTimeout(resolve, 2000)); 
+      while (true) {
+        try {
+        if (!port) {        // code for reconnect here
+
+
+        }
+
+        const { value, done } = await reader.read();    // waits for input
+        if (done) {
+          reader.releaseLock();
+          result.textContent='End of Stream';
+          break;
+        }
+        // const outdecoder = new TextDecoder();
+        // output.textContent += outdecoder.decode(value);
+        output.textContent += value;
+
+        } catch (err) {
+                result.textContent='Error:'+err;
+                console.error('Error:', err);
+                await new Promise(resolve => setTimeout(resolve, 1000));    // cool down loop
+                disconnectPort();
+                const ports = await navigator.serial.getPorts();
+                const nports = ports.length;
+                console.log('Reconnect ports.length:'+nports);
+                if(nports==1) {
+                    connectPort();
+                    await new Promise(resolve => setTimeout(resolve, 2000));    // cool down loop
+                }
+           }
+        }
+    }
+
+connectPort();
+
+readLoop();
+
+  </script>
+</body>
+</html>

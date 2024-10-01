@@ -135,7 +135,7 @@ socket.onclose = function(event) {
                 //const writer = textEncoder.writable.getWriter();
                 
                 const writer = port.writable.getWriter();
-                const data = new Uint8Array([36, 68, 48, 49, 13, 10]); // hello
+                const data = new Uint8Array([36, 68, 48, 49, 13, 10]); // $D01\r\n
                 await writer.write(data);
                 // Allow the serial port to be closed later.
                 writer.releaseLock();
@@ -162,6 +162,34 @@ socket.onclose = function(event) {
 // Turn off Serial Break signal.
 // await port.setSignals({ break: false });
 
+async function sendRecieveCommand(Uint8 cmd, Uint8 p1, Uint8 p2) {
+    // const encoder = new TextEncoder();
+    // const decoder = new TextDecoder();
+    if (!port) { return };              
+    const writer = port.writable.getWriter();
+    const data = new Uint8Array([36, cmd, p1, p2, 13, 10]); // $D01\r\n
+    await writer.write(data);
+    writer.releaseLock();   // Allow the serial port to be closed later.
+    const reader = port.readable.getReader();
+    const { value, done } = await reader.read();
+    if (done) {
+        
+        reader.releaseLock();       // Allow the serial port to be closed later.
+        break;
+    }
+  // value is a string.
+          console.log(value);
+
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+        }
+
+
+                console.log('D0 on');
+            }
+        });
+
+
 async function readSignals() {
 /*if(ports.length==0) {
      //    port = await navigator.serial.requestPort();
@@ -173,6 +201,7 @@ async function readSignals() {
 const textDecoder = new TextDecoderStream();
 const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
 const reader = textDecoder.readable.getReader();
+
 
 
 

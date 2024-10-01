@@ -6,13 +6,28 @@
   <title>Controllino Mini Test</title>
 </head>
 <body>
-  <h1>Controllino Mini Test</h1>
+  <h2>Controllino Mini Test</h2>
   <style>
   .tbutt {
     /* padding: 10px 20px; */  /* Adjusts the space inside the button */
     font-size: 18px;      /* Increases the size of the text inside */
     width: 200px;   /* Set button width */
     height: 50px;   /* Set button height */
+      /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
+      margin: 10px 20px 10px 10px; /* Top, Right, Bottom, Left */
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .outputpre {
+      position: absolute;
+      top: 50px;  /* Adjust the top position */
+      left: 800px;  /* Adjust the left position */
+      background-color: #f4f4f4;
+      border: 1px solid #ddd;
+      padding: 10px;
     }
   </style>
 <button id="connect">Connect</button>
@@ -20,6 +35,7 @@
   <input type="text" id="sendid" name="sendname" placeholder="enter message here">
   <button id="send">Send</button><br>
 
+  
   <button class="tbutt" id="sd01">D0 on</button><button class="tbutt" id="sd00">D0 off</button><br>
   <button class="tbutt" id="sd11">D1 on</button><button class="tbutt" id="sd10">D1 off</button><br>
   <button class="tbutt" id="sd21">D2 on</button><button class="tbutt" id="sd20">D2 off</button><br>
@@ -28,9 +44,9 @@
   <button class="tbutt" id="sd51">D5 on</button><button class="tbutt" id="sd50">D5 off</button><br>
   <button class="tbutt" id="sd61">D6 on</button><button class="tbutt" id="sd60">D6 off</button><br>
   <button class="tbutt" id="sd71">D7 on</button><button class="tbutt" id="sd70">D7 off</button><br>
+  <button class="tbutt" id="sda1">ALL on</button><button class="tbutt" id="sda0">ALL off</button><br>
  
-  <p id="result"></p>
-  <pre id="output"></pre>
+  <pre class="outputpre" id="output"></pre>
 
   <script src="js/SerialPort.js"></script>
   <script>
@@ -47,6 +63,7 @@
     document.getElementById('sd51').addEventListener('click', setD51 ); document.getElementById('sd50').addEventListener('click', setD50 );
     document.getElementById('sd61').addEventListener('click', setD61 ); document.getElementById('sd60').addEventListener('click', setD60 );
     document.getElementById('sd71').addEventListener('click', setD71 ); document.getElementById('sd70').addEventListener('click', setD70 );
+    document.getElementById('sda1').addEventListener('click', setda1 ); document.getElementById('sda0').addEventListener('click', setDa0 );
 
     document.getElementById('sp40').addEventListener('click',  async () => {
        setD41();

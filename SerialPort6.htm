@@ -4,9 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Serial Port Communication</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h1>Serial Port Communication</h1>
+
+  <a href="index.html" class="navbutt" >Startsida</a>
+  <center><h2>Serial Port Communication Test</h2></center>
+
   <button id="connect">Connect</button>
   <button id="disconnect">Disconnect</button><br>
   <input type="text" id="sendid" name="sendname" placeholder="enter message here">
@@ -27,9 +31,10 @@
   <script src="js/SerialPort.js"></script>
   <script>
 
-    function showBuffer (v) {
+    function showLogg (v) {
             output.textContent += v+'\n';
     }
+    
 
     document.getElementById('sd01').addEventListener('click', setD01 ); document.getElementById('sd00').addEventListener('click', setD00 );
     document.getElementById('sd11').addEventListener('click', setD11 ); document.getElementById('sd10').addEventListener('click', setD10 );

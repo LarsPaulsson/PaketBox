@@ -6,21 +6,47 @@
   <title>Controllino Mini Test</title>
 </head>
 <body>
-  <h2>Controllino Mini Test</h2>
+
   <style>
-  .tbutt {
-    /* padding: 10px 20px; */  /* Adjusts the space inside the button */
-    font-size: 18px;      /* Increases the size of the text inside */
-    width: 200px;   /* Set button width */
-    height: 50px;   /* Set button height */
-      /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-      margin: 10px 20px 10px 10px; /* Top, Right, Bottom, Left */
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+        .tbutt {
+            display: inline-block;
+          /* padding: 10px 20px; */  /* Adjusts the space inside the button */
+          font-size: 18px;      /* Increases the size of the text inside */
+          width: 200px;   /* Set button width */
+          height:50px;   /* Set button height */
+            /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
+            margin: 10px 20px 10px 10px; /* Top, Right, Bottom, Left */
+            background-color: #007BFF;
+            color: white;
+            border: black;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            line-height: 50px;   
+            
+          }
+          .navbutt {
+            position: absolute;
+            top: 0px;  /* Adjust the top position */
+            left: 0px;  /* Adjust the left position */
+            display: inline-block;
+          /* padding: 10px 20px; */  /* Adjusts the space inside the button */
+          font-size: 18px;      /* Increases the size of the text inside */
+          width: 100px;   /* Set button width */
+          height:50px;   /* Set button height */
+            /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
+            margin: 10px 20px 10px 10px; /* Top, Right, Bottom, Left */
+            background-color: #5f6169;
+            color: white;
+            border: black;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            line-height: 50px;   
+            
+          }
     .outputpre {
       position: absolute;
       top: 50px;  /* Adjust the top position */
@@ -30,6 +56,10 @@
       padding: 10px;
     }
   </style>
+    
+    <a href="index.html" class="navbutt" >Startsida</a>
+    <center><h2>Controllino Mini Test</h2></center>
+
 <button id="connect">Connect</button>
   <button id="disconnect">Disconnect</button>
   <input type="text" id="sendid" name="sendname" placeholder="enter message here">
@@ -51,10 +81,13 @@
   <script src="js/SerialPort.js"></script>
   <script>
 
-    function showBuffer (v) {
+/*    function showBuffer (v) {
+            output.textContent += v+'\n';
+    }*/
+    function showLogg (v) {
             output.textContent += v+'\n';
     }
-
+    
     document.getElementById('sd01').addEventListener('click', setD01 ); document.getElementById('sd00').addEventListener('click', setD00 );
     document.getElementById('sd11').addEventListener('click', setD11 ); document.getElementById('sd10').addEventListener('click', setD10 );
     document.getElementById('sd21').addEventListener('click', setD21 ); document.getElementById('sd20').addEventListener('click', setD20 );
@@ -62,8 +95,10 @@
     document.getElementById('sd41').addEventListener('click', setD41 ); document.getElementById('sd40').addEventListener('click', setD40 );
     document.getElementById('sd51').addEventListener('click', setD51 ); document.getElementById('sd50').addEventListener('click', setD50 );
     document.getElementById('sd61').addEventListener('click', setD61 ); document.getElementById('sd60').addEventListener('click', setD60 );
-    document.getElementById('sd71').addEventListener('click', setD71 ); document.getElementById('sd70').addEventListener('click', setD70 );
-    document.getElementById('sda1').addEventListener('click', setda1 ); document.getElementById('sda0').addEventListener('click', setDa0 );
+    document.getElementById('sd71').addEventListener('click', async () => {setDigital(7,1) });
+
+    document.getElementById('sd70').addEventListener('click', async () => {setDigital(7,0) });
+    document.getElementById('sda1').addEventListener('click', setDa1 ); document.getElementById('sda0').addEventListener('click', setDa0 );
 
     document.getElementById('sp40').addEventListener('click',  async () => {
        setD41();

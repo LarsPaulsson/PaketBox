@@ -19,15 +19,14 @@
         ]);
     }
 
-    function logg (level, v) {
-        switch (level) {
-        case 0-9: s=`*:${level} ${v}`;
-        break;
-        case 10-99:  s=`!:${level} ${v}`;
-        break;
-        default:  s=`+${level} ${v}`
-        break;
-        }
+    function logg (l, v) {
+        if (l < 10) p=`*`;
+        else if (l==90) p=">";
+        else if (l==91) p="<";
+        else if (l==92) p="?";
+        else if (l<100) p="!";
+        else p="+";
+        s=`${p}:${l} ${v}`;
         showLogg (s);   // resides in html document
         console.log(s);
 
@@ -89,7 +88,7 @@
     };
 
     async function disconnectPort () {
-        console.log('disconnectPort');
+        logg(100,'disconnectPort');
         portstatus=0;
         try {
             if (reader) {
@@ -108,7 +107,8 @@
             port = null;
         } catch (err) {
             // reportStatus('Error:'+err);
-            console.error('Error:', err);
+            // console.error('Error:', err);
+            logg(9,"Disconnect error="+err.message);
         }
     };
 
@@ -117,9 +117,9 @@
       const writer = outputStream.getWriter();
       await writer.write(inputValue+'\r\n');
       writer.releaseLock();
+      logg(90, inputValue);
       } catch (err) {
-            reportStatus('Error:'+err);
-            console.error('Error:', err);
+            logg(9,"sendtoPort error="+err.message);
       }
     }
 
@@ -128,9 +128,9 @@
     try {
         // Wait for the async operation, but with a 2-second timeout
         const result = await withTimeout(sendtoPort(inputValue), 2000);
-        console.log("sendtoPort:"+inputValue);
+        // console.log("sendtoPort:"+inputValue);
     } catch (error) {
-        console.error(error.message);  // Output: 'Operation timed out'
+        logg (9,"error="+error.message);  // Output: 'Operation timed out'
     }
     }
 
@@ -141,7 +141,7 @@
         if (l<=0) break;
         s=getBufferLine();
         if (s.length>0) {
-               showBuffer('?:'+s);                   
+               logg(92,s);                   
         }
        }
        // showBuffer('flushBuffer loops:'+i);
@@ -150,15 +150,11 @@
     function getBufferLine() {
         let i=0;
         let s="";
-        // console.log('1:'+globalBuffer.length);
         i=globalBuffer.indexOf('\n');
         if (i<0) return('');
-        s=globalBuffer.substr(0,i);
-        // console.log('s:'+s.length);
+        s=globalBuffer.substring(0,i);
         s=s.trim();
-        // console.log('s.trim:'+s.length);
-        globalBuffer=globalBuffer.substr(i+1);
-        // console.log('2:'+globalBuffer.length);
+        globalBuffer=globalBuffer.substring(i+1);
         return(s);
     }
 
@@ -204,31 +200,23 @@
     async function sendReceivePort (inputValue) {
     let result;
     let i=0;
-
+    const MAXLOOP=200;
     globalState=2;          // stop automatic flushing
     flushBuffer();          // empty buffer
     try {
         result = await sendtoPort(inputValue);
-        showBuffer('>:'+inputValue);
-        //  result = await withTimeout(sendtoPort(inputValue), 2000); // Wait for the async operation, but with a 2-second timeout
-        console.log("sendtoPort:"+inputValue); 
-
-        for (n=0; n<200; n++) {
-            await new Promise(resolve => setTimeout(resolve, 10)); // yield till läsloopen
-
-
+        for (n=0; n<MAXLOOP; n++) {
+            await new Promise(resolve => setTimeout(resolve, 10)); // yield till läsloopen, tiden inte så viktig
             i=globalBuffer.indexOf('\n');
-            // console.log('newline:'+i);
             if (i>=0) break;
-            i=globalBuffer.indexOf('\r');
-            // console.log('return:'+i);
         }
-        // output.textContent = globalBuffer;
         console.log('Needed loops:'+n);
-        s=getBufferLine();
-        showBuffer('<:'+s);
+        if (n<MAXLOOP) {
+            s=getBufferLine();
+            logg(91, s);
+        } else logg(9,"sendReceivePort No Reply");
     } catch (error) {
-        console.error(error.message);  // Output: 'Operation timed out'
+        logg(9,"sendReceivePort:"+error.message)
     }
     globalState=1;
     }
@@ -309,7 +297,7 @@ function reportStatus(txt)
         } catch (err) {
             cErrors++;
             if (cErrors==1) {
-                logg(9,err);
+                logg(9,err.message);
                 // console.error('Error:', err);
             }
             await delay(1000);

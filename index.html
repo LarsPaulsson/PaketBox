@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,50 +42,4 @@
     }
   </script>
 </body>
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-    <h2>Välkommen!</h2>
-    
-    <a href="Tanka1.htm" class="tbutt" >Swisha & Tanka</a>
-    <a href="ControllinoMiniTest.htm" class="tbutt" >Controllino test</a>
-    <a href="SerialPort6.htm" class="tbutt">Serieport Test</a>
-    <a href="https://larspaulsson.github.io/PaketBox/index.html" class="tbutt">Github</a>
-   
-   <!-- Input box with a button to navigate -->
-  <form onsubmit="navigateToURL(event)">
-    <input type="text" id="urlInput" placeholder="ange websida här" style="width: 400px; padding: 10px;  margin: 10px 20px 10px 10px;">
-    <button type="submit" style="padding: 10px 20px;  margin: 10px 20px 10px 10px;">Välj</button>
-  </form>
-
-  <script>
-    // Function to handle the navigation
-    function navigateToURL(event) {
-      event.preventDefault();  // Prevent form from submitting
-
-      // Get the input value (URL)
-      const url = document.getElementById('urlInput').value;
-      
-      // Basic validation to check if the URL is not empty
-      if (url) {
-        // Check if the URL starts with "http://" or "https://", otherwise prepend it
-        const fullURL = url.startsWith('http://') || url.startsWith('https://') ? url : 'http://' + url;
-
-        // Navigate to the entered URL
-        window.location.href = fullURL;
-      } else {
-        alert('Please enter a valid URL');
-      }
-    }
-  </script>
-</body>
->>>>>>> 1f43fe857af03412fa21107311e5f0638341ef85
 </html>

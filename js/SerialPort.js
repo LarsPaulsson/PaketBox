@@ -19,6 +19,8 @@
         ]);
     }
 
+    const debuglevel=1000;
+
     function logg (l, v) {
         if (l < 10) p=`*`;
         else if (l==90) p=">";
@@ -27,7 +29,7 @@
         else if (l<100) p="!";
         else p="+";
         s=`${p}:${l} ${v}`;
-        showLogg (s);   // resides in html document
+        if (l<=debuglevel) showLogg (s);   // resides in html document
         console.log(s);
 
     }
@@ -48,26 +50,27 @@
         if (r==0)  logg(100, "sp connected");
         else logg(r, "sp not connected")
     }
+
     async function reconnectPort () {             // must be async because uses await
         try {
             
             const ports = await navigator.serial.getPorts();
             const nports = ports.length;
-            // logg(100,'sp connecting, ports='+nports); // spammar loggen
+            logg(1001,'sp connecting, ports='+nports); // spammar loggen
             if (nports==0) {
-                // logg(9, "No serialport available");
+                logg(1009, "No serialport available");
                 return 9;
             }
             if(nports==1) {
                 port=ports[0];      // No need to ask, try this
             }
             if (port==null) {       // If still no port
-                // logg(10, 'port null:'+nports);
+                logg(1010, 'port null:'+nports);
                 port = await navigator.serial.requestPort();  // Ask User for permission and select port
             }
 
             if (port==null) {
-                // logg(8, "Serialport null");
+                logg(1008, "Serialport null");
                 return 8;
             }
 
@@ -78,7 +81,7 @@
                 inputStream = textDecoder.readable;
 
                 reader = inputStream.getReader();
-//                readLoop();
+
 
                 const textEncoder = new TextEncoderStream();
                 outputDone = textEncoder.readable.pipeTo(port.writable);
@@ -88,7 +91,7 @@
                 return 0;
 
             } catch (error) {
-                // logg (7, err);
+                logg (1007, error.message);
                 return 7;
             }
     };

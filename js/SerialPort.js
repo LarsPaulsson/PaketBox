@@ -58,8 +58,8 @@
             const nports = ports.length;
             logg(1001,'sp connecting, ports='+nports); // spammar loggen
             if (nports==0) {
-                logg(1009, "No serialport available");
-                return 9;
+                logg(1009, "No serialports available");
+                // return 9;
             }
             if(nports==1) {
                 port=ports[0];      // No need to ask, try this

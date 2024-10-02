@@ -135,7 +135,11 @@ socket.onclose = function(event) {
                 //const writer = textEncoder.writable.getWriter();
                 
                 const writer = port.writable.getWriter();
+<<<<<<< HEAD
                 const data = new Uint8Array([36, 68, 48, 49, 13, 10]); // $D01\r\n
+=======
+                const data = new Uint8Array([36, 68, 48, 49, 13, 10]); // hello
+>>>>>>> 1f43fe857af03412fa21107311e5f0638341ef85
                 await writer.write(data);
                 // Allow the serial port to be closed later.
                 writer.releaseLock();
@@ -162,6 +166,7 @@ socket.onclose = function(event) {
 // Turn off Serial Break signal.
 // await port.setSignals({ break: false });
 
+<<<<<<< HEAD
 async function sendRecieveCommand(Uint8 cmd, Uint8 p1, Uint8 p2) {
     // const encoder = new TextEncoder();
     // const decoder = new TextDecoder();
@@ -190,6 +195,8 @@ async function sendRecieveCommand(Uint8 cmd, Uint8 p1, Uint8 p2) {
         });
 
 
+=======
+>>>>>>> 1f43fe857af03412fa21107311e5f0638341ef85
 async function readSignals() {
 /*if(ports.length==0) {
      //    port = await navigator.serial.requestPort();
@@ -205,7 +212,10 @@ const reader = textDecoder.readable.getReader();
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f43fe857af03412fa21107311e5f0638341ef85
             while (port) {
                 const signals = await port.getSignals();
                 document.getElementById('dcd').textContent = signals.dataCarrierDetect ? 'Active +10V' : 'Inactive 0V';

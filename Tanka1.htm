@@ -41,6 +41,8 @@
       </style>
 
 <a href="index.html" class="navbutt" >Startsida</a>
+<button class="connectbutt" id="connect">Manual Connect</button>
+
 
     <table>
         <tr>
@@ -237,6 +239,8 @@ async function doLucka(nr, button) {
     setDigital(7,0);
 }
 
+document.getElementById('connect').addEventListener('click', connectPort );
+ 
 document.getElementById('tank1').addEventListener('click', async () =>{ doTanka(1,'tank1'); });
 document.getElementById('tank2').addEventListener('click', async () =>{ doTanka(2,'tank2'); });
 document.getElementById('tank3').addEventListener('click', async () =>{ doTanka(3,'tank3'); });

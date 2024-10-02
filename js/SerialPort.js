@@ -45,12 +45,18 @@
     }
     */
 
+    // Manual connect coming from User gesture
     async function connectPort () {             // must be async because uses await
+        if (port) {
+            await disconnectPort();
+            await delay(100);
+        }
         r=await reconnectPort();
         if (r==0)  logg(100, "sp connected");
         else logg(r, "sp not connected, try manual connect")
     }
 
+    // Automatic reconnect if lost, like usb is pulled out and reinserted
     async function reconnectPort () {             // must be async because uses await
         try {
             
@@ -89,6 +95,7 @@
                 outputStream = textEncoder.writable;
 
                 portstatus=1;
+                globalState=1;
                 return 0;
 
             } catch (error) {
@@ -98,6 +105,8 @@
     };
 
     async function disconnectPort () {
+        globalState=-1;
+        await delay(100);
         logg(100,'sp disconnect');
         portstatus=0;
         try {
@@ -120,10 +129,11 @@
             // console.error('Error:', err);
             logg(9,"Disconnect error="+err.message);
         }
+        logg(100,'sp disconnect done');
     };
 
     async function sendtoPort (inputValue) {
-    if (globalState==0) {
+    if (globalState<=0) {
         return 1;
     }
 
@@ -226,7 +236,7 @@
     let result;
     let i=0;
     const MAXLOOP=200;
-    if (globalState==0) {
+    if (globalState<=0) {
         logg (9, "sp no connection, can not send");
         return 1;           // we are not connected
     }
@@ -295,16 +305,23 @@ function reportStatus(txt)
         try {
 
         if (globalState>0) {
-            const { value, done } = await reader.read();    // waits for a chunk of input
-            if (done) {
+            const { value, done } = await reader.read();    // väntar normalt alltid här
+            if (done) {                                     // om rejected kommer vi ut här
                 reader.releaseLock();
-                logg(9,'Unexpected End of Stream');
-                globalState=0;
+                if (globalState>0) {
+                   logg(9,'Unexpected End of Stream');
+                   await disconnectPort();
+                   globalState=0;
+                }
             }
             else globalBuffer += value;
         }
         
         switch (globalState) {
+            case -1:                 // Disconnecting
+            await delay(200);       // frigör cpu från tajt loop
+                // logg(1020, "disconnecting");
+            break;
             case 0:                 // Not connected
                 r = await reconnectPort();
                 if (r==0) {
@@ -323,34 +340,27 @@ function reportStatus(txt)
               if (l>MAXLEN_GLOBALBUFFER) {
                 logg(99,'Overrun buffer, reached maxlen:'+MAXLEN_GLOBALBUFFER+' '+globalBuffer);
                 globalBuffer='';
+                await delay(200);       // frigör cpu från tajt loop
               }
               break;
-            case 2:         // Monitoring buffer elsewhere
-            
+            case 2:                   // Monitoring buffer elsewhere
+              await delay(200);       // frigör cpu från tajt loop
               break;
-            case 3: 
+            default:
+              await delay(200);       // frigör cpu från tajt loop 
               break;
         }
 
         } catch (err) {
             cErrors++;
-            if (cErrors==1) {
-                logg(9,err.message);
+            // if (cErrors==1) {
+                logg(1090,err.message);
                 // console.error('Error:', err);
-            }
+            // }
             await delay(1000);
-            //    await new Promise(resolve => setTimeout(resolve, 1000));    // cool down loop
-            disconnectPort();
+            await disconnectPort();
             await delay(1000);
             globalState=0;
-/*                const ports = await navigator.serial.getPorts();
-                const nports = ports.length;
-                console.log('Reconnect ports.length:'+nports);
-                if(nports==1) {
-                    connectPort();
-                    await new Promise(resolve => setTimeout(resolve, 2000));    // cool down loop
-                }
-                    */
         }
       }
     }

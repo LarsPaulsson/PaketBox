@@ -235,6 +235,7 @@
     let ret=0;
     let result;
     let i=0;
+    let s;
     const MAXLOOP=200;
     if (globalState<=0) {
         logg (9, "sp no connection, can not send");
@@ -340,11 +341,11 @@ function reportStatus(txt)
               if (l>MAXLEN_GLOBALBUFFER) {
                 logg(99,'Overrun buffer, reached maxlen:'+MAXLEN_GLOBALBUFFER+' '+globalBuffer);
                 globalBuffer='';
-                await delay(200);       // frigör cpu från tajt loop
+                await delay(1);       // frigör cpu från tajt loop
               }
               break;
             case 2:                   // Monitoring buffer elsewhere
-              await delay(200);       // frigör cpu från tajt loop
+              await delay(1);       // frigör cpu från tajt loop
               break;
             default:
               await delay(200);       // frigör cpu från tajt loop 

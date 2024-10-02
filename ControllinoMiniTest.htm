@@ -18,6 +18,7 @@
   <button id="send">Send</button>
   <input type="text" id="recid" name="recname" placeholder="received here">
   <input type="text" id="counter0id" name="counter0name" placeholder="counter 0">
+  <input type="text" id="counter1id" name="counter1name" placeholder="counter 1">
   <br>
 
   
@@ -48,14 +49,17 @@
     }
 
     function recCallback (v) {
+      let s;
+      let p1;
       recid.value=v;
       s=v.substring(0,2);
       if (s=="#A") {
         p1=v.indexOf("V");
-        p2=v.indexOf("W");
         s=v.substring(p1+1);
-//        s=s.trim();
         counter0id.value=parseInt(s);
+        p1=v.indexOf("W");
+        s=v.substring(p1+1);
+        counter1id.value=parseInt(s);
       // logg(1,"HERE:"+s);
       }
     }

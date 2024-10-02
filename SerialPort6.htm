@@ -13,9 +13,10 @@
 
   <button id="connect">Connect</button>
   <button id="disconnect">Disconnect</button><br>
-  <input type="text" id="sendid" name="sendname" placeholder="enter message here">
-  <button id="send">Send</button><br>
-
+  <input type="text" id="sendid" name="sendname" placeholder="$S00">
+  <button id="send">Send</button>
+  <input type="text" id="recid" name="recname" placeholder="received here">
+  <br>
   <button id="sd01">D0 on</button><button id="sd00">D0 off</button><br>
   <button id="sd11">D1 on</button><button id="sd10">D1 off</button><br>
   <button id="sd21">D2 on</button><button id="sd20">D2 off</button><br>
@@ -37,7 +38,12 @@
             output.textContent += v+'\n';
     }
     
-
+    function recCallback (v) {
+      recid.value=v;
+      // document.getElementById('recid').textContent=v;
+      // logg(100,"FINE"+v)
+    }
+    
     document.getElementById('sd01').addEventListener('click', setD01 ); document.getElementById('sd00').addEventListener('click', setD00 );
     document.getElementById('sd11').addEventListener('click', setD11 ); document.getElementById('sd10').addEventListener('click', setD10 );
     document.getElementById('sd21').addEventListener('click', setD21 ); document.getElementById('sd20').addEventListener('click', setD20 );

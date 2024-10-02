@@ -14,17 +14,22 @@
 <button id="connect">Connect</button>
   <button id="disconnect">Disconnect</button>
   <input type="text" id="sendid" name="sendname" placeholder="enter message here">
-  <button id="send">Send</button><br>
+  <button id="send">Send</button>
+  <input type="text" id="recid" name="recname" placeholder="received here">
+  <input type="text" id="counter0id" name="counter0name" placeholder="counter 0">
+  <br>
 
   
-  <button class="tbutt" id="sd01">D0 on</button><button class="tbutt" id="sd00">D0 off</button><br>
+  <button class="tbutt" id="sd01">D0 on</button><button class="tbutt" id="sd00">D0 off</button>
+  <button class="tbutt" id="buttStatus">Status</button><br>
   <button class="tbutt" id="sd11">D1 on</button><button class="tbutt" id="sd10">D1 off</button><br>
   <button class="tbutt" id="sd21">D2 on</button><button class="tbutt" id="sd20">D2 off</button><br>
   <button class="tbutt" id="sd31">D3 on</button><button class="tbutt" id="sd30">D3 off</button><br>
-  <button class="tbutt" id="sd41">D4 on</button><button class="tbutt" id="sd40">D4 off</button><button class="tbutt" id="sp40">D4 pulse</button><br>
+  <button class="tbutt" id="sd41">D4 on</button><button class="tbutt" id="sd40">D4 off</button>
+  <button class="tbutt" id="sp40">D4 pulse</button><br>
   <button class="tbutt" id="sd51">D5 on</button><button class="tbutt" id="sd50">D5 off</button><br>
   <button class="tbutt" id="sd61">D6 on</button><button class="tbutt" id="sd60">D6 off</button><br>
-  <button class="tbutt" id="sd71">D7 on</button><button class="tbutt" id="sd70">D7 off</button><br>
+  <button class="tbutt" id="sd71">D7 on</button><button class="tbutt" id="sd70">D7 off</button><button class="tbutt" id="hatch1">D7 on+D4 pulse</button><br>
   <button class="tbutt" id="sda1">ALL on</button><button class="tbutt" id="sda0">ALL off</button><br>
  
   <pre class="outputpre" id="output"></pre>
@@ -41,7 +46,19 @@
             output.textContent += v+'\n';
     }
 
-    
+    function recCallback (v) {
+      recid.value=v;
+      s=v.substring(0,2);
+      if (s=="#A") {
+        p1=v.indexOf("V");
+        p2=v.indexOf("W");
+        s=v.substring(p1+1);
+//        s=s.trim();
+        counter0id.value=parseInt(s);
+      // logg(1,"HERE:"+s);
+      }
+    }
+
     document.getElementById('sd01').addEventListener('click', setD01 ); document.getElementById('sd00').addEventListener('click', setD00 );
     document.getElementById('sd11').addEventListener('click', setD11 ); document.getElementById('sd10').addEventListener('click', setD10 );
     document.getElementById('sd21').addEventListener('click', setD21 ); document.getElementById('sd20').addEventListener('click', setD20 );
@@ -54,11 +71,18 @@
     document.getElementById('sd70').addEventListener('click', async () => {setDigital(7,0) });
     document.getElementById('sda1').addEventListener('click', setDa1 ); document.getElementById('sda0').addEventListener('click', setDa0 );
 
+    document.getElementById('buttStatus').addEventListener('click',  async () => {
+       sendReceivePort("$S00");
+    });
+
+
     document.getElementById('sp40').addEventListener('click',  async () => {
        setD41();
        await delay(200);
        setD40();
     });
+
+    document.getElementById('hatch1').addEventListener('click',  async () => { openHatch(1); });
  
     document.getElementById('connect').addEventListener('click', connectPort );
     document.getElementById('disconnect').addEventListener('click', disconnectPort );

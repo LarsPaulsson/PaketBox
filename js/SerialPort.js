@@ -48,7 +48,7 @@
     async function connectPort () {             // must be async because uses await
         r=await reconnectPort();
         if (r==0)  logg(100, "sp connected");
-        else logg(r, "sp not connected")
+        else logg(r, "sp not connected, try manual connect")
     }
 
     async function reconnectPort () {             // must be async because uses await
@@ -66,7 +66,8 @@
             }
             if (port==null) {       // If still no port
                 logg(1010, 'port null:'+nports);
-                port = await navigator.serial.requestPort();  // Ask User for permission and select port
+                try { port = await navigator.serial.requestPort(); } // Ask User for permission and select port
+                catch (error) {return 6; }       //Probably needs User gesture
             }
 
             if (port==null) {

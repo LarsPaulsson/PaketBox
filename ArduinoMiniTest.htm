@@ -4,19 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Serial Port Communication</title>
-  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-  <a href="index.html" class="navbutt" >Startsida</a>
-  <center><h2>Serieport test</h2></center>
-
+  <h1>Serial Port Communication</h1>
   <button id="connect">Connect</button>
   <button id="disconnect">Disconnect</button><br>
-  <input type="text" id="sendid" name="sendname" placeholder="$S00">
-  <button id="send">Send</button>
-  <input type="text" id="recid" name="recname" placeholder="received here">
-  <br>
+  <input type="text" id="sendid" name="sendname" placeholder="enter message here">
+  <button id="send">Send</button><br>
+
   <button id="sd01">D0 on</button><button id="sd00">D0 off</button><br>
   <button id="sd11">D1 on</button><button id="sd10">D1 off</button><br>
   <button id="sd21">D2 on</button><button id="sd20">D2 off</button><br>
@@ -27,23 +22,15 @@
   <button id="sd71">D7 on</button><button id="sd70">D7 off</button><br>
  
   <p id="result"></p>
-  <pre class="outputpre" id="output"></pre>
+  <pre id="output"></pre>
 
   <script src="js/SerialPort.js"></script>
   <script>
 
-    function showLogg (v) {
-      const totalHeight = output.clientHeight;
-      if (totalHeight>650) output.textContent="";
+    function showBuffer (v) {
             output.textContent += v+'\n';
     }
-    
-    function recCallback (v) {
-      recid.value=v;
-      // document.getElementById('recid').textContent=v;
-      // logg(100,"FINE"+v)
-    }
-    
+
     document.getElementById('sd01').addEventListener('click', setD01 ); document.getElementById('sd00').addEventListener('click', setD00 );
     document.getElementById('sd11').addEventListener('click', setD11 ); document.getElementById('sd10').addEventListener('click', setD10 );
     document.getElementById('sd21').addEventListener('click', setD21 ); document.getElementById('sd20').addEventListener('click', setD20 );

@@ -4,43 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div>Välkommen!</div>
-    <ul>
-        <li><a href="Webpage5.htm"> PaketBox Test 5</a></li>
-        <li><a href="Webpage6.htm"> PaketBox Test 6</a></li>
-        <li><a href="Webpage7.htm"> PaketBox Test 7</a></li>
-        <li><a href="Webpage8.htm"> PaketBox Test 8</a></li>
-        <li><a href="Webpage9.htm"> PaketBox Test 9</a></li>
-        <li><a href="Webpage10.htm"> PaketBox Test 10</a></li>
-        <li><a href="Webpage11.htm"> Test 11 Swish</a></li>
-        <li><a href="Webpage12.htm"> Test 12 Swisha & Tanka</a></li>
-        <li><a href="Webpage13.htm"> Test 13 Swisha & Tanka</a></li>
 
-        <li><a href="Tanka1.htm"> Swisha & Tanka</a></li>
+    <h2>Välkommen!</h2>
+    
+    <a href="Tanka1.htm" class="tbutt" >Swisha & Tanka</a>
+    <a href="ControllinoMiniTest.htm" class="tbutt" >Controllino test</a>
+    <a href="SerialPort6.htm" class="tbutt">Serieport Test</a>
+    <a href="https://larspaulsson.github.io/PaketBox/index.html" class="tbutt">Github</a>
+   
+   <!-- Input box with a button to navigate -->
+  <form onsubmit="navigateToURL(event)">
+    <input type="text" id="urlInput" placeholder="ange websida här" style="width: 400px; padding: 10px;  margin: 10px 20px 10px 10px;">
+    <button type="submit" style="padding: 10px 20px;  margin: 10px 20px 10px 10px;">Välj</button>
+  </form>
 
-        <li><a href=""></a></li>
+  <script>
+    // Function to handle the navigation
+    function navigateToURL(event) {
+      event.preventDefault();  // Prevent form from submitting
 
-        <li><a href="SerialPort.htm"> Serial Port Test</a></li>
-        <li><a href="SerialPort2.htm"> Serial Port 2 Test</a></li>
-        <li><a href="SerialPort4.htm"> Serial Port 4 Test</a></li>
-        <li><a href="SerialPort5.htm"> Serial Port 5 Test</a></li>
-        <li><a href="SerialPort6.htm"> Serial Port 6 Test</a></li>
-        <li><a href="https://developer.swish.nu/api">Swish</a></li>
-        
-        <li><a href=""></a></li>
-        <li><a href=""></a></li>
-        <li><a href=""></a></li>
-        <li><a href=""></a></li>
-        <li><a href=""></a></li>
-        <li><a href=""></a></li>
-        
-        <li></li>
-    </ul>
-    <div class="myclass"></div>
-    <input type="text" id="foo" class="bar">
-    <br>
-    <input type="date" name="nameDate" id="idDate">
+      // Get the input value (URL)
+      const url = document.getElementById('urlInput').value;
+      
+      // Basic validation to check if the URL is not empty
+      if (url) {
+        // Check if the URL starts with "http://" or "https://", otherwise prepend it
+        const fullURL = url.startsWith('http://') || url.startsWith('https://') ? url : 'http://' + url;
+
+        // Navigate to the entered URL
+        window.location.href = fullURL;
+      } else {
+        alert('Please enter a valid URL');
+      }
+    }
+  </script>
 </body>
 </html>

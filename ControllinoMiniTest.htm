@@ -3,47 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Serial Port Communication</title>
+  <title>Controllino Test</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <a href="index.html" class="navbutt" >Startsida</a>
-  <center><h2>Serieport test</h2></center>
+    <a href="index.html" class="navbutt" >Startsida</a>
+    <center><h2>Controllino Test</h2></center>
 
-  <button id="connect">Connect</button>
-  <button id="disconnect">Disconnect</button><br>
-  <input type="text" id="sendid" name="sendname" placeholder="$S00">
+<button id="connect">Connect</button>
+  <button id="disconnect">Disconnect</button>
+  <input type="text" id="sendid" name="sendname" placeholder="enter message here">
   <button id="send">Send</button>
   <input type="text" id="recid" name="recname" placeholder="received here">
+  <input type="text" id="counter0id" name="counter0name" placeholder="counter 0">
   <br>
-  <button id="sd01">D0 on</button><button id="sd00">D0 off</button><br>
-  <button id="sd11">D1 on</button><button id="sd10">D1 off</button><br>
-  <button id="sd21">D2 on</button><button id="sd20">D2 off</button><br>
-  <button id="sd31">D3 on</button><button id="sd30">D3 off</button><br>
-  <button id="sd41">D4 on</button><button id="sd40">D4 off</button><button id="sp40">D4 pulse</button><br>
-  <button id="sd51">D5 on</button><button id="sd50">D5 off</button><br>
-  <button id="sd61">D6 on</button><button id="sd60">D6 off</button><br>
-  <button id="sd71">D7 on</button><button id="sd70">D7 off</button><br>
+
+  
+  <button class="tbutt" id="sd01">D0 on</button><button class="tbutt" id="sd00">D0 off</button>
+  <button class="tbutt" id="buttStatus">Status</button><br>
+  <button class="tbutt" id="sd11">D1 on</button><button class="tbutt" id="sd10">D1 off</button><br>
+  <button class="tbutt" id="sd21">D2 on</button><button class="tbutt" id="sd20">D2 off</button><br>
+  <button class="tbutt" id="sd31">D3 on</button><button class="tbutt" id="sd30">D3 off</button><br>
+  <button class="tbutt" id="sd41">D4 on</button><button class="tbutt" id="sd40">D4 off</button>
+  <button class="tbutt" id="sp40">D4 pulse</button><br>
+  <button class="tbutt" id="sd51">D5 on</button><button class="tbutt" id="sd50">D5 off</button><br>
+  <button class="tbutt" id="sd61">D6 on</button><button class="tbutt" id="sd60">D6 off</button><br>
+  <button class="tbutt" id="sd71">D7 on</button><button class="tbutt" id="sd70">D7 off</button><button class="tbutt" id="hatch1">D7 on+D4 pulse</button><br>
+  <button class="tbutt" id="sda1">ALL on</button><button class="tbutt" id="sda0">ALL off</button><br>
  
-  <p id="result"></p>
   <pre class="outputpre" id="output"></pre>
 
   <script src="js/SerialPort.js"></script>
   <script>
 
+/*    function showBuffer (v) {
+            output.textContent += v+'\n';
+    }*/
     function showLogg (v) {
       const totalHeight = output.clientHeight;
       if (totalHeight>650) output.textContent="";
             output.textContent += v+'\n';
     }
-    
+
     function recCallback (v) {
       recid.value=v;
-      // document.getElementById('recid').textContent=v;
-      // logg(100,"FINE"+v)
+      s=v.substring(0,2);
+      if (s=="#A") {
+        p1=v.indexOf("V");
+        p2=v.indexOf("W");
+        s=v.substring(p1+1);
+//        s=s.trim();
+        counter0id.value=parseInt(s);
+      // logg(1,"HERE:"+s);
+      }
     }
-    
+
     document.getElementById('sd01').addEventListener('click', setD01 ); document.getElementById('sd00').addEventListener('click', setD00 );
     document.getElementById('sd11').addEventListener('click', setD11 ); document.getElementById('sd10').addEventListener('click', setD10 );
     document.getElementById('sd21').addEventListener('click', setD21 ); document.getElementById('sd20').addEventListener('click', setD20 );
@@ -51,13 +66,23 @@
     document.getElementById('sd41').addEventListener('click', setD41 ); document.getElementById('sd40').addEventListener('click', setD40 );
     document.getElementById('sd51').addEventListener('click', setD51 ); document.getElementById('sd50').addEventListener('click', setD50 );
     document.getElementById('sd61').addEventListener('click', setD61 ); document.getElementById('sd60').addEventListener('click', setD60 );
-    document.getElementById('sd71').addEventListener('click', setD71 ); document.getElementById('sd70').addEventListener('click', setD70 );
+    document.getElementById('sd71').addEventListener('click', async () => {setDigital(7,1) });
+
+    document.getElementById('sd70').addEventListener('click', async () => {setDigital(7,0) });
+    document.getElementById('sda1').addEventListener('click', setDa1 ); document.getElementById('sda0').addEventListener('click', setDa0 );
+
+    document.getElementById('buttStatus').addEventListener('click',  async () => {
+       sendReceivePort("$S00");
+    });
+
 
     document.getElementById('sp40').addEventListener('click',  async () => {
        setD41();
        await delay(200);
        setD40();
     });
+
+    document.getElementById('hatch1').addEventListener('click',  async () => { openHatch(1); });
  
     document.getElementById('connect').addEventListener('click', connectPort );
     document.getElementById('disconnect').addEventListener('click', disconnectPort );

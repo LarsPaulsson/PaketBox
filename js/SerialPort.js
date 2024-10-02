@@ -240,7 +240,7 @@
         if (n<MAXLOOP) {
             s=getBufferLine();
            
-            // i framtiden ska vi kräva korrekt svar här
+            // i framtiden ska vi kontrollera korrekt svar här
             try {recCallback(s); } catch(error) {};
             logg(91, s);
         } else {

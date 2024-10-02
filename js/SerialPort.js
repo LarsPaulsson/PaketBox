@@ -42,12 +42,18 @@
         output.textContent += v+'\n';
     }
     */
+
     async function connectPort () {             // must be async because uses await
+        r=await reconnectPort();
+        if (r==0)  logg(100, "sp connected");
+        else logg(r, "sp not connected")
+    }
+    async function reconnectPort () {             // must be async because uses await
         try {
             
             const ports = await navigator.serial.getPorts();
             const nports = ports.length;
-            // logg(100,'Connecting, ports='+nports);
+            // logg(100,'sp connecting, ports='+nports); // spammar loggen
             if (nports==0) {
                 // logg(9, "No serialport available");
                 return 9;
@@ -88,7 +94,7 @@
     };
 
     async function disconnectPort () {
-        logg(100,'disconnectPort');
+        logg(100,'sp disconnect');
         portstatus=0;
         try {
             if (reader) {
@@ -103,7 +109,7 @@
                 outputStream = null;
                 outputDone = null;
             }
-            await port.close();
+            if (port) await port.close();
             port = null;
         } catch (err) {
             // reportStatus('Error:'+err);
@@ -113,13 +119,19 @@
     };
 
     async function sendtoPort (inputValue) {
+    if (globalState==0) {
+        return 1;
+    }
+
     try {
       const writer = outputStream.getWriter();
       await writer.write(inputValue+'\r\n');
       writer.releaseLock();
       logg(90, inputValue);
+      return 0;
       } catch (err) {
             logg(9,"sendtoPort error="+err.message);
+            return 2;
       }
     }
 
@@ -160,7 +172,6 @@
 
     function setDigital(port, v) {
         let s='$D'+String.fromCharCode(port+48)+String.fromCharCode(v+48);
-        console.log(s);
         sendReceivePort(s);
     }
 
@@ -197,10 +208,25 @@
         } 
     }
 
+    async function openHatch(hatchno) { 
+        setDigital(7,1);
+        await delay(2000);
+        switch (hatchno) {
+        case 1: setDigital(4,1); await delay(100); setDigital(4,0); break;
+        case 2: setDigital(5,1); await delay(100); setDigital(5,0); break;
+        }
+    }
+
     async function sendReceivePort (inputValue) {
+    let ret=0;
     let result;
     let i=0;
     const MAXLOOP=200;
+    if (globalState==0) {
+        logg (9, "sp no connection, can not send");
+        return 1;           // we are not connected
+    }
+
     globalState=2;          // stop automatic flushing
     flushBuffer();          // empty buffer
     try {
@@ -213,12 +239,20 @@
         console.log('Needed loops:'+n);
         if (n<MAXLOOP) {
             s=getBufferLine();
+           
+            // i framtiden ska vi kräva korrekt svar här
+            try {recCallback(s); } catch(error) {};
             logg(91, s);
-        } else logg(9,"sendReceivePort No Reply");
+        } else {
+            logg(9,"sendReceivePort No Reply");
+            ret=2;
+        }
     } catch (error) {
         logg(9,"sendReceivePort:"+error.message)
+        return ret=3;
     }
     globalState=1;
+    return ret;
     }
 /*
     navigator.serial.addEventListener('disconnect', (event) => {
@@ -268,13 +302,13 @@ function reportStatus(txt)
         
         switch (globalState) {
             case 0:                 // Not connected
-                r = await connectPort();
+                r = await reconnectPort();
                 if (r==0) {
-                    logg (100, "Connected");
+                    logg (100, "sp connected");
                     globalState=1;
                     cErrors=0;
                 } else {
-                    if (cErrors==0) logg (r, "connectPort");
+                    if (cErrors==0) logg (r, "sp not connected");
                     cErrors++;
                 }
                 await delay(1000);

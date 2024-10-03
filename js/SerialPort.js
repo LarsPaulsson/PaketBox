@@ -39,13 +39,10 @@
         logg(100,v);
     }
 
-    /* Must be similar in html document
-    function showLogg (v) {
-        output.textContent += v+'\n';
-    }
-    */
 
-    // Manual connect coming from User gesture
+    // I vanlig webbrowser är serieporten skyddad av att användaren godkänner en första gång
+    // så då behöver en första connect göras strax efter en "User Gesture"
+
     async function connectPort () {             // must be async because uses await
         if (port) {
             await disconnectPort();
@@ -104,6 +101,18 @@
             }
     };
 
+
+    // För test att återställa som om Serieporten vore ny
+    async function disconnectAndForgetPort () {
+        try {
+        await disconnectPort();
+        await port.forget;
+        logg(100,'disconnectAndForget');
+        } catch (err) {
+        logg(9,'disconnectAndForget error='+err.message);
+        }
+    }
+
     async function disconnectPort () {
         globalState=-1;
         await delay(100);
@@ -123,10 +132,8 @@
                 outputDone = null;
             }
             if (port) await port.close();
-            port = null;
+            // port = null;
         } catch (err) {
-            // reportStatus('Error:'+err);
-            // console.error('Error:', err);
             logg(9,"Disconnect error="+err.message);
         }
         logg(100,'sp disconnect done');
@@ -285,11 +292,6 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function reportStatus(txt)
-{
-    showBuffer('!:'+txt)
-    // result.textContent = txt;
-}
 
     // Call this from the html document.
     // Html document must provide showBuffer() for reporting

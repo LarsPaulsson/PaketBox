@@ -62,7 +62,7 @@
     });
  
     document.getElementById('connect').addEventListener('click', connectPort );
-    document.getElementById('disconnect').addEventListener('click', disconnectPort );
+    document.getElementById('disconnect').addEventListener('click', disconnectAndForgetPort );
     document.getElementById('send').addEventListener('click', async () => {
     try {
       var inputElement = document.getElementById("sendid");

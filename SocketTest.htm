@@ -95,8 +95,23 @@
 
     logg(0, 'Program start');
 
-document.getElementById('open1').addEventListener('click', async () => { logg (100, "Open");  });
-document.getElementById('close1').addEventListener('click', async () => { logg (100, "Close"); });
+document.getElementById('open1').addEventListener('click', async () => {
+    try {
+       socket.close();
+       logg (100, "ws open");
+    } catch (err) {
+        logg (8, "ws close Error:"+err.message);
+    };
+});
+
+document.getElementById('close1').addEventListener('click', async () => {
+    try {
+       socket.close();
+       logg (100, "ws close");
+    } catch (err) {
+        logg (8, "ws close Error:"+err.message);
+    };
+});
 
 document.getElementById('open2').addEventListener('click', async () =>{
     logg (100, "Open");
@@ -152,10 +167,12 @@ socketPy.onclose = function(event) {
 */
 
 const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Din Pushbullet API-nyckel
+// Skapa en WebSocket-anslutning till Pushbullet
+// const socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
 
 // Skapa en WebSocket-anslutning till Pushbullet
 try {
-   const socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
+   var socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
    logg (100, "ws New");
 } catch (err) {
     logg (8, "ws Error:"+err.message);

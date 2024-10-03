@@ -172,8 +172,8 @@ const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Din Pushbullet API-
 
 // Skapa en WebSocket-anslutning till Pushbullet
 try {
-   // var socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
-   var socket = new WebSocket(`wss://echo.websocket.org`);
+   var socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
+   // var socket = new WebSocket(`wss://echo.websocket.org`);
    logg (100, "ws New");
 } catch (err) {
     logg (8, "ws Error:"+err.message);

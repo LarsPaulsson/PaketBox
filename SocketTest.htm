@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swisha och tanka!</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <style>
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding: 8px;
+          text-align: center;
+          border: 1px solid black;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+      </style>
+      
+      <style>
+          .tankbutton {
+              padding: 10px 20px;  /* Adjusts the space inside the button */
+              font-size: 18px;      /* Increases the size of the text inside */
+              width: 300px;   /* Set button width */
+              height: 50px;   /* Set button height */
+              background-color: green;
+          }
+          .tankpre {
+            position: absolute;
+            top: 250px;  /* Adjust the top position */
+            left:20px;  /* Adjust the left position */
+            width:600;
+            height: 500;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            }
+      </style>
+
+<a href="index.html" class="navbutt" >Startsida</a>
+
+
+    <table>
+        <tr>
+          <th>Socket 1</th>
+          <th>Socket 2</th>
+          <th>Socket 3</th>
+          <th>Socket 4</th>
+        </tr>
+        <tr>
+        <td><button class="tbutt" id="open1">Öppna</button>
+            <button class="tbutt" id="close1">Stäng</button></td>
+        <td><button class="tbutt" id="open2">Öppna</button>
+            <button class="tbutt" id="close2">Stäng</button></td>
+        <td><button class="tbutt" id="open3">Öppna</button>
+            <button class="tbutt" id="close3">Stäng</button></td>
+        <td><button class="tbutt" id="open4">Öppna</button>
+            <button class="tbutt" id="close4">Stäng</button></td>
+        </tr>
+        <tr>
+            <td><input type="text" id="counter0id" name="counter0name" placeholder="counter 0"></td>
+        </tr>
+
+      </table>
+      
+      <pre class="tankpre" id="output"></pre>
+    
+    <script src="js/SerialPort.js"></script>
+
+    <script>
+
+    function showLogg (v) {
+      const totalHeight = output.clientHeight;
+      if (totalHeight>150) output.textContent="";
+            output.textContent += v+'\n';
+    }
+
+    function recCallback (v) {
+      // recid.value=v;
+      s=v.substring(0,2);
+      if (s=="#A") {
+        p1=v.indexOf("V");
+        p2=v.indexOf("W");
+        s=v.substring(p1+1);
+//        s=s.trim();
+        counter0id.value=parseInt(s);
+      // logg(1,"HERE:"+s);
+      }
+    }
+
+    logg(0, 'Program start');
+
+document.getElementById('open1').addEventListener('click', async () => { logg (100, "Open");  });
+document.getElementById('close1').addEventListener('click', async () => { logg (100, "Close"); });
+
+document.getElementById('open2').addEventListener('click', async () =>{
+    logg (100, "Open");
+        });
+        
+document.getElementById('close2').addEventListener('click', async () =>{
+    logg (100, "Close");
+        });
+
+document.getElementById('open3').addEventListener('click', async () =>{
+    try {const audio = new Audio('mp3/sound3.mp3'); audio.play();} catch{};
+        });
+
+document.getElementById('close3').addEventListener('click', async () =>{
+    try {const audio = new Audio('mp3/sound1.mp3'); audio.play(); } catch{};
+        });
+
+document.getElementById('open4').addEventListener('click', async () =>{
+//    try {const audio = new Audio('mp3/sound3.mp3'); audio.play();} catch{};
+        });
+
+document.getElementById('close4').addEventListener('click', async () =>{
+//    try {const audio = new Audio('mp3/sound1.mp3'); audio.play(); } catch{};
+        });
+
+        /*
+// Skapa en WebSocket-anslutning till Python
+const socketPy = new WebSocket(`ws://localhost:8765/`);
+
+// Lyssna efter WebSocket-anslutningens öppnande
+socketPy.onopen = function(event) {
+//    showSocket("Ansluten!","","");
+    console.log("socketPy ansluten till Python!");
+};
+
+// Hantera inkommande meddelanden
+socketPy.onmessage = function(event) {
+    // const data = JSON.parse(event.data);
+    console.log("socketPy.onmessage:", event.data);
+};
+
+// Hantera eventuella fel med WebSocket
+socketPy.onerror = function(error) {
+    console.error("WebSocketPy fel:", error);
+    // showSocket("socket.onerror",error,"");
+};
+
+// Stäng WebSocket-anslutningen när det behövs
+socketPy.onclose = function(event) {
+    console.log("WebSocketPy stängd.");
+    // showSocket("socket.onclose","","");
+};
+*/
+
+const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Din Pushbullet API-nyckel
+
+// Skapa en WebSocket-anslutning till Pushbullet
+try {
+   const socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
+   logg (100, "ws New");
+} catch (err) {
+    logg (8, "ws Error:"+err.message);
+};
+
+// Lyssna efter WebSocket-anslutningens öppnande
+socket.onopen = function(event) {
+    logg (100, "ws open");
+};
+
+// Hantera inkommande meddelanden från Pushbullet
+socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    let l2="";
+    let l3="";
+    let audio;
+
+    logg (100, "ws onmessage data.type="+data.type);
+
+    // Kontrollera om det är ett pushmeddelande
+    if (data.type === 'push') {
+//        console.log("push:", data.push);
+        if (data.push.type === 'mirror') {
+            try {
+             l1=`${data.push.application_name}`;
+             l2=`${data.push.title}`;
+             l3=`${data.push.body}`;
+            }
+            catch {    }
+            logg(100, `ws application_name: ${l1}`);
+            logg(100, `ws title: ${l2}`);
+            logg(100, `ws body: ${l3}`);
+            switch (l1) {
+                case "Pushbullet":
+                    logg(100, "ws Pushbullet");
+                    document.getElementById('tank4').click();
+                    // document.getElementById('pulseDTR').click();
+                    // audio = new Audio('mp3/pusbullet.mp3'); audio.play();
+                    break;
+                case "Tapo":
+                    logg(100, "ws Tapo");
+                // audio = new Audio('mp3/tapo.mp3'); audio.play();
+                    break;
+                case "Swish":
+                    logg(100, "Swish");
+                    document.getElementById('tank1').click();
+                    // document.getElementById('pulseDTR').click();
+                    // audio = new Audio('mp3/swish.mp3'); audio.play();
+                    break;
+            
+                default:
+                    break;
+            }
+            
+        }
+    }
+};
+
+// Hantera eventuella fel med WebSocket
+socket.onerror = function(error) {
+    logg("ws onerror=",error);
+};
+
+// Stäng WebSocket-anslutningen när det behövs
+socket.onclose = function(event) {
+    logg ("ws onclose");
+};
+/*
+function showSocket(line1,line2,line3) {
+        document.getElementById('Message1').textContent = line1 + "   " + line2 + "   " + line3;
+}
+*/
+
+
+function playSound() {
+    try {
+            const audio = new Audio('mp3/eagle.mp3');
+            audio.play();
+        } catch{};
+    }
+
+ </script>
+</body>
+</html>

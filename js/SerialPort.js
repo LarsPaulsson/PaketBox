@@ -77,7 +77,10 @@
                 logg(1008, "Serialport null");
                 return 8;
             }
-
+                // Ett bekymmer är att enheten resettas varje gång vi kommer hit.
+                // Bra vid fel men hindrar navigering mellan sidor
+                // FUNKAR INTE OM DENNA AKTIVERAS await port.setSignals({ dataTerminalReady: false });
+                // FUNKAR INTE OM DENNA AKTIVERAS await port.setSignals({ requestToSend: false });
                 await port.open({ baudRate: 9600 });
 
                 const textDecoder = new TextDecoderStream();

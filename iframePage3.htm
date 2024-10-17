@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swisha och tanka!</title>
+    <link rel="stylesheet" href="css/styleiframe.css">
+</head>
+<body>
+
+    <table>
+
+        <tr><td>Skruv 1</td><td>Skruv 2</td><td>Skruv 3</td><td>Skruv 4</td></tr>
+        <tr><td>Vete</td><td>Fågelfrö</td><td>Majs</td><td>Havre</td></tr>
+        <tr><td>4,5 kr/kg</td><td>5,50 kr/kg</td><td>3,8 kr/ kg</td><td>3,9 kr/kg</td></tr>
+        <tr><td><button class="bigbutt" id="sel1butt" onclick="select(1)">Välj</button></td>
+            <td><button class="bigbutt" id="sel2butt" onclick="select(2)">Välj</button></td>
+            <td><button class="bigbutt" id="sel3butt" onclick="select(3)">Välj</button></td>
+            <td><button class="bigbutt" id="sel4butt" onclick="select(4)">Välj</button></td>
+        </tr>
+    </table>
+
+    <script>
+
+
+        function select(newsel) {
+            window.location.href = "iframePage4.htm?sel="+newsel;
+            // document.getElementById('useriframe').src = "iframePage4.htm?sel="+newsel;
+        }
+        
+    </script>
+
+</body>
+</html>

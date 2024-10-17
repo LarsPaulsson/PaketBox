@@ -1,43 +1,28 @@
 
-.tbutt {
-    display: inline-block;
-  /* padding: 10px 20px; */  /* Adjusts the space inside the button */
-  font-size: 18px;      /* Increases the size of the text inside */
-  width: 200px;   /* Set button width */
-  height:50px;   /* Set button height */
-    /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-    margin: 10px 20px 10px 10px; /* Top, Right, Bottom, Left */
-    background-color: #007BFF;
-    color: white;
-    border: black;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
-    text-align: center;
-    line-height: 50px;   
-    
+body, html {
+width: 100%;
+height: 100%;
+margin: 0;
+display: flex;
+justify-content: center;  /* Center horizontally */
+align-items: center;      /* Center vertically */
+}
+
+table {
+    border-collapse: collapse;
+    font-size: 40px;
+    margin: 0 auto; /* Center the table itself */
+    text-align: center; /* Center the content in the table */
+    width: 80%; /* Optional: define the table width */       
   }
-  .navbutt {
-    position: absolute;
-    // top: 0px;  /* Adjust the top position */
-    left: 0px;  /* Adjust the left position */
-    bottom: 20px; /* Distance from the bottom */
-    display: inline-block;
-  /* padding: 10px 20px; */  /* Adjusts the space inside the button */
-  font-size: 18px;      /* Increases the size of the text inside */
-  width: 100px;   /* Set button width */
-  height:50px;   /* Set button height */
-    /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-    margin: 0px 0px 0px 0px; /* Top, Right, Bottom, Left */
-    background-color: #5f6169;
-    color: white;
-    border: black;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
+th, td {
+    padding: 8px;
     text-align: center;
-    line-height: 50px;   
-    }
+    border: 1px solid black;
+  }
+th {
+    background-color: #f2f2f2;
+  }
 
     .bigbutt {
     padding: 10px 20px;  /* Adjusts the space inside the button */

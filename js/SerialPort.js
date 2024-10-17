@@ -19,7 +19,7 @@
         ]);
     }
 
-    const debuglevel=1000;
+    const debuglevel=89;
 
     function logg (l, v) {
         if (l < 10) p=`*`;
@@ -29,8 +29,10 @@
         else if (l<100) p="!";
         else p="+";
         s=`${p}:${l} ${v}`;
-        if (l<=debuglevel) showLogg (s);   // resides in html document
-        console.log(s);
+        if (l<=debuglevel) {
+            showLogg (s);   // resides in html document
+            console.log(s);
+        }
 
     }
 
@@ -261,7 +263,7 @@
             i=globalBuffer.indexOf('\n');
             if (i>=0) break;
         }
-        console.log('Needed loops:'+n);
+        // console.log('Needed loops:'+n);
         if (n<MAXLOOP) {
             s=getBufferLine();
            

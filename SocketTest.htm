@@ -167,10 +167,9 @@ socketPy.onclose = function(event) {
 */
 
 const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Din Pushbullet API-nyckel
-// Skapa en WebSocket-anslutning till Pushbullet
-// const socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
 
 // Skapa en WebSocket-anslutning till Pushbullet
+// Denna funkade inte på Raspberry Pi eftersom dess Chromium hade en extension som blockerade, ublock origin.
 try {
    var socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
    // var socket = new WebSocket(`wss://echo.websocket.org`);

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swisha och tanka!</title>
+    <link rel="stylesheet" href="css/styleiframe.css">
+</head>
+<body>
+
+    <table>
+        <tr><td>Välj mängd</td></tr>
+        <tr><td><button class="bigbutt" id="sel4butt" onclick="select(1)">Välj</button></td></tr>
+    </table>
+
+  <script>
+
+
+      function select(newsel) {
+          window.location.href = "iframePage5.htm?sel="+newsel;
+          // document.getElementById('useriframe').src = "iframePage4.htm?sel="+newsel;
+      }
+      
+  </script>
+   
+
+</body>
+</html>

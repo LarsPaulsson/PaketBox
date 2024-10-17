@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swisha och tanka!</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <style>
+
+    table {
+          width: 300px;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding: 2px;
+          text-align: center;
+          border: 1px solid black;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+      </style>
+      
+      <style>
+      .topbutt {
+        /* position: absolute;
+         top: 120px;  * Adjust the top position *
+         left: 120px;  * Adjust the left position *
+         bottom: 20px; * Distance from the bottom */
+        /* display: inline-block;*/
+      /* padding: 10px 20px; */  /* Adjusts the space inside the button */
+      font-size: 12px;      /* Increases the size of the text inside */
+      width: 100px;   /* Set button width */
+      height:50px;   /* Set button height */
+        /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
+        margin: 0px 0px 0px 0px; /* Top, Right, Bottom, Left */
+        background-color: #5f6169;
+        color: white;
+        border: black;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        line-height: 50px;   
+        }
+
+          .tankpre {
+            // position: absolute;
+            // top: 620px;  /* Adjust the top position */
+            // left:400px;  /* Adjust the left position */
+            width: 500px;
+            height: 300px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            }
+      </style>
+
+
+<iframe
+  id="useriframe"
+  title=""
+  width="100%"
+  height="600"
+  src="iframePage1.htm">
+</iframe>
+
+<br>
+<div id="devdiv">
+<a href="index.html" class="devbutt" >Testsidor</a>
+<button class="topbutt" id="connect">Serieport test</button>
+<button class="topbutt" id="buttProduct">Vara</button>
+<button class="topbutt" id="buttPulses">Varv</button>
+<button class="topbutt" id="buttStart">Starta</button>
+<button class="topbutt" id="page1butt" onclick="navigateIframe('iframePage1.htm')">1 Välkommen</button>
+<button class="topbutt" id="page2butt" onclick="navigateIframe('iframePage2.htm')">2 Villkor</button>
+<button class="topbutt" id="page3butt" onclick="navigateIframe('iframePage3.htm')">3 Vara</button>
+<button class="topbutt" id="page3butt" onclick="navigateIframe('iframePage4.htm')">4 Mängd</button>
+<button class="topbutt" id="page3butt" onclick="navigateIframe('iframePage5.htm')">5 Swisha</button>
+<button class="topbutt" id="page3butt" onclick="navigateIframe('iframeTanka1.htm')">6 Hämta</button>
+<table>
+    <tr><td>State</td><td>Tillgängliga</td><td>Varuval</td><td>Pulsval</td><td>Räknare</td><td>Tid kvar</td></tr>
+    <tr>
+        <td><div id="idState">-</div></td>
+        <td><div id="idAvailable">-</div></td>
+        <td><div id="idProduct"></div></td>
+        <td><div id="idPulses"></div></td>
+        <td><div id="idCounter" >-</div></td>
+        <td><div id="idTimeleft" >-</div></td>
+        </tr>
+</table>
+
+<pre class="tankpre" id="output"></pre>
+</div>
+    
+    <script src="js/SerialPort.js"></script>
+
+    <script>
+
+const TIMEOUT=30;
+let pumpstate=0;
+let pumptimer=0;
+let pump=0;
+let pulsespaid=0;
+let pulsestart=0;
+let pcount=0;
+let d6=0;
+const sessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
+
+
+    document.getElementById('buttProduct').addEventListener('click',  async () => {
+       pump++;
+       if (pump>4) pump=0;
+       idProduct.textContent=pump;
+    });
+
+    document.getElementById('buttPulses').addEventListener('click',  async () => {
+    pulsespaid++;
+    if (pulsespaid>10) pulsespaid=0;
+    idPulses.textContent=pulsespaid;
+    sessionobj.pulsespaid=pulsespaid;
+    });
+
+    document.getElementById('buttStart').addEventListener('click',  async () => {
+       if (pump>0) {
+          await setDigital(pump-1,1);
+          await delay(100);
+       }
+       pumptimer=TIMEOUT;
+       pumpstate=1;
+       pulsestart=counter0;
+    });
+
+let intervalId = setInterval(timerStuff, 1000);
+
+// Stop the interval  clearInterval(intervalId);
+
+async function timerStuff() {
+    
+if (pumpstate==1) {     // Pumpar
+  if (pumptimer>0) pumptimer--;
+    idTimeleft.textContent=pumptimer;
+    if (pumptimer<=0) {
+        pumpstate=3;
+    } else {
+       d6++;
+       if (d6>1) d6=0;
+       await setDigital(6,d6);
+       await delay(100);
+       // sendReceivePort("$S00");
+    }
+  }
+  if (pumpstate==2) {     // Uppnått antal pulser
+    await setDigital(pump-1,0);
+    await delay(100);
+    d6=0;
+    await setDigital(6,d6);
+    await delay(100);
+    pumpstate=4;
+    pumptimer=5;
+  }
+  if (pumpstate==3) {     // Timeout
+    await setDigital(pump-1,0);
+    await delay(100);
+    d6=0;
+    await setDigital(6,d6);
+    await delay(100);
+    pumpstate=4;
+    pumptimer=5;
+  }
+  if (pumpstate==4) {     // Avslutar pumpsessionen
+    pumptimer--;
+    idTimeleft.textContent=pumptimer;
+    if (pumptimer<=0) {
+        pumpstate=0;
+    }
+  }
+  idState.textContent=pumpstate;
+  sendReceivePort("$S00");
+}
+
+
+function navigateIframe(newsrc) {
+    
+    document.getElementById('useriframe').src = newsrc;
+}
+
+    function showLogg (v) {
+      const totalHeight = output.clientHeight;
+      if (totalHeight>400) output.textContent="";
+      output.textContent += v+'\n';
+    }
+
+    function recCallback (v) {
+      let s;
+      let p1;
+      // instatus.textContent=v;
+      s=v.substring(0,2);
+      if (s=="#A") {
+        diginp=v.substring(2,6);
+        p1=v.indexOf("V");
+        s=v.substring(p1+1);
+        counter0=parseInt(s);
+        p1=v.indexOf("W");
+        s=v.substring(p1+1);
+        counter1=parseInt(s);
+        idAvailable.textContent=diginp;
+        pcount=counter0-pulsestart;
+        idCounter.textContent=pcount;
+        // const piframe = document.getElementById('useriframe');
+        // piframe.contentWindow.postMessage(pcount, '*');
+        sessionobj.pulsesnow=(pcount);
+        sendiframe();
+        if (pcount >= pulsespaid) {
+            if (pumpstate==1) pumpstate=2;
+        }
+      }
+      // logg(1,"HERE:"+s);
+    }
+    
+/*
+    function showBuffer (v) {
+           output.textContent += v+'\n';
+    }
+*/
+logg(10, 'Program start');
+/*
+// Skapa en WebSocket-anslutning till Python
+const socketPy = new WebSocket(`ws://localhost:8765/`);
+
+// Lyssna efter WebSocket-anslutningens öppnande
+socketPy.onopen = function(event) {
+//    showSocket("Ansluten!","","");
+    console.log("socketPy ansluten till Python!");
+};
+
+// Hantera inkommande meddelanden
+socketPy.onmessage = function(event) {
+    // const data = JSON.parse(event.data);
+    console.log("socketPy.onmessage:", event.data);
+};
+
+// Hantera eventuella fel med WebSocket
+socketPy.onerror = function(error) {
+    console.error("WebSocketPy fel:", error);
+    // showSocket("socket.onerror",error,"");
+};
+
+// Stäng WebSocket-anslutningen när det behövs
+socketPy.onclose = function(event) {
+    console.log("WebSocketPy stängd.");
+    // showSocket("socket.onclose","","");
+};
+*/
+
+const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Din Pushbullet API-nyckel
+
+// Skapa en WebSocket-anslutning till Pushbullet
+const socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
+
+// Lyssna efter WebSocket-anslutningens öppnande
+socket.onopen = function(event) {
+    logg (100, "ws open");
+};
+
+// Hantera inkommande meddelanden från Pushbullet
+socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    let l2="";
+    let l3="";
+    let audio;
+
+    logg (100, "ws onmessage data.type="+data.type);
+
+    // Kontrollera om det är ett pushmeddelande
+    if (data.type === 'push') {
+//        console.log("push:", data.push);
+        if (data.push.type === 'mirror') {
+            try {
+             l1=`${data.push.application_name}`;
+             l2=`${data.push.title}`;
+             l3=`${data.push.body}`;
+            }
+            catch {    }
+            logg(100, `ws application_name: ${l1}`);
+            logg(100, `ws title: ${l2}`);
+            logg(100, `ws body: ${l3}`);
+            switch (l1) {
+                case "Pushbullet":
+                    logg(100, "ws Pushbullet");
+                    document.getElementById('tank4').click();
+                    // document.getElementById('pulseDTR').click();
+                    // audio = new Audio('mp3/pusbullet.mp3'); audio.play();
+                    break;
+                case "Tapo":
+                    logg(100, "ws Tapo");
+                // audio = new Audio('mp3/tapo.mp3'); audio.play();
+                    break;
+                case "Swish":
+                    logg(100, "Swish");
+                    document.getElementById('tank1').click();
+                    // document.getElementById('pulseDTR').click();
+                    // audio = new Audio('mp3/swish.mp3'); audio.play();
+                    break;
+            
+                default:
+                    break;
+            }
+            
+        }
+    }
+};
+
+// Hantera eventuella fel med WebSocket
+socket.onerror = function(error) {
+    logg("ws onerror=",error);
+};
+
+// Stäng WebSocket-anslutningen när det behövs
+socket.onclose = function(event) {
+    logg ("ws onclose");
+};
+/*
+function showSocket(line1,line2,line3) {
+        document.getElementById('Message1').textContent = line1 + "   " + line2 + "   " + line3;
+}
+*/
+async function doTanka(nr, button) {
+    // socketPy.send("$D01\r\n");
+    setDigital(nr-1,1);
+    // try {const audio = new Audio('mp3/sound3.mp3'); audio.play(); } catch{};
+    for (i=0; i<60; i++) {
+    document.getElementById(button).style.backgroundColor = 'red';
+    await new Promise(resolve => setTimeout(resolve, 500));
+    sendReceivePort("$S00");
+    document.getElementById(button).style.backgroundColor = 'green';
+    await new Promise(resolve => setTimeout(resolve, 500));
+    sendReceivePort("$S00");
+    }
+    setDigital(nr-1,0);
+}
+
+async function doLucka(nr, button) {
+
+    try {const audio = new Audio('mp3/sound4.mp3'); audio.play(); } catch{};
+    setDigital(7,1);    // D7 on i minst 1,3 s före puls
+    for (i=0; i<8; i++) {
+    document.getElementById(button).style.backgroundColor = 'red';
+    await delay(250);
+    document.getElementById(button).style.backgroundColor = 'green';
+    await delay(250);
+    }
+    setDigital(4,1);
+    await delay(200);   // nödvändig yield för att serieporten ska fungera
+    setDigital(4,0);
+
+    setDigital(7,0);
+}
+
+document.getElementById('connect').addEventListener('click', connectPort );
+ 
+window.addEventListener('message', function(event) {
+        // Check the origin of the message for security reasons
+        // if (event.origin !== 'http://your-parent-domain.com') { return;}
+      try {
+        const dataobj = JSON.parse(event.data);
+        // const obj = JSON.parse('{"name": "Alice"}');
+        // console.log(obj);
+      } catch (error) {
+        console.log('Error parsing JSON:', error.message);
+      }
+
+      logg(10, event.data);
+    });
+
+    function sendiframe() {
+      // const obj = { name: "Alice", age: 25, isStudent: false };
+      const jsonString = JSON.stringify(sessionobj);
+      const piframe = document.getElementById('useriframe');
+      piframe.contentWindow.postMessage(jsonString, '*');
+
+    }
+
+function playSound() {
+            const audio = new Audio('mp3/file.mp3');
+            audio.play();
+        }
+
+   readLoop();
+    </script>
+</body>
+</html>

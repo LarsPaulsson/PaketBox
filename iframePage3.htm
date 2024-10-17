@@ -12,7 +12,7 @@
 
         <tr><td>Skruv 1</td><td>Skruv 2</td><td>Skruv 3</td><td>Skruv 4</td></tr>
         <tr><td>Vete</td><td>Fågelfrö</td><td>Majs</td><td>Havre</td></tr>
-        <tr><td>4,5 kr/kg</td><td>5,50 kr/kg</td><td>3,8 kr/ kg</td><td>3,9 kr/kg</td></tr>
+        <tr><td>4,5 kr/kg</td><td>5,50 kr/kg</td><td>3,80 kr/ kg</td><td>3,90 kr/kg</td></tr>
         <tr><td><button class="bigbutt" id="sel1butt" onclick="select(1)">Välj</button></td>
             <td><button class="bigbutt" id="sel2butt" onclick="select(2)">Välj</button></td>
             <td><button class="bigbutt" id="sel3butt" onclick="select(3)">Välj</button></td>
@@ -22,9 +22,41 @@
 
     <script>
 
+let downsessionobj = { productnumber: 0, pulsespaid: 0, pulsesnow: 0 };
+let upsessionobj = { };
+let parentwindow;
+
+// Listen for messages from the parent page
+window.addEventListener('message', function(event) {
+   // Check the origin of the message for security reasons
+   // if (event.origin !== 'http://your-parent-domain.com') { return;}
+   try {
+    downsessionobj = JSON.parse(event.data);
+     // const obj = JSON.parse('{"name": "Alice"}');
+     // console.log(obj);
+   } catch (error) {
+     logg(9, 'Error parsing JSON:'+error.message);
+   }
+   // idPulsesnow.textContent=downsessionobj.pulsesnow; // Display the received message
+   // idPulsespaid.textContent=downsessionobj.pulsespaid; // Display the received message
+   // event.source.postMessage("Ok", event.origin); // Return channel
+   parentwindow=event.source;
+});
+
+function sendup() {
+      // const obj = { name: "Alice", age: 25, isStudent: false };
+      const jsonString = JSON.stringify(upsessionobj);
+      parent.postMessage(jsonString, '*');
+      // parentwindow.postMessage(jsonString, '*');
+
+    }
 
         function select(newsel) {
+            upsessionobj.productnumber=newsel;
+            sendup();
+
             window.location.href = "iframePage4.htm?sel="+newsel;
+
             // document.getElementById('useriframe').src = "iframePage4.htm?sel="+newsel;
         }
         

@@ -5,13 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Swisha och tanka!</title>
     <link rel="stylesheet" href="css/styleiframe.css">
+
 </head>
 <body>
 
     <table>
         <tr><td>Swisha</td></tr>
-        <tr><td><a href="iframeTanka1.htm" class="bigbutt" >Hämta</a></td></tr>
+
+        <tr><td><button class="bigbutt" id="selbutt" onclick="select(0)">Hämta</button></td></tr>
     </table>
 
+    <script>
+        let amount=0;
+    
+    let downsessionobj = { productnumber: 0, pulsespaid: 0, pulsesnow: 0 };
+    let upsessionobj = { };
+    let parentwindow;
+    
+    // Listen for messages from the parent page
+    window.addEventListener('message', function(event) {
+       // Check the origin of the message for security reasons
+       // if (event.origin !== 'http://your-parent-domain.com') { return;}
+       try {
+        downsessionobj = JSON.parse(event.data);
+         // const obj = JSON.parse('{"name": "Alice"}');
+         // console.log(obj);
+       } catch (error) {
+         logg(9, 'Error parsing JSON:'+error.message);
+       }
+       // idPulsesnow.textContent=downsessionobj.pulsesnow; // Display the received message
+       // idPulsespaid.textContent=downsessionobj.pulsespaid; // Display the received message
+       // event.source.postMessage("Ok", event.origin); // Return channel
+       parentwindow=event.source;
+    });
+    
+    function sendup() {
+          // const obj = { name: "Alice", age: 25, isStudent: false };
+          const jsonString = JSON.stringify(upsessionobj);
+          parent.postMessage(jsonString, '*');
+          // parentwindow.postMessage(jsonString, '*');
+    
+        }
+  
+        function select(newsel) {
+    
+            if (newsel==0) {
+                upsessionobj.command="Start";
+                sendup();
+                window.location.href = "iframeTanka1.htm";
+                // document.getElementById('useriframe').src = "iframePage4.htm?sel="+newsel;
+            } else {
+
+            }
+        }
+          
+      </script>
+       
 </body>
 </html>

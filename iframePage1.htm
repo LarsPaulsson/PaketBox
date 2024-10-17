@@ -15,11 +15,17 @@
       display: flex;
       justify-content: center;  /* Center horizontally */
       align-items: center;      /* Center vertically */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
       }
 
       table {
           border-collapse: collapse;
+          font-family: Arial, sans-serif;
           font-size: 40px;
+          font-weight: bold;
+          color: white;
           margin: 0 auto; /* Center the table itself */
           text-align: center; /* Center the content in the table */
           width: 80%; /* Optional: define the table width */       
@@ -27,7 +33,7 @@
       th, td {
           padding: 8px;
           text-align: center;
-          border: 1px solid black;
+          border: 0px solid black;
         }
       th {
           background-color: #f2f2f2;
@@ -39,10 +45,66 @@
     <table>
         <tr><td>Välkommen till Östadlund AB</td></tr>
      
-        <tr><td><a href="iframePage2.htm" class="bigbutt" >Klicka här för att fortsätta</a></td></tr>
+        <td><button class="bigbutt" id="sel4butt" onclick="select(0)">Klicka/tryck här för att starta</button></td>
     </table>
 
-   
+    <script>
+      
+      function select(newsel) {
+            // upsessionobj.productnumber=newsel;
+            sendup();
+            nextimage();
+            // window.location.href = "iframePage2.htm?sel="+newsel;
+
+      }
+
+    const images = [
+              'url("img/image1.jpg")',
+              'url("img/image2.jpg")',
+              'url("img/image3.jpg")',
+              'url("img/image4.jpg")'
+            ];
+  
+    let imagenumber=0;
+    document.body.style.backgroundImage = images[imagenumber];
+
+    function nextimage() {
+       imagenumber++;
+       if (imagenumber>=images.length) imagenumber=0;
+       document.body.style.backgroundImage = images[imagenumber];
+    }
+
+let downsessionobj = { productnumber: 0, pulsespaid: 0, pulsesnow: 0 };
+let upsessionobj = { };
+let parentwindow;
+ 
+// Listen for messages from the parent page
+window.addEventListener('message', function(event) {
+   // Check the origin of the message for security reasons
+   // if (event.origin !== 'http://your-parent-domain.com') { return;}
+   try {
+    downsessionobj = JSON.parse(event.data);
+     // const obj = JSON.parse('{"name": "Alice"}');
+     // console.log(obj);
+   } catch (error) {
+     logg(9, 'Error parsing JSON:'+error.message);
+   }
+   // idPulsesnow.textContent=downsessionobj.pulsesnow; // Display the received message
+   // idPulsespaid.textContent=downsessionobj.pulsespaid; // Display the received message
+   // event.source.postMessage("Ok", event.origin); // Return channel
+   parentwindow=event.source;
+});
+
+
+function sendup() {
+      // const obj = { name: "Alice", age: 25, isStudent: false };
+      const jsonString = JSON.stringify(upsessionobj);
+      parent.postMessage(jsonString, '*');
+      // parentwindow.postMessage(jsonString, '*');
+
+    }
+
+  </script>
 
 </body>
 </html>

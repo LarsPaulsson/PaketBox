@@ -10,16 +10,57 @@
 
     <table>
         <tr><td>Välj mängd</td></tr>
-        <tr><td><button class="bigbutt" id="sel4butt" onclick="select(1)">Välj</button></td></tr>
+        <tr><td><div id="idPulsespaid">-</div></td></tr>
+
+        <tr><td><button class="bigbutt" id="incutt" onclick="select(1)">+ Öka</button></td></tr>
+        <tr><td><button class="bigbutt" id="decbutt" onclick="select(-1)">- Minska</button></td></tr>
+        <tr><td><button class="bigbutt" id="sel4butt" onclick="select(0)">Välj</button></td></tr>
     </table>
 
   <script>
+    let amount=0;
 
+let downsessionobj = { productnumber: 0, pulsespaid: 0, pulsesnow: 0 };
+let upsessionobj = { };
+let parentwindow;
 
-      function select(newsel) {
-          window.location.href = "iframePage5.htm?sel="+newsel;
-          // document.getElementById('useriframe').src = "iframePage4.htm?sel="+newsel;
-      }
+// Listen for messages from the parent page
+window.addEventListener('message', function(event) {
+   // Check the origin of the message for security reasons
+   // if (event.origin !== 'http://your-parent-domain.com') { return;}
+   try {
+    downsessionobj = JSON.parse(event.data);
+     // const obj = JSON.parse('{"name": "Alice"}');
+     // console.log(obj);
+   } catch (error) {
+     logg(9, 'Error parsing JSON:'+error.message);
+   }
+   // idPulsesnow.textContent=downsessionobj.pulsesnow; // Display the received message
+   // idPulsespaid.textContent=downsessionobj.pulsespaid; // Display the received message
+   // event.source.postMessage("Ok", event.origin); // Return channel
+   parentwindow=event.source;
+});
+
+function sendup() {
+      // const obj = { name: "Alice", age: 25, isStudent: false };
+      const jsonString = JSON.stringify(upsessionobj);
+      parent.postMessage(jsonString, '*');
+      // parentwindow.postMessage(jsonString, '*');
+
+    }
+
+    function select(newsel) {
+
+        if (newsel==0) {
+            upsessionobj.pulsespaid=amount;
+            sendup();
+            window.location.href = "iframePage5.htm";
+            // document.getElementById('useriframe').src = "iframePage4.htm?sel="+newsel;
+        } else {
+            amount += newsel;
+            idPulsespaid.textContent=amount;
+        }
+    }
       
   </script>
    

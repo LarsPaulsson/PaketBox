@@ -124,14 +124,33 @@ const sessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
     });
 
     document.getElementById('buttStart').addEventListener('click',  async () => {
-       if (pump>0) {
+      startPump();
+    });
+
+    async function startPump() {
+      if (pump>0) {
           await setDigital(pump-1,1);
           await delay(100);
        }
        pumptimer=TIMEOUT;
        pumpstate=1;
        pulsestart=counter0;
-    });
+    }
+
+    
+    async function stopPump() {
+       pumptimer=1;
+    }
+
+    function execCommand(cmdstring) {
+      switch (cmdstring) {
+      case "Start": logg(1, "START"); startPump(); break;
+      case "Stop": stopPump();  break;
+      case "": break;
+      default: break;
+      }
+    }
+
 
 let intervalId = setInterval(timerStuff, 1000);
 
@@ -361,34 +380,48 @@ async function doLucka(nr, button) {
 
 document.getElementById('connect').addEventListener('click', connectPort );
  
-window.addEventListener('message', function(event) {
+  window.addEventListener('message', function(event) {
         // Check the origin of the message for security reasons
         // if (event.origin !== 'http://your-parent-domain.com') { return;}
       try {
-        const dataobj = JSON.parse(event.data);
+        recobj = JSON.parse(event.data);
+
+        if ('productnumber' in recobj) {
+           pump=recobj.productnumber;
+           sessionobj.productnumber=recobj.productnumber;
+           idProduct.textContent=recobj.productnumber;
+        }
+        if ('pulsespaid' in recobj) {
+        sessionobj.pulsespaid=recobj.pulsespaid;
+        idPulses.textContent=recobj.pulsespaid;
+        }
+        if ('command' in recobj) {
+          execCommand(recobj.command);
+        }
+
         // const obj = JSON.parse('{"name": "Alice"}');
         // console.log(obj);
       } catch (error) {
-        console.log('Error parsing JSON:', error.message);
+        logg(8,'Error parsing JSON:'+error.message);
       }
 
       logg(10, event.data);
-    });
+  });
 
-    function sendiframe() {
+  function sendiframe() {
       // const obj = { name: "Alice", age: 25, isStudent: false };
       const jsonString = JSON.stringify(sessionobj);
       const piframe = document.getElementById('useriframe');
       piframe.contentWindow.postMessage(jsonString, '*');
 
-    }
+  }
 
-function playSound() {
+  function playSound() {
             const audio = new Audio('mp3/file.mp3');
             audio.play();
-        }
+  }
 
-   readLoop();
-    </script>
+readLoop();
+</script>
 </body>
 </html>

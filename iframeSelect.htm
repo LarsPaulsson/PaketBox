@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swisha och tanka!</title>
+    <link rel="stylesheet" href="css/styleiframe.css">
+</head>
+<body>
+
+    <table>
+      <tr><td><div id="idProductname">-</div></td></tr>
+      <tr><td><div id="idProductprice">-</div></td></tr>
+      <tr><td>Välj ev annan vara nedan</td></tr>
+      <tr><td><button class="bigbutt" id="incutt" onclick="select(-1)">Förra</button>
+      <button class="bigbutt" id="decbutt" onclick="select(1)">Nästa</button></td></tr>
+      <tr><td><div id="idKilos">-</div></td></tr>
+      <tr><td><div id="idPrice">-</div></td></tr>
+      <tr><td>
+       <button class="bigbutt" id="decbutt" onclick="select(-2)">- Minska</button>
+       <button class="bigbutt" id="incbutt" onclick="select(2)">+ Öka</button></td></tr>
+       <tr><td><button class="bigbutt" id="sel4butt" onclick="select(0)">Till betalning</button></td></tr>
+    </table>
+
+    
+  <script src="js/Util.js"></script>
+  <script>
+    let price=10.0;
+    let kilos=0.0;
+
+let recobj = { productnumber: 0, pulsespaid: 0, pulsesnow: 0 };
+let upsessionobj = { };
+let parentwindow;
+
+
+
+function newproduct(p) {
+    if (p<0) p=prods.length-1;
+    if (p>=prods.length) p=0;
+    productindex=p;
+    // console.log ("PROD="+p);
+    productnow=prods[productindex];
+    // idProductnumber.textContent=productnow.number;
+    idProductname.textContent=productnow.number+". "+productnow.name;
+    idProductprice.textContent=productnow.price+" kr/kg";
+
+    newprice(price);
+}
+
+function newprice(p) {
+    if (p<10) p=10;
+    if (p>100) p=100;
+    price=p;
+    idPrice.textContent="Pris "+p+" kr";
+    kilos=p/productnow.price;
+    idKilos.textContent="Mängd "+kilos.toFixed(1)+" kg"
+}
+
+function select(newsel) {
+
+    switch (newsel) {
+    case 0: msg.command=STATE_PAYING;
+            msg.productnumber=productindex;
+            msg.price=price;
+            sendup(msg); break;
+    case -1: newproduct(productindex-1); break;
+    case 1: newproduct(productindex+1); break;
+    case -2: newprice(price-1); break;
+    case 2: newprice(price+1); break;
+    }
+}
+
+// Listen for messages from the parent page
+window.addEventListener('message', function(event) {
+  // logg(1,"Listener")
+   // Check the origin of the message for security reasons
+   // if (event.origin !== 'http://your-parent-domain.com') { return;}
+   try {
+    recobj = JSON.parse(event.data);
+    if ('productnumber' in recobj) {
+       newproduct(parseInt(recobj.productnumber));
+      // console.log("Received="+event.data);
+
+    }
+     // const obj = JSON.parse('{"name": "Alice"}');
+     // console.log(obj);
+   } catch (error) {
+     // logg(9, 'Error parsing JSON:'+error.message);
+     console.log('Error parsing JSON:'+error.message);
+
+   }
+   // idPulsesnow.textContent=downsessionobj.pulsesnow; // Display the received message
+   // idPulsespaid.textContent=downsessionobj.pulsespaid; // Display the received message
+   // event.source.postMessage("Ok", event.origin); // Return channel
+   parentwindow=event.source;
+});
+
+let msg={};
+
+      
+    document.addEventListener("DOMContentLoaded", function() {
+      console.log("DOM fully loaded and parsed!");
+      msg.command=MSG_LOADED;
+      sendup(msg);
+
+    });
+    window.onload = function() {
+      console.log("Page is fully loaded!");
+
+    };
+
+
+  </script>
+   
+
+</body>
+</html>

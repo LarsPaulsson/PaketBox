@@ -10,8 +10,8 @@
     <table>
         <tr><td>Hämta</td></tr>
         <tr><td>Pumpen är nu öppen, håll inne pumpens knapp för att tanka</td></tr>
-        <tr><td><div id="idPulsesnow">-</div></td>
-        <tr><td><div id="idPulsespaid">-</div></td></tr>
+        <tr><td><div id="idDelivered">-</div></td>
+        <tr><td><div id="idPaid">-</div></td></tr>
 
     </table>
 <script src="js/Util.js"></script>
@@ -28,8 +28,8 @@ let upsessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
         if ('productnumber' in recobj) {
             // idVara.textContent=recobj.productnumber;
         }
-        if ('pulsesnow' in recobj) { idPulsesnow.textContent=recobj.pulsesnow; }
-        if ('pulsespaid' in recobj)  { idPulsespaid.textContent=recobj.pulsespaid; }
+        if ('paydelivered' in recobj) { idDelivered.textContent=recobj.paydelivered; }
+        if ('price' in recobj)  { idPaid.textContent=recobj.price; }
         
         // const obj = JSON.parse('{"name": "Alice"}');
         // console.log(obj);

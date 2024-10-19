@@ -4,83 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Swisha och tanka!</title>
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <style>
+<style>
+.usertable {
+    border-collapse: collapse;
+    font-size: 40px;
+    color: white;
+    background-color: #2d5e17;
+    margin: 0 auto; /* Center the table itself */
+    text-align: center; /* Center the content in the table */
+    width: 80%; /* Optional: define the table width */
+    height:80%;       
+  }
+th, td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid black;
+  
+  }
+th {
+    background-color: #f2f2f2;
+}
 
-    table {
-          width: 300px;
-          border-collapse: collapse;
-        }
-        th, td {
-          padding: 2px;
-          text-align: center;
-          border: 1px solid black;
-        }
-        th {
-          background-color: #f2f2f2;
-        }
-      </style>
-      
-      <style>
-      .topbutt {
-        /* position: absolute;
-         top: 120px;  * Adjust the top position *
-         left: 120px;  * Adjust the left position *
-         bottom: 20px; * Distance from the bottom */
-        /* display: inline-block;*/
-      /* padding: 10px 20px; */  /* Adjusts the space inside the button */
-      font-size: 12px;      /* Increases the size of the text inside */
-      width: 100px;   /* Set button width */
-      height:50px;   /* Set button height */
-        /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-        margin: 0px 0px 0px 0px; /* Top, Right, Bottom, Left */
-        background-color: #5f6169;
-        color: white;
-        border: black;
-        border-radius: 5px;
-        cursor: pointer;
-        text-decoration: none;
-        text-align: center;
-        line-height: 50px;   
-        }
+.devtable {
+    background-color: white;
+}
 
-          .tankpre {
+.bigbutt {
+    padding: 10px 20px;  /* Adjusts the space inside the button */
+    font-size: 24px;      /* Increases the size of the text inside */
+    width: 10%px;   /* Set button width */
+    height:10%;   /* Set button height */
+      /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
+      margin: 10px 10px 10px 10px; /* Top, Right, Bottom, Left */
+      background-color: #400de7;
+      color: white;
+      border: black;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      line-height: 50px;   
+}
+
+.tankpre {
             // position: absolute;
             // top: 620px;  /* Adjust the top position */
             // left:400px;  /* Adjust the left position */
             width: 500px;
-            height: 300px;
+            height: 200px;
             background-color: #f4f4f4;
             border: 1px solid #ddd;
             padding: 10px;
-            }
-      </style>
+}
+</style>
+
+<table class="usertable">
+    <tr><td><div id="line1"></div></td></tr>
+    <tr><td><div id="line2"></div></td></tr>
+    <tr><td><div id="line3"></div></td></tr>
+    <tr><td><div id="line4"></div></td></tr>
+    <tr><td><div id="line5"></div></td></tr>
+    <tr><td><div id="line6"></div></td></tr>
+</table>
 
 
-<iframe
-  id="useriframe"
-  title=""
-  width="100%"
-  height="600"
-  src="iframePage1.htm">
-</iframe>
 
-<br>
-<div id="devdiv">
-<a href="index.html" class="devbutt" >Testsidor</a>
-<button class="topbutt" id="connect">Serieport test</button>
-<button class="topbutt" id="buttProduct">Vara</button>
-<button class="topbutt" id="buttPulses">Varv</button>
-<button class="topbutt" id="buttStart">Starta</button>
-<button class="topbutt" id="page1butt" onclick="navigateIframe('iframePage1.htm')">1 Välkommen</button>
-<button class="topbutt" id="page2butt" onclick="navigateIframe('iframePage2.htm')">2 Villkor</button>
-<button class="topbutt" id="page3butt" onclick="navigateIframe('iframePage3.htm')">3 Vara</button>
-<button class="topbutt" id="page3butt" onclick="navigateIframe('iframePage4.htm')">4 Mängd</button>
-<button class="topbutt" id="page3butt" onclick="navigateIframe('iframePage5.htm')">5 Swisha</button>
-<button class="topbutt" id="page3butt" onclick="navigateIframe('iframeTanka1.htm')">6 Hämta</button>
-<table>
+<div id="dev">
+<table class="devtable">
     <tr><td>State</td><td>Timer</td><td>Tillgängliga</td><td>Vara</td><td>Pulser</td><td>Räknare</td><td>Tid kvar</td><td>PumpState</td></tr><tr></tr>
     <tr>
         <td><div id="idState">-</div></td>
@@ -93,15 +85,162 @@
         <td><div id="idPumpState" >-</div></td>
         </tr>
 </table>
-
 <pre class="tankpre" id="output"></pre>
+
 </div>
-    
-    <script src="js/SerialPort.js"></script>
-    <script src="js/Util.js"></script>
 
-    <script>
+<script src="js/SerialPort.js"></script>
+<script src="js/Util.js"></script>
+<script>
 
+window.onload = function() {
+    changeState(0);
+};
+
+    s0=[
+    "Välkommen till Östadlund AB",
+    '-',
+    '-',
+    '-',
+    '-',
+    '<button class="bigbutt" id="sel4butt" onclick="changeState(1)">Klicka/tryck här för att starta</button>'
+    ];
+    s1=[
+    'Handla i automaten',
+    '-Medtag eget kärl för varan',
+    '-Bestäm vara och mängd på pekskärmen',
+    '-Betala med Swish',
+    'Obs! Levered mängd kan avvika med +- 15%',
+    '<button class="bigbutt" id="sel4butt" onclick="changeState(2)">Klicka här för att acceptera dessa villkor</button>'
+    ];
+
+    s2=[
+    '-',
+    'Välj ev annan vara nedan',
+    '<button class="bigbutt" id="incutt" onclick="select(-1)">Förra</button><button class="bigbutt" id="decbutt" onclick="select(1)">Nästa</button>',
+    '-',
+    '<button class="bigbutt" id="decbutt" onclick="select(-2)">- Minska</button><button class="bigbutt" id="incbutt" onclick="select(2)">+ Öka</button>',
+    '<button class="bigbutt" id="sel4butt" onclick="changeState(3)">Till betalning</button>'
+    ];
+    s3=[
+    "Swisha",
+    '-',
+    '-',
+    '-',
+    '-',
+    '<button class="bigbutt" id="selbutt" onclick="changeState(STATE_DELIVER)">Hämta</button>'
+    ];
+    s4=[
+    "Hämta",
+    '-',
+    'Pumpen är nu öppen, håll inne pumpens knapp för att tanka',
+    '-',
+    '-',
+    '-'
+    ];
+    s5=[
+    'Tack för besöket',
+    '-',
+    'Välkommen åter',
+    '-',
+    '-',
+    '-'
+    ];
+
+    let price=10.0;
+    let kilos=0.0;
+
+    function changeTable(s) {
+            line1.innerHTML=s[0];
+            line2.innerHTML=s[1];
+            line3.innerHTML=s[2];
+            line4.innerHTML=s[3];
+            line5.innerHTML=s[4];
+            line6.innerHTML=s[5];
+    }
+
+function changeState(newstate) {
+        if (newstate<pages.length) {
+          sessionstate=newstate;
+          idState.textContent=sessionstate;
+          /// navigateIframe(pages[newstate]);
+
+        }
+        switch (newstate) {
+        case STATE_PAUSE:
+            changeTable(s0);
+            break;
+        case STATE_STARTING:
+            changeTable(s1);
+            sessiontimer=60;
+            break;
+        case STATE_SELECTING:
+            changeTable(s2);
+            newproduct(pump);
+            sessiontimer=60;
+        break;
+        case STATE_PAYING:
+            changeTable(s3);
+            sessiontimer=60;
+            break;
+        case STATE_DELIVER: 
+            changeTable(s4);
+            newprice(price);
+            sessiontimer=60;
+         
+            kilos=price/productnow.price;
+            pulsespaid=Math.round(kilos*productnow.pulses);
+            idPulses.textContent=pulsespaid.toFixed(0);
+            startPump();
+        break;
+        case STATE_FINISH:
+            changeTable(s5);
+            sessiontimer=10;
+        break;
+        case MSG_LOADED:
+            // logg(10, "MSG_LOADED");
+            sendiframe(sessionobj);
+            break;
+        }
+      }
+
+function newproduct(p) {
+    if (p<0) p=prods.length-1;
+    if (p>=prods.length) p=0;
+    productindex=p;
+    pump=p;
+    // console.log ("PROD="+p);
+    productnow=prods[productindex];
+    idProduct.textContent=productnow.number;
+    line1.textContent=productnow.number+". "+productnow.name+" "+productnow.price+" kr/kg";
+    // line2.textContent=productnow.price+" kr/kg";
+    newprice(price);
+}
+
+function newprice(p) {
+    if (p<10) p=10;
+    if (p>100) p=100;
+    price=p;
+    // line5.textContent="Belopp "+p+" kr";
+    kilos=p/productnow.price;
+    line4.textContent="Belopp "+p+" kr"+" "+"Mängd "+kilos.toFixed(1)+" kg"
+}
+
+function select(newsel) {
+
+    sessiontimer=60;
+    switch (newsel) {
+    case 0: msg.command=STATE_PAYING;
+            msg.productnumber=productindex;
+            msg.price=price;
+            changeState(STATE_PAYING);
+            // sendup(msg); break;
+    case -1: newproduct(productindex-1); break;
+    case 1: newproduct(productindex+1); break;
+    case -2: newprice(price-1); break;
+    case 2: newprice(price+1); break;
+    }
+}
 
 let sessionstate=0;
 const TIMEOUT=30;
@@ -118,6 +257,21 @@ let sessioninterval = setInterval(timerState, 1000);
 let sessiontimer=0;
 let msg={};
 
+const images = [
+              'url("img/image1.jpg")',
+              'url("img/image2.jpg")',
+              'url("img/image3.jpg")',
+              'url("img/image4.jpg")'
+            ];
+  
+    let imagenumber=0;
+    document.body.style.backgroundImage = images[imagenumber];
+
+    function nextimage() {
+       imagenumber++;
+       if (imagenumber>=images.length) imagenumber=0;
+       document.body.style.backgroundImage = images[imagenumber];
+    }
 
 
 const pages = [
@@ -128,27 +282,6 @@ const pages = [
               'iframeTanka1.htm'
             ];
 
-      function changeState(newstate) {
-        if (newstate<pages.length) {
-          sessionstate=newstate;
-          idState.textContent=sessionstate;
-          navigateIframe(pages[newstate]);
-
-        }
-        switch (newstate) {
-        case STATE_PAUSE: break;
-        case STATE_STARTING: break;
-        case STATE_SELECTING:
-           break;
-        case STATE_PAYING: break;
-        case STATE_DELIVER: break;
-        case STATE_FINISH: break;
-        case MSG_LOADED:
-            // logg(10, "MSG_LOADED");
-            sendiframe(sessionobj);
-            break;
-        }
-      }
 
       function timerState(cmd) {
 
@@ -159,39 +292,41 @@ const pages = [
         case STATE_PAUSE:
            if (sessiontimer<=0) {
               msg.command=MSG_NEXT;
-              sendiframe(msg);
+              // sendiframe(msg);
+              nextimage();
               sessiontimer=5;
             }
         break;
         case STATE_STARTING:
-
+            if (sessiontimer<=0) {
+                changeState(STATE_PAUSE);
+            }
         break;
-        case STATE_SELECTING: break;
-        case STATE_PAYING: break;
-        case STATE_DELIVER: break;
-        case STATE_FINISH: break;
+        case STATE_SELECTING:
+            if (sessiontimer<=0) {
+                changeState(STATE_PAUSE);
+            }
+        break;
+        case STATE_PAYING:
+            if (sessiontimer<=0) {
+            changeState(STATE_PAUSE);
+            }
+        break;
+        case STATE_DELIVER:
+            if (sessiontimer<=0) {
+                changeState(STATE_PAUSE);
+            }
+        break;
+        case STATE_FINISH:
+            if (sessiontimer<=0) {
+                changeState(STATE_PAUSE);
+            }
+        break;
         }
+        timerStuff();
 
       }
 
-    document.getElementById('buttProduct').addEventListener('click',  async () => {
-       pump++;
-       if (pump>4) pump=0;
-       idProduct.textContent=pump;
-       sessionobj.productnumber=pump;
-       sendiframe(sessionobj);
-    });
-
-    document.getElementById('buttPulses').addEventListener('click',  async () => {
-    pulsespaid++;
-    if (pulsespaid>10) pulsespaid=0;
-    idPulses.textContent=pulsespaid;
-    sessionobj.pulsespaid=pulsespaid;
-    });
-
-    document.getElementById('buttStart').addEventListener('click',  async () => {
-      startPump();
-    });
 
     async function startPump() {
       if (pump>0) {
@@ -207,7 +342,7 @@ const pages = [
     async function stopPump() {
        pumptimer=1;
     }
-
+/*
     function execCommand(cmdstring) {
       switch (cmdstring) {
       case "Start": logg(1, "START"); startPump(); break;
@@ -216,9 +351,9 @@ const pages = [
       default: break;
       }
     }
+*/
 
-
-let intervalId = setInterval(timerStuff, 1000);
+// let intervalId = setInterval(timerStuff, 1000);
 
 // Stop the interval  clearInterval(intervalId);
 
@@ -267,11 +402,6 @@ if (pumpstate==1) {     // Pumpar
 }
 
 
-function navigateIframe(newsrc) {
-    
-    document.getElementById('useriframe').src = newsrc;
-}
-
     function showLogg (v) {
       const totalHeight = output.clientHeight;
       if (totalHeight>400) output.textContent="";
@@ -299,8 +429,9 @@ function navigateIframe(newsrc) {
           kilos=pcount/productnow.pulses;
           pdeliv=kilos*productnow.price;
           sessionobj.paydelivered=pdeliv.toFixed(2);
+          line5.textContent="Pumpat för "+pdeliv.toFixed(2)+" kr";
 
-          sendiframe(sessionobj);
+          // sendiframe(sessionobj);
         }
         if (pcount >= pulsespaid) {
             if (pumpstate==1) pumpstate=2;
@@ -448,8 +579,9 @@ async function doLucka(nr, button) {
     setDigital(7,0);
 }
 
-document.getElementById('connect').addEventListener('click', connectPort );
- 
+// document.getElementById('connect').addEventListener('click', connectPort );
+
+/*
   window.addEventListener('message', function(event) {
         // Check the origin of the message for security reasons
         // if (event.origin !== 'http://your-parent-domain.com') { return;}
@@ -494,7 +626,7 @@ document.getElementById('connect').addEventListener('click', connectPort );
       piframe.contentWindow.postMessage(jsonString, '*');
       logg(10,"Sending:"+jsonString);
   }
-
+*/
   
   function playSound() {
             const audio = new Audio('mp3/file.mp3');

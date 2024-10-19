@@ -14,7 +14,7 @@
 
         <tr><td><button class="bigbutt" id="selbutt" onclick="select(0)">Hämta</button></td></tr>
     </table>
-
+    <script src="js/Util.js"></script>
     <script>
         let amount=0;
     
@@ -39,21 +39,15 @@
        parentwindow=event.source;
     });
     
-    function sendup() {
-          // const obj = { name: "Alice", age: 25, isStudent: false };
-          const jsonString = JSON.stringify(upsessionobj);
-          parent.postMessage(jsonString, '*');
-          // parentwindow.postMessage(jsonString, '*');
-    
-        }
-  
         function select(newsel) {
     
+            const msg={};
+
             if (newsel==0) {
-                upsessionobj.command="Start";
-                sendup();
-                window.location.href = "iframeTanka1.htm";
-                // document.getElementById('useriframe').src = "iframePage4.htm?sel="+newsel;
+                msg.command=STATE_DELIVER;
+                // msg.pulsespaid=amount;
+                sendup(msg);
+
             } else {
 
             }

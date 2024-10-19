@@ -20,6 +20,7 @@
         </tr>
     </table>
 
+    <script src="js/Util.js"></script>
     <script>
 
 let downsessionobj = { productnumber: 0, pulsespaid: 0, pulsesnow: 0 };
@@ -43,21 +44,12 @@ window.addEventListener('message', function(event) {
    parentwindow=event.source;
 });
 
-function sendup() {
-      // const obj = { name: "Alice", age: 25, isStudent: false };
-      const jsonString = JSON.stringify(upsessionobj);
-      parent.postMessage(jsonString, '*');
-      // parentwindow.postMessage(jsonString, '*');
-
-    }
+let msg={};
 
         function select(newsel) {
-            upsessionobj.productnumber=newsel;
-            sendup();
-
-            window.location.href = "iframePage4.htm?sel="+newsel;
-
-            // document.getElementById('useriframe').src = "iframePage4.htm?sel="+newsel;
+            msg.command=STATE_SELECTING2;
+            msg.productnumber=newsel;
+            sendup(msg);
         }
         
     </script>

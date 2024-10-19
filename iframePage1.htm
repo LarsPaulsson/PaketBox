@@ -43,17 +43,20 @@
     </style>
 
     <table>
-        <tr><td>Välkommen till Östadlund AB</td></tr>
+        <tr><td><div id="idText">Välkommen till Östadlund AB</div></td></tr>
      
         <td><button class="bigbutt" id="sel4butt" onclick="select(0)">Klicka/tryck här för att starta</button></td>
     </table>
 
+    <script src="js/Util.js"></script>
     <script>
-      
+      let msg={};
+
       function select(newsel) {
             // upsessionobj.productnumber=newsel;
-            sendup();
-            nextimage();
+            msg.command=STATE_STARTING;
+            sendup(msg);
+            // nextimage();
             // window.location.href = "iframePage2.htm?sel="+newsel;
 
       }
@@ -74,7 +77,16 @@
        document.body.style.backgroundImage = images[imagenumber];
     }
 
-let downsessionobj = { productnumber: 0, pulsespaid: 0, pulsesnow: 0 };
+    function execCommand(cmdstring) {
+      switch (cmdstring) {
+      case MSG_NEXT: nextimage(); break;
+      case "Stop": stopPump();  break;
+      case "": break;
+      default: break;
+      }
+    }
+
+let recobj = { };
 let upsessionobj = { };
 let parentwindow;
  
@@ -83,11 +95,15 @@ window.addEventListener('message', function(event) {
    // Check the origin of the message for security reasons
    // if (event.origin !== 'http://your-parent-domain.com') { return;}
    try {
-    downsessionobj = JSON.parse(event.data);
-     // const obj = JSON.parse('{"name": "Alice"}');
-     // console.log(obj);
+    // console.log(recobj);
+    recobj = JSON.parse(event.data);
+    // idText.textContent=recobj.command;
+    if ('command' in recobj) {
+          execCommand(recobj.command);
+        }
+
    } catch (error) {
-     logg(9, 'Error parsing JSON:'+error.message);
+     // logg(9, 'Error parsing JSON:'+error.message);
    }
    // idPulsesnow.textContent=downsessionobj.pulsesnow; // Display the received message
    // idPulsespaid.textContent=downsessionobj.pulsespaid; // Display the received message
@@ -95,14 +111,6 @@ window.addEventListener('message', function(event) {
    parentwindow=event.source;
 });
 
-
-function sendup() {
-      // const obj = { name: "Alice", age: 25, isStudent: false };
-      const jsonString = JSON.stringify(upsessionobj);
-      parent.postMessage(jsonString, '*');
-      // parentwindow.postMessage(jsonString, '*');
-
-    }
 
   </script>
 

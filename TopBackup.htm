@@ -98,12 +98,19 @@
 </div>
     
     <script src="js/SerialPort.js"></script>
-    <script src="js/Util.js"></script>
 
     <script>
 
-
 let sessionstate=0;
+const SSTATE_PAUSE=0;
+const SSTATE_STARTING=1;
+const SSTATE_SELECTING1=2;
+const SSTATE_SELECTING2=3;
+const SSTATE_PAYING=4;
+const SSTATE_COLLECTING=5;
+const SSTATE_FINISH=6;
+
+
 const TIMEOUT=30;
 let pumpstate=0;
 let pumptimer=0;
@@ -114,11 +121,9 @@ let pcount=0;
 let d6=0;
 const sessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
 
-let sessioninterval = setInterval(timerState, 1000);
+let sessioninterval = setInterval(checkState, 1000);
 let sessiontimer=0;
 let msg={};
-
-
 
 const pages = [
               'iframePage1.htm',
@@ -130,50 +135,39 @@ const pages = [
             ];
 
       function changeState(newstate) {
-        if (newstate<pages.length) {
-          sessionstate=newstate;
-          idState.textContent=sessionstate;
-          navigateIframe(pages[newstate]);
-
-        }
-        switch (newstate) {
-        case STATE_PAUSE: break;
-        case STATE_STARTING: break;
-        case STATE_SELECTING1:
-           break;
-        case STATE_SELECTING2:
-           break;
-        case STATE_PAYING: break;
-        case STATE_DELIVER: break;
-        case STATE_FINISH: break;
-        case MSG_LOADED:
-            // logg(10, "MSG_LOADED");
-            sendiframe(sessionobj);
-            break;
-        }
+        sessionstate=newstate;
+        idState.textContent=sessionstate;
+        navigateIframe(pages[newstate]);
       }
 
-      function timerState(cmd) {
+      function checkState(cmd) {
 
-        sessiontimer--;
-        idTimer.textContent=sessiontimer;
+        if (cmd=="") {
+            sessiontimer--;
+            idTimer.textContent=sessiontimer;
+        }
 
         switch (sessionstate) {
-        case STATE_PAUSE:
-           if (sessiontimer<=0) {
-              msg.command=MSG_NEXT;
+        case SSTATE_PAUSE:
+          if (cmd=="Selected") {
+            changeState(SSTATE_STARTING);
+          }
+          else  if (sessiontimer<=0) {
+              msg.command="Timeout";
               sendiframe(msg);
               sessiontimer=5;
             }
         break;
-        case STATE_STARTING:
-
+        case SSTATE_STARTING:
+        if (cmd=="Selected") {
+            changeState(SSTATE_SELECTING1);
+          }
         break;
-        case STATE_SELECTING1: break;
-        case STATE_SELECTING2: break;
-        case STATE_PAYING: break;
-        case STATE_DELIVER: break;
-        case STATE_FINISH: break;
+        case SSTATE_SELECTING1: break;
+        case SSTATE_SELECTING2: break;
+        case SSTATE_PAYING: break;
+        case SSTATE_COLLECTING: break;
+        case SSTATE_FINISH: break;
         }
 
       }
@@ -182,8 +176,6 @@ const pages = [
        pump++;
        if (pump>4) pump=0;
        idProduct.textContent=pump;
-       sessionobj.productnumber=pump;
-       sendiframe(sessionobj);
     });
 
     document.getElementById('buttPulses').addEventListener('click',  async () => {
@@ -298,6 +290,8 @@ function navigateIframe(newsrc) {
         idAvailable.textContent=diginp;
         pcount=counter0-pulsestart;
         idCounter.textContent=pcount;
+        // const piframe = document.getElementById('useriframe');
+        // piframe.contentWindow.postMessage(pcount, '*');
         sessionobj.pulsesnow=(pcount);
         sendiframe(sessionobj);
         if (pcount >= pulsespaid) {
@@ -460,19 +454,18 @@ document.getElementById('connect').addEventListener('click', connectPort );
            idProduct.textContent=recobj.productnumber;
         }
         if ('pulsespaid' in recobj) {
-          sessionobj.pulsespaid=recobj.pulsespaid;
-          idPulses.textContent=recobj.pulsespaid;
-          logg(1,"paid");
+        sessionobj.pulsespaid=recobj.pulsespaid;
+        idPulses.textContent=recobj.pulsespaid;
         }
         if ('command' in recobj) {
-          changeState(recobj.command);
+          checkState(recobj.command);
           // execCommand(recobj.command);
         }
 
         // const obj = JSON.parse('{"name": "Alice"}');
         // console.log(obj);
       } catch (error) {
-        logg(7,'Error parsing JSON:'+error.message);
+        logg(8,'Error parsing JSON:'+error.message);
       }
 
       logg(10, event.data);

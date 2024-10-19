@@ -16,9 +16,62 @@
     <tr><td>-Önskar du kvitto knappa in ditt mobilnummer</td></tr>
     <tr><td>Obs! Levered mängd kan avvika med +- 15%</td></tr>
 
-    <tr><td><a href="iframePage3.htm" class="bigbutt" >Klicka här för att acceptera dessa villkor</a></td></tr>
-    </table>
+    <td><button class="bigbutt" id="sel4butt" onclick="select(0)">Klicka här för att acceptera dessa villkor</button></td>
 
+    </table>
+    <script src="js/Util.js"></script>
+    <script>
+        let msg={};
+  
+        function select(newsel) {
+              msg.command=STATE_SELECTING1;
+              sendup(msg);
+        }
+
+        function execCommand(cmdstring) {
+        switch (cmdstring) {
+        case "Timeout": break;
+        case "Stop": break;
+        case "": break;
+        default: break;
+        }
+      }
+  
+  let recobj = { };
+  let upsessionobj = { };
+  let parentwindow;
+   
+  // Listen for messages from the parent page
+  window.addEventListener('message', function(event) {
+     // Check the origin of the message for security reasons
+     // if (event.origin !== 'http://your-parent-domain.com') { return;}
+     try {
+      // console.log(recobj);
+      recobj = JSON.parse(event.data);
+      // idText.textContent=recobj.command;
+      if ('command' in recobj) {
+            execCommand(recobj.command);
+          }
+  
+     } catch (error) {
+       // logg(9, 'Error parsing JSON:'+error.message);
+     }
+     // idPulsesnow.textContent=downsessionobj.pulsesnow; // Display the received message
+     // idPulsespaid.textContent=downsessionobj.pulsespaid; // Display the received message
+     // event.source.postMessage("Ok", event.origin); // Return channel
+     parentwindow=event.source;
+  });
+  
+  
+  function sendup(m) {
+        const jsonString = JSON.stringify(m);
+        parent.postMessage(jsonString, '*');
+        // parentwindow.postMessage(jsonString, '*');
+  
+      }
+  
+    </script>
+  
    
 
 </body>

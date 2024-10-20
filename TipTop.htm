@@ -99,7 +99,7 @@ window.onload = function() {
 
     s0=[
     "Välkommen till Östadlund AB",
-    '-',
+    'Här finns att hämta',
     '-',
     '-',
     '-',
@@ -147,7 +147,7 @@ window.onload = function() {
     '-'
     ];
 
-    let price=10.0;
+    let price=100.0;
     let kilos=0.0;
 
     function changeTable(s) {
@@ -181,11 +181,13 @@ function changeState(newstate) {
         break;
         case STATE_PAYING:
             changeTable(s3);
+            newproduct(pump);
             sessiontimer=60;
             break;
         case STATE_DELIVER: 
             changeTable(s4);
-            newprice(price);
+            newproduct(pump);
+            // newprice(price);
             sessiontimer=60;
          
             kilos=price/productnow.price;
@@ -209,10 +211,12 @@ function newproduct(p) {
     if (p>=prods.length) p=0;
     productindex=p;
     pump=p;
-    // console.log ("PROD="+p);
+   
     productnow=prods[productindex];
     idProduct.textContent=productnow.number;
-    line1.textContent=productnow.number+". "+productnow.name+" "+productnow.price+" kr/kg";
+    line2.textContent="Pump "+productnow.number+" max "+productnow.volume+" kg "+productnow.name+" "+productnow.price+" kr/kg";
+    document.body.style.backgroundImage = 'url('+productnow.image+')';
+    // console.log ("PROD img="+productnow.image);
     // line2.textContent=productnow.price+" kr/kg";
     newprice(price);
 }
@@ -223,7 +227,7 @@ function newprice(p) {
     price=p;
     // line5.textContent="Belopp "+p+" kr";
     kilos=p/productnow.price;
-    line4.textContent="Belopp "+p+" kr"+" "+"Mängd "+kilos.toFixed(1)+" kg"
+    line4.textContent="Belopp "+p+" kr"+" motsvarar "+kilos.toFixed(1)+" kg"
 }
 
 function select(newsel) {
@@ -273,6 +277,9 @@ const images = [
        document.body.style.backgroundImage = images[imagenumber];
     }
 
+    function nextproduct() {
+       newproduct(productindex+1);
+    }
 
 const pages = [
               'iframePage1.htm',
@@ -293,7 +300,7 @@ const pages = [
            if (sessiontimer<=0) {
               msg.command=MSG_NEXT;
               // sendiframe(msg);
-              nextimage();
+              nextproduct();
               sessiontimer=5;
             }
         break;

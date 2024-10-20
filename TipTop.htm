@@ -128,7 +128,7 @@ window.onload = function() {
     '-',
     '-',
     '-',
-    '<button class="bigbutt" id="selbutt" onclick="changeState(STATE_DELIVER)">Hämta</button>'
+    '<button class="bigbutt" id="selbutt" onclick="payment(10)">Hämta</button>'
     ];
     s4=[
     "Hämta",
@@ -139,12 +139,12 @@ window.onload = function() {
     '-'
     ];
     s5=[
+    'Sessionen avslutas',
+    '-',
+    '-',
+    '-',
     'Tack för besöket',
-    '-',
-    'Välkommen åter',
-    '-',
-    '-',
-    '-'
+    'Välkommen åter'
     ];
 
     let price=100.0;
@@ -160,15 +160,17 @@ window.onload = function() {
     }
 
 function changeState(newstate) {
-        if (newstate<pages.length) {
+        // if (newstate<pages.length) {
           sessionstate=newstate;
           idState.textContent=sessionstate;
           /// navigateIframe(pages[newstate]);
 
-        }
+        
         switch (newstate) {
         case STATE_PAUSE:
             changeTable(s0);
+            sessiontimer=TIMEPAUSEPAGE;
+
             break;
         case STATE_STARTING:
             changeTable(s1);
@@ -197,12 +199,15 @@ function changeState(newstate) {
         break;
         case STATE_FINISH:
             changeTable(s5);
-            sessiontimer=10;
+            newproduct(pump);
+            line6.textContent=sessionresult;
+            sessiontimer=20;
         break;
-        case MSG_LOADED:
+       /* case MSG_LOADED:
             // logg(10, "MSG_LOADED");
             sendiframe(sessionobj);
             break;
+        */
         }
       }
 
@@ -214,7 +219,7 @@ function newproduct(p) {
    
     productnow=prods[productindex];
     idProduct.textContent=productnow.number;
-    line2.textContent="Pump "+productnow.number+" max "+productnow.volume+" kg "+productnow.name+" "+productnow.price+" kr/kg";
+    line2.textContent="Pump "+productnow.number+" har "+productnow.volume+" kg "+productnow.name+" "+productnow.price+" kr/kg";
     document.body.style.backgroundImage = 'url('+productnow.image+')';
     // console.log ("PROD img="+productnow.image);
     // line2.textContent=productnow.price+" kr/kg";
@@ -247,7 +252,10 @@ function select(newsel) {
 }
 
 let sessionstate=0;
+let sessionresult="Okänt avslut";
+let paid=0;
 const TIMEOUT=30;
+const TIMEPAUSEPAGE=5;
 let pumpstate=0;
 let pumptimer=0;
 let pump=0;
@@ -268,8 +276,13 @@ const images = [
               'url("img/image4.jpg")'
             ];
   
-    let imagenumber=0;
-    document.body.style.backgroundImage = images[imagenumber];
+//    let imagenumber=0;
+//    document.body.style.backgroundImage = images[imagenumber];
+function payment(n) {
+       paid=n;
+       newprice(paid);
+       changeState(STATE_DELIVER);
+    }
 
     function nextimage() {
        imagenumber++;
@@ -298,10 +311,10 @@ const pages = [
         switch (sessionstate) {
         case STATE_PAUSE:
            if (sessiontimer<=0) {
-              msg.command=MSG_NEXT;
+              // msg.command=MSG_NEXT;
               // sendiframe(msg);
               nextproduct();
-              sessiontimer=5;
+              sessiontimer=TIMEPAUSEPAGE;
             }
         break;
         case STATE_STARTING:
@@ -320,11 +333,31 @@ const pages = [
             }
         break;
         case STATE_DELIVER:
-            if (sessiontimer<=0) {
-                changeState(STATE_PAUSE);
+            if (sessiontimer>0) {
+                // Omvandla pcount till kr
+                kilos=pcount/productnow.pulses;
+                pdeliv=kilos*productnow.price;
+                sessionobj.paydelivered=pdeliv.toFixed(2);
+                line5.textContent="Pumpat för "+pdeliv.toFixed(2)+" kr";
+                if (pumpstate==2) {
+                    stopPump();
+                    sessionresult="Tankning klar";
+                    changeState(STATE_FINISH);
+                }
+          // sendiframe(sessionobj);
+           } else {
+                stopPump();
+                sessionresult="Timeout vid tankning";
+                changeState(STATE_FINISH);
+                if (pumpstate!=2) pumpstate=2;
             }
         break;
         case STATE_FINISH:
+            // logg (1, "FINISH");
+            kilos=pcount/productnow.pulses;
+                pdeliv=kilos*productnow.price;
+                sessionobj.paydelivered=pdeliv.toFixed(2);
+                line5.textContent="Pumpat för "+pdeliv.toFixed(2)+" kr";
             if (sessiontimer<=0) {
                 changeState(STATE_PAUSE);
             }
@@ -340,14 +373,20 @@ const pages = [
           await setDigital(pump-1,1);
           await delay(100);
        }
-       pumptimer=TIMEOUT;
+//       pumptimer=TIMEOUT;
        pumpstate=1;
        pulsestart=counter0;
     }
 
     
     async function stopPump() {
-       pumptimer=1;
+//        pumptimer=1;
+        await setDigital(pump-1,0);
+        await delay(100);
+        d6=0;
+        await setDigital(6,d6);
+        await delay(100);
+
     }
 /*
     function execCommand(cmdstring) {
@@ -366,43 +405,15 @@ const pages = [
 
 async function timerStuff() {
     
-if (pumpstate==1) {     // Pumpar
-  if (pumptimer>0) pumptimer--;
-    idTimeleft.textContent=pumptimer;
-    if (pumptimer<=0) {
-        pumpstate=3;
-    } else {
+  if (pumpstate==1) {     // Pumpar
        d6++;
        if (d6>1) d6=0;
        await setDigital(6,d6);
        await delay(100);
        // sendReceivePort("$S00");
-    }
   }
   if (pumpstate==2) {     // Uppnått antal pulser
-    await setDigital(pump-1,0);
-    await delay(100);
-    d6=0;
-    await setDigital(6,d6);
-    await delay(100);
-    pumpstate=4;
-    pumptimer=5;
-  }
-  if (pumpstate==3) {     // Timeout
-    await setDigital(pump-1,0);
-    await delay(100);
-    d6=0;
-    await setDigital(6,d6);
-    await delay(100);
-    pumpstate=4;
-    pumptimer=5;
-  }
-  if (pumpstate==4) {     // Avslutar pumpsessionen
-    pumptimer--;
-    idTimeleft.textContent=pumptimer;
-    if (pumptimer<=0) {
-        pumpstate=0;
-    }
+      // stopPump();
   }
   idPumpState.textContent=pumpstate;
   sendReceivePort("$S00");
@@ -431,17 +442,10 @@ if (pumpstate==1) {     // Pumpar
         idAvailable.textContent=diginp;
         pcount=counter0-pulsestart;
         idCounter.textContent=pcount;
-        if (sessionstate==STATE_DELIVER) {
-        // Omvandla pcount till kr
-          kilos=pcount/productnow.pulses;
-          pdeliv=kilos*productnow.price;
-          sessionobj.paydelivered=pdeliv.toFixed(2);
-          line5.textContent="Pumpat för "+pdeliv.toFixed(2)+" kr";
-
-          // sendiframe(sessionobj);
-        }
-        if (pcount >= pulsespaid) {
-            if (pumpstate==1) pumpstate=2;
+ 
+        if (pcount > pulsespaid) {
+            // stopPump();
+            pumpstate=2;
         }
       }
       // logg(1,"HERE:"+s);

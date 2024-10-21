@@ -23,8 +23,6 @@
     let lockcounter=0;
 
     function logg (l, v) {
-        let s;
-        let p;
         if (l < 10) p=`*`;
         else if (l==90) p=">";
         else if (l==91) p="<";
@@ -148,8 +146,6 @@
     };
 
     async function sendtoPort (inputValue) {
-    //    logg(89, inputValue);
-
     if (globalState<=0) {
         return 1;
     }    
@@ -239,19 +235,15 @@
     function setD70() { setDigital(7,0); }
     function setD71() { setDigital(7,1); }
     
-    async function setDa0() {
-        let i=0;    // se upp för att globalt i finns
+    async function setDa0() { 
         for (i=0; i<8; i++) {
             setDigital(i,0);
             await delay(100);
         } 
     }
-
-    async function setDa1() {
-        let i=0;    // se upp för att globalt i finns
+    async function setDa1() { 
         for (i=0; i<8; i++) {
             setDigital(i,1);
-            // logg(88, "setDa1 i="+i);
             await delay(100);
         } 
     }
@@ -266,7 +258,7 @@
     }
 
     let SRcounter=0;
-/*
+
     async function sendReceivePort (inputValue) {
     let ret=0;
     let result;
@@ -320,61 +312,6 @@
     SRcounter--;
     return ret;
     }
-*/
-// För test av Controllino standard config
-let spCounters=[0,0,0,0];
-let spAinputs=[0,0,0,0,0,0,0,0];
-let spDoutputs=[0,0,0,0,0,0,0,0];
-let spTest=0;
-
-    function ArduinoParse (v) {
-        let s;
-        let p1;
-        let p2;
-        let i;
-
-        s=v.substring(0,2);
-        if (s=="#a") {
-          p1=v.indexOf("a");
-          for (i=0; i<8; i++) {
-                s=v.substr(p1+1+i,1); 
-                spAinputs[i]=parseInt(s);
-            }
-          p1=v.indexOf("d");
-          for (i=0; i<8; i++) {
-                  s=v.substr(p1+1+i,1); 
-                  spDoutputs[i]=parseInt(s);
-              }
-          p1=v.indexOf("v");
-          s=v.substring(p1+1);
-          spCounters[0]=parseInt(s);
-          p1=v.indexOf("w");
-          p2=v.indexOf("x");
-          s=v.substring(p1+1,p2);
-          // logg(1,s);
-          spCounters[1]=parseInt(s);
-          p1=v.indexOf("x");
-          s=v.substring(p1+1);
-          spCounters[2]=parseInt(s);
-          p1=v.indexOf("y");
-          s=v.substring(p1+1);
-          spCounters[3]=parseInt(s);
-
-          p1=v.indexOf("z");
-          s=v.substring(p1+1);
-          spTest=parseInt(s);
-        }
-        if (s=="#A") {
-          p1=v.indexOf("V");
-          s=v.substring(p1+1);
-
-          spCounters[0]=parseInt(s);
-          p1=v.indexOf("W");
-          s=v.substring(p1+1);
-
-          spCounters[1]=parseInt(s);
-        }
-      }
 /*
     navigator.serial.addEventListener('disconnect', (event) => {
             if (port === event.target) {
@@ -399,13 +336,10 @@ function delay(ms) {
     // globalBuffer is grown as serial input is received and shrinked according to algorithm
     async function readLoop() {
       let l=0;
-      let n;
       let cErrors=0;
-      let i;
       // await connectPort();
       // await delay(1000);
       globalState=0;
-
       while (true) {
         try {
 
@@ -419,10 +353,7 @@ function delay(ms) {
                    globalState=0;
                 }
             }
-            else {
-                globalBuffer += value;
-                // logg(69,"globbuffer.len="+globalBuffer.length+" State="+globalState);
-            }
+            else globalBuffer += value;
         }
         
         switch (globalState) {
@@ -442,8 +373,7 @@ function delay(ms) {
                 }
                 await delay(1000);
                 break;
-            case 2:                
-            /* // Idle,nothing expected, just keep buffer empty
+            case 1:                 // Idle,nothing expected, just keep buffer empty
               flushBuffer();
               l=globalBuffer.length;
               if (l>MAXLEN_GLOBALBUFFER) {
@@ -451,34 +381,9 @@ function delay(ms) {
                 globalBuffer='';
                 await delay(1);       // frigör cpu från tajt loop
               }
-              break;*/
-            case 1:                   // Monitoring buffer elsewhere
-              // await delay(10);       // frigör cpu från tajt loop
-              for (n=0; n<10; n++) {
-                // await new Promise(resolve => setTimeout(resolve, 10)); // yield till läsloopen, tiden inte så viktig
-                // logg(90,"globbuffer.len="+globalBuffer.length);
-                        
-                i=globalBuffer.indexOf('\n');  
-                if (i>=0) {
-                   s=getBufferLine();
-                   logg(91,s+" length="+s.length);
-                   try {recCallback(s); } catch(error) {};
-                } else {
-                    // logg(70,"no cr+lf globbuffer.len="+globalBuffer.length);
-                    break;
-                }
-                // console.log(s);
-                // logg(71,"globbuffer.len="+globalBuffer.length);
-                // i framtiden ska vi kontrollera korrekt svar här
-                
-               
-              }
-/*            } else {
-                logg(9,"sendReceivePort No Reply");
-                ret=2;
-            }*/
-    
-
+              break;
+            case 2:                   // Monitoring buffer elsewhere
+              await delay(1);       // frigör cpu från tajt loop
               break;
             default:
               await delay(200);       // frigör cpu från tajt loop 

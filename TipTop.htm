@@ -73,7 +73,7 @@ th {
 
 <div id="dev">
 <table class="devtable">
-    <tr><td>State</td><td>Timer</td><td>Tillgängliga</td><td>Vara</td><td>Pulser</td><td>Räknare</td><td>Tid kvar</td><td>PumpState</td></tr><tr></tr>
+    <tr><td>State</td><td>Timer</td><td>Tillgängliga</td><td>Vara</td><td>Pulser</td><td>Räknare</td><td>PumpState</td></tr><tr></tr>
     <tr>
         <td><div id="idState">-</div></td>
         <td><div id="idTimer">-</div></td>
@@ -81,7 +81,7 @@ th {
         <td><div id="idProduct"></div></td>
         <td><div id="idPulses"></div></td>
         <td><div id="idCounter" >-</div></td>
-        <td><div id="idTimeleft" >-</div></td>
+  
         <td><div id="idPumpState" >-</div></td>
         </tr>
 </table>
@@ -430,14 +430,15 @@ async function timerStuff() {
     function recCallback (v) {
       let s;
       let p1;
+ 
       // instatus.textContent=v;
       s=v.substring(0,2);
-      if (s=="#A") {
+      if (s=="#a") {
         diginp=v.substring(2,6);
-        p1=v.indexOf("V");
+        p1=v.indexOf("v");
         s=v.substring(p1+1);
         counter0=parseInt(s);
-        p1=v.indexOf("W");
+        p1=v.indexOf("w");
         s=v.substring(p1+1);
         counter1=parseInt(s);
         idAvailable.textContent=diginp;

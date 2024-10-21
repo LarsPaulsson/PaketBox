@@ -20,6 +20,7 @@
     }
 
     const debuglevel=89;
+    let lockcounter=0;
 
     function logg (l, v) {
         if (l < 10) p=`*`;
@@ -147,18 +148,29 @@
     async function sendtoPort (inputValue) {
     if (globalState<=0) {
         return 1;
+    }    
+    for (i=0; i<10; i++) {
+        if (lockcounter>0) {
+            await delay(100);
+        }
     }
-
+    if (lockcounter>0) {
+        logg (2,"sendtoPort:overrun c="+lockcounter+" v="+inputValue);
+    }
+    lockcounter++;
     try {
       const writer = outputStream.getWriter();
       await writer.write(inputValue+'\r\n');
       writer.releaseLock();
       logg(90, inputValue);
-      return 0;
+
       } catch (err) {
             logg(9,"sendtoPort error="+err.message);
+            lockcounter--;
             return 2;
       }
+      lockcounter--;
+      return 0;
     }
 
 
@@ -198,7 +210,9 @@
 
     function setDigital(port, v) {
         let s='$D'+String.fromCharCode(port+48)+String.fromCharCode(v+48);
-        sendReceivePort(s);
+        // sendReceivePort(s);
+        sendtoPort(s);
+
     }
 
     function setD00() { setDigital(0,0); }
@@ -243,6 +257,8 @@
         }
     }
 
+    let SRcounter=0;
+
     async function sendReceivePort (inputValue) {
     let ret=0;
     let result;
@@ -253,6 +269,20 @@
         logg (9, "sp no connection, can not send");
         return 1;           // we are not connected
     }
+
+    for (i=0; i<20; i++) {  
+        if (SRcounter>0) {      // detekterar overrun
+            await delay(100);   // vänta på vår tur
+        }
+    }
+
+    if (SRcounter>0) {          // om fortf overrun ge upp
+            logg (1,"sendReceivePort:overrun count="+SRcounter+" v="+inputValue);
+            return 4;
+    }
+
+
+    SRcounter++;
 
     globalState=2;          // stop automatic flushing
     flushBuffer();          // empty buffer
@@ -279,6 +309,7 @@
         return ret=3;
     }
     globalState=1;
+    SRcounter--;
     return ret;
     }
 /*

@@ -169,6 +169,7 @@ function changeState(newstate) {
         switch (newstate) {
         case STATE_PAUSE:
             changeTable(s0);
+            newproduct(1);
             sessiontimer=TIMEPAUSEPAGE;
 
             break;
@@ -369,23 +370,23 @@ const pages = [
 
 
     async function startPump() {
-      if (pump>0) {
-          await setDigital(pump-1,1);
-          await delay(100);
-       }
-//       pumptimer=TIMEOUT;
+//        logg (10,"startPump="+pump);
+//      if (pump>0) {
+          await setDigital(pump,1);
+          logg (10,"startPump="+pump);
+         // await delay(100);
+//       }
        pumpstate=1;
        pulsestart=counter0;
     }
 
     
     async function stopPump() {
-//        pumptimer=1;
-        await setDigital(pump-1,0);
-        await delay(100);
+        await setDigital(pump,0);
+        // await delay(100);
         d6=0;
         await setDigital(6,d6);
-        await delay(100);
+        // await delay(100);
 
     }
 /*

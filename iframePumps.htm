@@ -69,29 +69,12 @@ th {
     <tr><td><div id="line6"></div></td></tr>
 </table>
 
-
-
-<div id="dev">
-<table class="devtable">
-    <tr><td>State</td><td>Timer</td><td>Tillgängliga</td><td>Vara</td><td>Pulser</td><td>Räknare</td><td>PumpState</td></tr><tr></tr>
-    <tr>
-        <td><div id="idState">-</div></td>
-        <td><div id="idTimer">-</div></td>
-        <td><div id="idAvailable">-</div></td>
-        <td><div id="idProduct"></div></td>
-        <td><div id="idPulses"></div></td>
-        <td><div id="idCounter" >-</div></td>
-  
-        <td><div id="idPumpState" >-</div></td>
-        </tr>
-</table>
-<pre class="tankpre" id="output"></pre>
-
-</div>
-
-<script src="js/SerialPort.js"></script>
 <script src="js/Util.js"></script>
 <script>
+
+    function logg(v,s) {
+
+    }
 
 window.onload = function() {
     changeState(0);
@@ -149,6 +132,8 @@ window.onload = function() {
 
     let price=100.0;
     let kilos=0.0;
+    const DELIVER_TIMEOUT=60;
+
 
     function changeTable(s) {
             line1.innerHTML=s[0];
@@ -162,7 +147,7 @@ window.onload = function() {
 function changeState(newstate) {
         // if (newstate<pages.length) {
           sessionstate=newstate;
-          idState.textContent=sessionstate;
+          // idState.textContent=sessionstate;
           /// navigateIframe(pages[newstate]);
 
         
@@ -191,11 +176,11 @@ function changeState(newstate) {
             changeTable(s4);
             newproduct(pump);
             // newprice(price);
-            sessiontimer=60;
+            sessiontimer=DELIVER_TIMEOUT;
          
             kilos=price/productnow.price;
             pulsespaid=Math.round(kilos*productnow.pulses);
-            idPulses.textContent=pulsespaid.toFixed(0);
+            // idPulses.textContent=pulsespaid.toFixed(0);
             startPump();
         break;
         case STATE_FINISH:
@@ -219,7 +204,7 @@ function newproduct(p) {
     pump=p;
    
     productnow=prods[productindex];
-    idProduct.textContent=productnow.number;
+    // idProduct.textContent=productnow.number;
     line2.textContent="Pump "+productnow.number+" har "+productnow.volume+" kg "+productnow.name+" "+productnow.price+" kr/kg";
     document.body.style.backgroundImage = 'url('+productnow.image+')';
     // console.log ("PROD img="+productnow.image);
@@ -269,45 +254,22 @@ const sessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
 let sessioninterval = setInterval(timerState, 1000);
 let sessiontimer=0;
 let msg={};
-
-const images = [
-              'url("img/image1.jpg")',
-              'url("img/image2.jpg")',
-              'url("img/image3.jpg")',
-              'url("img/image4.jpg")'
-            ];
+let lastpcount=0;
   
-//    let imagenumber=0;
-//    document.body.style.backgroundImage = images[imagenumber];
 function payment(n) {
        paid=n;
        newprice(paid);
        changeState(STATE_DELIVER);
     }
 
-    function nextimage() {
-       imagenumber++;
-       if (imagenumber>=images.length) imagenumber=0;
-       document.body.style.backgroundImage = images[imagenumber];
-    }
-
     function nextproduct() {
        newproduct(productindex+1);
     }
 
-const pages = [
-              'iframePage1.htm',
-              'iframePage2.htm',
-              'iframeSelect.htm',
-              'iframePage5.htm',
-              'iframeTanka1.htm'
-            ];
-
-
       function timerState(cmd) {
 
         sessiontimer--;
-        idTimer.textContent=sessiontimer;
+        // idTimer.textContent=sessiontimer;
 
         switch (sessionstate) {
         case STATE_PAUSE:
@@ -336,12 +298,13 @@ const pages = [
         case STATE_DELIVER:
             if (sessiontimer>0) {
                 // Omvandla pcount till kr
+                if (pcount!=lastpcount) {sessiontimer=DELIVER_TIMEOUT; }
                 kilos=pcount/productnow.pulses;
                 pdeliv=kilos*productnow.price;
                 sessionobj.paydelivered=pdeliv.toFixed(2);
                 line5.textContent="Pumpat för "+pdeliv.toFixed(2)+" kr";
                 if (pumpstate==2) {
-                    stopPump();
+                    // stopPump();
                     sessionresult="Tankning klar";
                     changeState(STATE_FINISH);
                 }
@@ -364,30 +327,26 @@ const pages = [
             }
         break;
         }
-        timerStuff();
+        // timerStuff();
 
       }
 
 
-    async function startPump() {
-//        logg (10,"startPump="+pump);
-//      if (pump>0) {
-          await setDigital(pump,1);
-          logg (10,"startPump="+pump);
-         // await delay(100);
-//       }
-       pumpstate=1;
-       pulsestart=counter0;
+    function startPump() {
+        let msg={};
+        msg.command="startPump";
+        msg.productnumber=productindex;
+        msg.pulsespaid=pulsespaid;
+        sendup(msg);
     }
 
     
-    async function stopPump() {
-        await setDigital(pump,0);
-        // await delay(100);
-        d6=0;
-        await setDigital(6,d6);
-        // await delay(100);
-
+    function stopPump() {
+        let msg={};
+        msg.command="stopPump";
+        // msg.productnumber=productindex;
+        // msg.pulsespaid=pulsespaid;
+        sendup(msg);
     }
 /*
     function execCommand(cmdstring) {
@@ -400,7 +359,7 @@ const pages = [
     }
 */
 
-// let intervalId = setInterval(timerStuff, 1000);
+/* let intervalId = setInterval(timerStuff, 1000);
 
 // Stop the interval  clearInterval(intervalId);
 
@@ -416,49 +375,19 @@ async function timerStuff() {
   if (pumpstate==2) {     // Uppnått antal pulser
       // stopPump();
   }
-  idPumpState.textContent=pumpstate;
-  sendtoPort("$s00");
+//  idPumpState.textContent=pumpstate;
+  sendReceivePort("$S00");
 }
 
+*/
 
-    function showLogg (v) {
-      const totalHeight = output.clientHeight;
-      if (totalHeight>400) output.textContent="";
-      output.textContent += v+'\n';
-    }
-
-    function recCallback (v) {
-      let s;
-      let p1;
- 
-      // instatus.textContent=v;
-      s=v.substring(0,2);
-      if (s=="#a") {
-        diginp=v.substring(2,6);
-        p1=v.indexOf("v");
-        s=v.substring(p1+1);
-        counter0=parseInt(s);
-        p1=v.indexOf("w");
-        s=v.substring(p1+1);
-        counter1=parseInt(s);
-        idAvailable.textContent=diginp;
-        pcount=counter0-pulsestart;
-        idCounter.textContent=pcount;
- 
-        if (pcount > pulsespaid) {
-            // stopPump();
-            pumpstate=2;
-        }
-      }
-      // logg(1,"HERE:"+s);
-    }
     
 /*
     function showBuffer (v) {
            output.textContent += v+'\n';
     }
 */
-logg(10, 'Program start');
+// logg(10, 'Program start');
 /*
 // Skapa en WebSocket-anslutning till Python
 const socketPy = new WebSocket(`ws://localhost:8765/`);
@@ -488,78 +417,7 @@ socketPy.onclose = function(event) {
 };
 */
 
-const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Din Pushbullet API-nyckel
 
-// Skapa en WebSocket-anslutning till Pushbullet
-const socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
-
-// Lyssna efter WebSocket-anslutningens öppnande
-socket.onopen = function(event) {
-    logg (100, "ws open");
-};
-
-// Hantera inkommande meddelanden från Pushbullet
-socket.onmessage = function(event) {
-    const data = JSON.parse(event.data);
-    let l2="";
-    let l3="";
-    let audio;
-
-    logg (100, "ws onmessage data.type="+data.type);
-
-    // Kontrollera om det är ett pushmeddelande
-    if (data.type === 'push') {
-//        console.log("push:", data.push);
-        if (data.push.type === 'mirror') {
-            try {
-             l1=`${data.push.application_name}`;
-             l2=`${data.push.title}`;
-             l3=`${data.push.body}`;
-            }
-            catch {    }
-            logg(100, `ws application_name: ${l1}`);
-            logg(100, `ws title: ${l2}`);
-            logg(100, `ws body: ${l3}`);
-            switch (l1) {
-                case "Pushbullet":
-                    logg(100, "ws Pushbullet");
-                    document.getElementById('tank4').click();
-                    // document.getElementById('pulseDTR').click();
-                    // audio = new Audio('mp3/pusbullet.mp3'); audio.play();
-                    break;
-                case "Tapo":
-                    logg(100, "ws Tapo");
-                // audio = new Audio('mp3/tapo.mp3'); audio.play();
-                    break;
-                case "Swish":
-                    logg(100, "Swish");
-                    document.getElementById('tank1').click();
-                    // document.getElementById('pulseDTR').click();
-                    // audio = new Audio('mp3/swish.mp3'); audio.play();
-                    break;
-            
-                default:
-                    break;
-            }
-            
-        }
-    }
-};
-
-// Hantera eventuella fel med WebSocket
-socket.onerror = function(error) {
-    logg("ws onerror=",error);
-};
-
-// Stäng WebSocket-anslutningen när det behövs
-socket.onclose = function(event) {
-    logg ("ws onclose");
-};
-/*
-function showSocket(line1,line2,line3) {
-        document.getElementById('Message1').textContent = line1 + "   " + line2 + "   " + line3;
-}
-*/
 async function doTanka(nr, button) {
     // socketPy.send("$D01\r\n");
     setDigital(nr-1,1);
@@ -594,59 +452,42 @@ async function doLucka(nr, button) {
 
 // document.getElementById('connect').addEventListener('click', connectPort );
 
-/*
+let recobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
+let upsessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
+
+   // Listen for messages from the parent page
   window.addEventListener('message', function(event) {
-        // Check the origin of the message for security reasons
-        // if (event.origin !== 'http://your-parent-domain.com') { return;}
+      // Check the origin of the message for security reasons
+      // if (event.origin !== 'http://your-parent-domain.com') { return;}
       try {
         recobj = JSON.parse(event.data);
-
         if ('productnumber' in recobj) {
-           pump=recobj.productnumber;
-           sessionobj.productnumber=recobj.productnumber;
-           productindex=pump;
-           productnow=prods[productindex];
-           idProduct.textContent=recobj.productnumber;
+            // idVara.textContent=recobj.productnumber;
         }
-        if ('price' in recobj) {
-          sessionobj.price=recobj.price;
-          p=recobj.price;
-          kiloprice=prods[recobj.productnumber].price;
-          kilos=p/kiloprice;
-          pulses=Math.round(kilos*prods[recobj.productnumber].pulses);
-          sessionobj.pulsespaid=pulses;        
-          idPulses.textContent=pulses.toFixed(0);
-          logg(1,"paid");
+        if ('pcount' in recobj) {
+            pcount=recobj.pcount;
         }
-
-        if ('command' in recobj) {
-          changeState(recobj.command);
-          // execCommand(recobj.command);
+        if ('pumpstate' in recobj) {
+            pumpstate=recobj.pumpstate;
         }
-
+        
+//        if ('paydelivered' in recobj) { idDelivered.textContent=recobj.paydelivered; }
+//        if ('price' in recobj)  { idPaid.textContent=recobj.price; }
+        
         // const obj = JSON.parse('{"name": "Alice"}');
         // console.log(obj);
       } catch (error) {
-        logg(7,'Error parsing JSON:'+error.message);
+        console.log('Error parsing JSON:'+error.message);
       }
-
-      logg(10, event.data);
+      // event.source.postMessage("Ok", event.origin); // Return channel
   });
 
-  function sendiframe(m) {
-      const jsonString = JSON.stringify(m);
-      const piframe = document.getElementById('useriframe');
-      piframe.contentWindow.postMessage(jsonString, '*');
-      logg(10,"Sending:"+jsonString);
-  }
-*/
   
   function playSound() {
             const audio = new Audio('mp3/file.mp3');
             audio.play();
   }
 
-readLoop();
 </script>
 </body>
 </html>

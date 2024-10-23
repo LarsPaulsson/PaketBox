@@ -38,6 +38,14 @@ th {
     background-color: #f2f2f2;
 }
 
+.devline {
+    background-color: rgb(9, 49, 31);
+    padding: 1px;
+    text-align: center;
+    font-size: 20px;
+}
+
+
 .devtable {
     background-color: white;
 }
@@ -78,17 +86,16 @@ th {
     <tr><td><div id="line4"></div></td></tr>
     <tr><td><div id="line5"></div></td></tr>
     <tr><td><div id="line6"></div></td></tr>
+    <tr><td class="devline"><div id="line7"></div></td></tr>
+    <tr><td class="devline"><div id="line8"></div></td></tr>
 </table>
 
 <script src="js/Util.js"></script>
 <script>
 
-    function logg(v,s) {
-
-    }
-
 window.onload = function() {
     changeState(0);
+    setDebugLine(debugline);
 };
 
     s0=[
@@ -140,10 +147,17 @@ window.onload = function() {
     'Tack för besöket',
     'Välkommen åter'
     ];
+    debuglines=[
+    '>>> click here for debugline 1<<<',
+    '>>> click here for debugline 2<<<',
+    '>>> click here for debugline 0 <<<'
+    ]; 
 
     let price=100.0;
     let kilos=0.0;
     const DELIVER_TIMEOUT=60;
+    let debugline=0;
+    let loggstring="";
 
 
     function changeTable(s) {
@@ -153,10 +167,33 @@ window.onload = function() {
             line4.innerHTML=s[3];
             line5.innerHTML=s[4];
             line6.innerHTML=s[5];
+            
     }
+
+    
+    function setDebugLine(dm) {
+        if (dm<=0 || dm>=debuglines.length) {
+            debugline=0;
+        } else {
+            debugline++;
+            if (debugline<=0 || debugline>=debuglines.length) debugline=0;
+        }
+        line8.innerHTML='<span id="idDebugnext">'+' '+debuglines[debugline]+'</span>';
+        document.getElementById('idDebugnext').addEventListener('click', setDebugLine );
+        // logg(100,"set="+debugline);
+    }
+
+    function logg(v,s) {
+        loggstring=s;
+        line7.innerHTML=v+","+loggstring;
+        // console.log(v+", logg="+s);
+
+    }
+
 
 function changeState(newstate) {
         // if (newstate<pages.length) {
+        logg(100, "changeState="+newstate);
           sessionstate=newstate;
           // idState.textContent=sessionstate;
           /// navigateIframe(pages[newstate]);
@@ -481,7 +518,9 @@ let upsessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
         if ('pumpstate' in recobj) {
             pumpstate=recobj.pumpstate;
         }
-        
+        if ('loggline' in recobj) {
+            logg(100, "Top:"+recobj.loggline);
+        }       
 //        if ('paydelivered' in recobj) { idDelivered.textContent=recobj.paydelivered; }
 //        if ('price' in recobj)  { idPaid.textContent=recobj.price; }
         

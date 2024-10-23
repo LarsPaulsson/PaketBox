@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Editable Swish QR Code Generator</title>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <style>
+        #qrcode {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Create Editable Swish QR Code</h2>
+    
+    <!-- Form for user inputs -->
+    <form id="swish-form">
+        <label for="swish-number">Recipient Swish Number:</label>
+        <input type="text" id="payee" value="0705152540" required><br><br>
+
+        <label for="amount">Amount (SEK):</label>
+        <input type="number" id="amount" value="10" required><br><br>
+
+        <label for="message">Message:</label>
+        <input type="text" id="message" value="Testservices"><br><br>
+
+        <button type="submit">Generate QR Code</button>
+    </form>
+
+    <div id="qrcode"></div>
+
+    <script>
+        // Listen for form submission
+        document.getElementById('swish-form').addEventListener('submit', function(e) {
+            e.preventDefault();  // Prevent form submission
+            
+            // Get input values
+            const recipient = document.getElementById('payee').value;
+            const amount = document.getElementById('amount').value;
+            const message = document.getElementById('message').value;
+
+            var format      = 'png'; // Can also be 'jpg' or 'svg'
+var size        = 400; // Between 300 and 2000
+var border      = 2; // Between 0 and 4 (measured in blocks, not pixels)
+var transparent = 'true'; // Must be 'false' for 'jpg'
+
+
+            // Define the payload for Swish QR generation
+            var json = '{'
+    + '"payee":{"value":"' + recipient + '","editable":false},'
+    + '"amount":{"value":' + amount + ',"editable":false},'
+    + '"message":{"value":"' + message + '","editable":false},'
+    + '"format":"' + format + '",'
+    + '"size":' + size + ','
+    + '"border":' + border + ','
+    + '"transparent":' + transparent
+    + '}';
+
+    var json2 = {
+    "format": "png",
+    "size": 300,
+    "transparent": false,
+    "amount": {
+        "value": 10.00,
+        "editable": true
+    },
+    "payee": {
+        "value": "0705152540",
+        "editable": false
+    },
+    "message": {
+        "value": "Hello",
+        "editable": false
+    }
+}
+            // Send API request to Swish QR Generator API
+            fetch('https://mpc.getswish.net/qrg-swish/api/v1/prefilled', {
+                method: "POST",
+                mode: 'no-cors', 
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(json2)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the QR code
+                const qrCodeData = data.qrCode;
+                document.getElementById("qrcode").innerHTML = `<img src="${qrCodeData}" alt="Swish QR Code" />`;
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+
+</body>
+</html>

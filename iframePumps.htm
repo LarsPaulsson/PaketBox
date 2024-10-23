@@ -24,7 +24,7 @@
     font-size: 40px;
     color: white;
     /* background-color: #2d5e17; */
-    background-color: rgba(0, 64, 0, 0.5);
+    background-color: rgba(0, 64, 0, 0.8);
     position: relative;
 
     margin: 0 auto; /* Center the table itself */
@@ -36,7 +36,7 @@
     border-collapse: collapse;
     font-size: 40px;
     color: white;
-    background-color: rgba(0, 64, 0, 0.5);
+    background-color: rgba(0, 64, 0, 0.6);
     margin: 0 auto; /* Center the table itself */
     text-align: center; /* Center the content in the table */
     width: 100%; /* Optional: define the table width */
@@ -82,6 +82,23 @@ th {
       line-height: 50px;   
 }
 
+.devbutt {
+    padding: 0px 0px;  /* Adjusts the space inside the button */
+    font-size: 16px;      /* Increases the size of the text inside */
+    width: 200px;   /* Set button width */
+    height:30px;   /* Set button height */
+      /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
+      margin: 1px 1px 1px 1px; /* Top, Right, Bottom, Left */
+      background-color: #400de7;
+      color: white;
+      border: black;
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      /* line-height: 50px; */   
+}
+
 .tankpre {
             // position: absolute;
             // top: 620px;  /* Adjust the top position */
@@ -111,8 +128,6 @@ th {
 window.onload = function() {
     changeState(0);
     setDebugLine(debugline);
-    let dpr = window.devicePixelRatio;
-    logg(100,'inner:'+ window.innerWidth+'x'+window.innerHeight+' dpratio:'+dpr+' screen:' + dpr*window.screen.width + 'x' + dpr*window.screen.height);
     CheckScreenSize();
     }
 
@@ -142,17 +157,23 @@ window.onload = function() {
         }
         // const rect = table.getBoundingClientRect();
         // console.log("Table height (getBoundingClientRect):", rect.height);
+        let dpr = window.devicePixelRatio;
 
-        logg(100,'resize:' + w + 'x' + h+' portrait='+portrait+" table:"+uh+" dt:"+dt);
+        logg(100,'size:'+w+'x'+h+' dpr:'+dpr+' screen:' + dpr*window.screen.width + 'x' + dpr*window.screen.height);
+
+        // logg(100,'resize:' + w + 'x' + h+' portrait='+portrait+" table:"+uh+" dt:"+dt);
     }
-
+/*
     let resizeTimeout;
     window.addEventListener('resize', function() {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout( CheckScreenSize, 200); // Delay of 200 milliseconds
     }
     );
-
+*/
+    let resizeTimeout;
+    window.addEventListener('resize', CheckScreenSize);
+    
     s0=[
     "Välkommen till Östadlund AB",
     'Här finns att hämta',
@@ -162,7 +183,7 @@ window.onload = function() {
     '<button class="bigbutt" id="sel4butt" onclick="changeState(1)">Klicka/tryck här för att starta</button>'
     ];
     s1=[
-    'Handla i automaten',
+    'Villkor',
     '-Medtag eget kärl för varan',
     '-Bestäm vara och mängd på pekskärmen',
     '-Betala med Swish',
@@ -171,8 +192,8 @@ window.onload = function() {
     ];
 
     s2=[
-    '-',
-    'Välj ev annan vara nedan',
+    'Välj',
+    'Välj bland varor nedan',
     '<button class="bigbutt" id="incutt" onclick="select(-1)">Förra</button><button class="bigbutt" id="decbutt" onclick="select(1)">Nästa</button>',
     '-',
     '<button class="bigbutt" id="decbutt" onclick="select(-2)">- Minska</button><button class="bigbutt" id="incbutt" onclick="select(2)">+ Öka</button>',
@@ -203,9 +224,9 @@ window.onload = function() {
     'Välkommen åter'
     ];
     debuglines=[
-    '>>> click here for debugline 1<<<',
-    '>>> click here for debugline 2<<<',
-    '>>> click here for debugline 0 <<<'
+    '<button class="devbutt" id="upbutt" onclick="setDebugLine(1)">felsök 1</button>',
+    '<button class="devbutt" id="upbutt" onclick="setDebugLine(2)">felsök 2</button>',
+    '<button class="devbutt" id="upbutt" onclick="setDebugLine(0)">felsök 0</button>'
     ]; 
 
     let price=100.0;
@@ -222,7 +243,6 @@ window.onload = function() {
             line4.innerHTML=s[3];
             line5.innerHTML=s[4];
             line6.innerHTML=s[5];
-            
     }
 
     
@@ -233,30 +253,30 @@ window.onload = function() {
             debugline++;
             if (debugline<=0 || debugline>=debuglines.length) debugline=0;
         }
-        line8.innerHTML='<span id="idDebugnext">'+' '+debuglines[debugline]+'</span>';
-        document.getElementById('idDebugnext').addEventListener('click', setDebugLine );
+        line8.innerHTML=debuglines[debugline];
+        if (debugline>0) line7.innerHTML=loggstring;
+        else line7.innerHTML="-";
+        // document.getElementById('idDebugnext').addEventListener('click', setDebugLine );
         // logg(100,"set="+debugline);
     }
 
-let logglines=[];
-let loggindex=0;
+// let logglines=[];
+// let loggindex=0;
 
     function logg(v,s) {
-        loggstring=s;
-        line7.innerHTML=v+","+loggstring;
+        if (loggstring.length>200) loggstring="";
+        loggstring +="//"+v+" "+s;
+        if (debugline>0) line7.innerHTML=loggstring;
         // console.log(v+", logg="+s);
 
     }
 
 
 function changeState(newstate) {
-        // if (newstate<pages.length) {
-        // logg(100, "changeState="+newstate);
-          sessionstate=newstate;
-          // idState.textContent=sessionstate;
-          /// navigateIframe(pages[newstate]);
-
-        
+      
+        logg(100, "changeState="+newstate);
+        sessionstate=newstate;
+                
         switch (newstate) {
         case STATE_PAUSE:
             changeTable(s0);

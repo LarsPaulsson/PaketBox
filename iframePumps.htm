@@ -96,6 +96,7 @@ th {
 window.onload = function() {
     changeState(0);
     setDebugLine(debugline);
+    logg(100,'size:' + window.innerWidth + 'x' + window.innerHeight);
 };
 
     s0=[
@@ -183,6 +184,9 @@ window.onload = function() {
         // logg(100,"set="+debugline);
     }
 
+let logglines=[];
+let loggindex=0;
+
     function logg(v,s) {
         loggstring=s;
         line7.innerHTML=v+","+loggstring;
@@ -190,10 +194,17 @@ window.onload = function() {
 
     }
 
+let resizeTimeout;
+window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(function() {
+        logg(100,'resize:' + window.innerWidth + 'x' + window.innerHeight);
+    }, 200); // Delay of 200 milliseconds
+});
 
 function changeState(newstate) {
         // if (newstate<pages.length) {
-        logg(100, "changeState="+newstate);
+        // logg(100, "changeState="+newstate);
           sessionstate=newstate;
           // idState.textContent=sessionstate;
           /// navigateIframe(pages[newstate]);

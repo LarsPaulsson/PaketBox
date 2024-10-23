@@ -7,33 +7,36 @@
 </head>
 <body>
 <style>
-      body, html {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      display: flex;
-      justify-content: center;  /* Center horizontally */
-      align-items: center;      /* Center vertically */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-      }
+    body, html {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    /* display: flex; */
+    /* display: grid; */
+    justify-content: center;  /* Center horizontally */
+    align-items: center;      /* Center vertically */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    }
 .usertable {
     border-collapse: collapse;
     font-size: 40px;
     color: white;
     /* background-color: #2d5e17; */
     background-color: rgba(0, 64, 0, 0.5);
+    position: relative;
+
     margin: 0 auto; /* Center the table itself */
     text-align: center; /* Center the content in the table */
     width: 80%; /* Optional: define the table width */
-    height:80%;       
+    /* height:80%; */
   }
   .usertablemobile {
     border-collapse: collapse;
     font-size: 40px;
     color: white;
-    background-color: rgba(64, 64, 0, 0.5);
+    background-color: rgba(0, 64, 0, 0.5);
     margin: 0 auto; /* Center the table itself */
     text-align: center; /* Center the content in the table */
     width: 100%; /* Optional: define the table width */
@@ -118,14 +121,29 @@ window.onload = function() {
         let w=window.innerWidth;
         let h=window.innerHeight;
         let p=0;
+        const tab = document.getElementById("utable");
         if (w<h) p=1;
         if (p != portrait) {
             portrait=p;
-            if (portrait) document.getElementById("utable").className = "usertablemobile";
-            else utable.className="usertable";
+            if (portrait) tab.className = "usertablemobile";
+            else tab.className="usertable";
         }
-        
-        logg(100,'resize:' + w + 'x' + h+' portrait='+portrait);
+        let uh=tab.offsetHeight ;
+        let dt=h-uh;
+        if (dt>10) {
+            tab.style.top=dt/2+"px";
+            // tab.style.transform = "translate(0%, 0%)";
+            //tab.style.margin=dt/2+"px";
+
+        } else {
+            // tab.style.transform = "translate(0%, 0%)";
+            // tab.style.position = "absolute";
+            tab.style.top="0 px";
+        }
+        // const rect = table.getBoundingClientRect();
+        // console.log("Table height (getBoundingClientRect):", rect.height);
+
+        logg(100,'resize:' + w + 'x' + h+' portrait='+portrait+" table:"+uh+" dt:"+dt);
     }
 
     let resizeTimeout;

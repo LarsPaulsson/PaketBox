@@ -96,8 +96,9 @@ th {
 window.onload = function() {
     changeState(0);
     setDebugLine(debugline);
-    logg(100,'size:' + window.innerWidth + 'x' + window.innerHeight);
-};
+    let dpr = window.devicePixelRatio;
+    logg(100,'inner:'+ window.innerWidth+'x'+window.innerHeight+' dpratio:'+dpr+' screen:' + dpr*window.screen.width + 'x' + dpr*window.screen.height);
+    }
 
     s0=[
     "Välkommen till Östadlund AB",

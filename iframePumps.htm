@@ -28,6 +28,17 @@
     width: 80%; /* Optional: define the table width */
     height:80%;       
   }
+  .usertablemobile {
+    border-collapse: collapse;
+    font-size: 40px;
+    color: white;
+    background-color: #b77e28;
+    margin: 0 auto; /* Center the table itself */
+    text-align: center; /* Center the content in the table */
+    width: 100%; /* Optional: define the table width */
+    height:100%;       
+  }
+
 th, td {
     padding: 8px;
     text-align: center;
@@ -79,7 +90,7 @@ th {
 }
 </style>
 
-<table class="usertable">
+<table id="utable" class="usertable">
     <tr><td><div id="line1"></div></td></tr>
     <tr><td><div id="line2"></div></td></tr>
     <tr><td><div id="line3"></div></td></tr>
@@ -98,7 +109,30 @@ window.onload = function() {
     setDebugLine(debugline);
     let dpr = window.devicePixelRatio;
     logg(100,'inner:'+ window.innerWidth+'x'+window.innerHeight+' dpratio:'+dpr+' screen:' + dpr*window.screen.width + 'x' + dpr*window.screen.height);
+    CheckScreenSize();
     }
+
+    let portrait=0;
+    function CheckScreenSize() {
+        let w=window.innerWidth;
+        let h=window.innerHeight;
+        let p=0;
+        if (w<h) p=1;
+        if (p != portrait) {
+            portrait=p;
+            if (portrait) document.getElementById("utable").className = "usertablemobile";
+            else utable.className="usertable";
+        }
+        
+        logg(100,'resize:' + w + 'x' + h+' portrait='+portrait);
+    }
+
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout( CheckScreenSize, 200); // Delay of 200 milliseconds
+    }
+    );
 
     s0=[
     "Välkommen till Östadlund AB",
@@ -195,13 +229,6 @@ let loggindex=0;
 
     }
 
-let resizeTimeout;
-window.addEventListener('resize', function() {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(function() {
-        logg(100,'resize:' + window.innerWidth + 'x' + window.innerHeight);
-    }, 200); // Delay of 200 milliseconds
-});
 
 function changeState(newstate) {
         // if (newstate<pages.length) {

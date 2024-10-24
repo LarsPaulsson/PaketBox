@@ -25,6 +25,7 @@
     color: white;
     /* background-color: #2d5e17; */
     background-color: rgba(0, 64, 0, 0.8);
+/*    background-color: rgba(255, 255, 255, 1); */
     position: relative;
 
     margin: 0 auto; /* Center the table itself */
@@ -109,6 +110,14 @@ th {
             border: 1px solid #ddd;
             padding: 10px;
 }
+.center-container {
+            display: flex;
+            justify-content: center; /* Horizontally center */
+            align-items: center;     /* Vertically center */
+            /* height: 100vh; */    /* 100% of the viewport height */
+            background-color: white;
+            padding: 10px;
+        }
 </style>
 
 <table id="utable" class="usertable">
@@ -122,6 +131,7 @@ th {
     <tr><td class="devline"><div id="line8"></div></td></tr>
 </table>
 
+<script src="js/qrcode.js"></script>
 <script src="js/Util.js"></script>
 <script>
 
@@ -201,10 +211,11 @@ window.onload = function() {
     ];
     s3=[
     "Swisha",
+    '',
+    '',
     '-',
-    'Scanna och swisha enligt QR koden',
-    '-',
-    '<img id="idSwishImage" src="img\\qr1.png" width=150 height=150 >',
+    // '<img id="idSwishImage" src="img\\qr1.png" width=150 height=150 >',
+    '<div class="center-container" id="idSwishImage"></div>',
     '<button class="bigbutt" id="selbutt" onclick="payment(10)">Hoppa över</button>'
     ];
     s4=[
@@ -297,8 +308,11 @@ function changeState(newstate) {
             changeTable(s3);
             if (price<1) price=1;
             if (price>10) price=10;
-            document.getElementById("idSwishImage").src = "img\\qr"+price+".png";
-            newproduct(pump);
+            // document.getElementById("idSwishImage").src = "img\\qr"+price+".png";
+            // console.log(phone1, price);
+            generateSwishQrCode("idSwishImage", phone2, price, "S1", 200, 1);
+            // newproduct(pump);
+            newprice(price);
             sessiontimer=60;
             break;
         case STATE_DELIVER: 

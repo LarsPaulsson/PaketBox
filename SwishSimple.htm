@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" 
+          content="width=device-width, 
+                         initial-scale=1.0" />
+    <title>QR Code Generator</title>
+    <style>
+        h1, h3 {
+          color: green;
+        }
+        body, header {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+    </style>
+
+    <script src="js/qrcode.js"></script>
+    <script src="js/Util.js"></script>
+   
+</head>
+
+<body>
+    <header>
+        <h3>QR code generator using qrcode.js</h3>
+        <h3>Enter QR code content and generate QR</h3>
+    </header>
+    <main>
+        <form action="/" id="qr-generation-form">
+            <input type="text"
+                   name="qr-code-content"
+                   id="qr-content" 
+                   value=""
+                   placeholder="Enter QR content"
+                   autocomplete="off" />
+            <input type="submit" 
+                   value="Generate QR Code" />
+        </form><br />
+        <div id="qr-code"></div>
+        <br> <br> <br> <br>
+        <br> <br>
+        <div id="qr-code2"></div>
+    </main>
+</body>
+<script>
+
+/* Exempel */
+
+s1="C0705152540;3;S1;4";  // 7 alla öppna, ..., 4 msg öppet, 3 belopp+tel öppet, 2 belopp öppet, 1 tel öppet, 0 allt låst
+s2="https://app.swish.nu/1/p/sw/?sw=0760530601&amt=1&cur=SEK&msg=P2B2&src=qr";
+// Låst
+s3="https://app.swish.nu/1/p/sw/?sw=0705152540&amt=99&cur=SEK&msg=Msg1&src=qr";
+
+//Öppen
+s4="https://app.swish.nu/1/p/sw/?sw=0705152540&amt=99&cur=SEK&msg=Msg1&edit=amt&src=qr";
+
+// Båda öppna
+s5="https://app.swish.nu/1/p/sw/?sw=0705152540&amt=99&cur=SEK&msg=MsgAllOpen&edit=amt,msg&src=qr";
+
+    let qrContentInput = document.getElementById("qr-content");
+    let qrGenerationForm = 
+    document.getElementById("qr-generation-form");
+    let qrCode;
+
+    /*
+    let phone1="0705152540"
+    let phone2="0760530601";
+    */
+    let amt="1";
+    let swmsg="S1Ostlunda";
+    
+
+    // Utan möjlighet att ändra något
+    // qrContentInput.value="C"+phone2+";"+amt+";"+swmsg+";0";
+    // Med webblänk
+//    qrContentInput.value="https://app.swish.nu/1/p/sw/?sw="+phone2+"&amt="+amt+"&cur=SEK&msg="+swmsg+"&src=qr";
+    qrContentInput.value="Disabled";
+
+    function generateQrCode(qrContent) {
+      return new QRCode("qr-code", {
+        text: qrContent,
+        width: 300,
+        height: 300,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H,
+      });
+    }
+
+    function generateSwishQrCode2(idDestination, phone, amt, swmsg, w, mode) {
+    // mode 1 är med webblänk
+    let qrContent;
+    if (mode==0) qrContent="C"+phone+";"+amt+";"+swmsg+";0";     // Liten, utan url, 0 sist ger utan möjlighet att ändra något
+    else  qrContent="https://app.swish.nu/1/p/sw/?sw="+phone+"&amt="+amt+"&cur=SEK&msg="+swmsg+"&src=qr";
+    const qrobj= new QRCode(idDestination, {
+         text: qrContent,
+         width:w, height: w,
+         colorDark: "#000000", colorLight: "#ffffff",
+         correctLevel: QRCode.CorrectLevel.H,
+        });
+    }
+
+    
+    // Event listener for form submit event
+    qrGenerationForm.addEventListener("submit", function (event) {
+      // Prevent form submission
+      event.preventDefault();
+      generateSwishQrCode("qr-code", phone2, 1, "Hejsan",200,0);
+      generateSwishQrCode("qr-code2", phone2, 1, "Hejsan",300,1);
+
+ /*     let qrContent = qrContentInput.value;
+      if (qrCode == null) {
+          
+        // Generate code initially
+        qrCode = generateQrCode(qrContent);
+      } else {
+          
+        // If code already generated then make 
+        // again using same object
+        qrCode.makeCode(qrContent);
+      }
+ */       
+    });
+</script>
+
+</html>

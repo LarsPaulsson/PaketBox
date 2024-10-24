@@ -21,3 +21,28 @@ function sendup(m) {
     parent.postMessage(jsonString, '*');
     // parentwindow.postMessage(jsonString, '*');
   }
+
+
+  // För test, se SwishSimple.htm
+  // använder <script src="js/qrcode.js">
+  // generateSwishQrCode("qr-code", phone2, 1, "Hejsan", 200, 0);
+  // generateSwishQrCode("qr-code2", phone2, 1, "Hejsan", 300, 1);
+  
+  let phone1="0705152540"
+  let phone2="0760530601";
+  /*
+  let amt="1";
+  let swmsg="S1Ostlunda";
+  */
+  function generateSwishQrCode(idDestination, phone, amt, swmsg, w, mode) {
+    // mode 1 är med webblänk
+    let qrContent;
+    if (mode==0) qrContent="C"+phone2+";"+amt+";"+swmsg+";0";     // Liten, utan url, 0 sist ger utan möjlighet att ändra något
+    else  qrContent="https://app.swish.nu/1/p/sw/?sw="+phone+"&amt="+amt+"&cur=SEK&msg="+swmsg+"&src=qr";
+    const qrobj= new QRCode(idDestination, {
+         text: qrContent,
+         width:w, height: w,
+         colorDark: "#000000", colorLight: "#ffffff",
+         correctLevel: QRCode.CorrectLevel.H,
+        });
+    }

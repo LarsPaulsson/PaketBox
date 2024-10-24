@@ -1,0 +1,14 @@
+Avlästa koder med QR-reader
+
+C0705152540;3;S1;4
+
+https://app.swish.nu/1/p/sw/?sw=0760530601&amt=1&cur=SEK&msg=P2B2&src=qr
+
+Låst
+https://app.swish.nu/1/p/sw/?sw=0705152540&amt=99&cur=SEK&msg=Msg1&src=qr
+
+Öppen
+https://app.swish.nu/1/p/sw/?sw=0705152540&amt=99&cur=SEK&msg=Msg1&edit=amt&src=qr
+
+Båda öppna
+https://app.swish.nu/1/p/sw/?sw=0705152540&amt=99&cur=SEK&msg=MsgAllOpen&edit=amt,msg&src=qr

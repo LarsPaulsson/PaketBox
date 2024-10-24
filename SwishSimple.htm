@@ -31,7 +31,8 @@
     </header>
     <main>
       <div id="idInfo">navigator info</div>
-      <a href="swish://paymentrequest?recipient=0705152540" 
+      <a href="swish://paymentrequest?recipient=0705152540"
+      
       onclick="if(!window.navigator.userAgent.match(/(iPhone|iPod|iPad|Android)/)) {
                 alert('Please open this link on a mobile device with Swish installed.');
                 return false;
@@ -39,10 +40,19 @@
        Open Swish if on mobile
    </a>
    <br>
-   <a href="swish://paymentrequest?recipient=0705152540">
+   <a href="swish://paymentrequest?recipient=0760530601">
        Try to open Swish
    </a>
-
+   <br>
+   <a href="swish://paymentrequest?sw=0760530601&amt=99&cur=SEK&msg=Msg1&src=qr">
+    Try to open Swish ?sw=0705152540
+  </a>
+  <br>
+  <a href="swish://paymentrequest?sw=0760530601&amt=99&cur=SEK&msg=Msg1&src=qr">
+    Try to open Swish
+  </a>
+  <br>
+  
            <form action="/" id="qr-generation-form">
             <input type="text"
                    name="qr-code-content"

@@ -30,12 +30,17 @@
         <h3>Enter QR code content and generate QR</h3>
     </header>
     <main>
+      <div id="idInfo">navigator info</div>
       <a href="swish://paymentrequest?recipient=0705152540" 
       onclick="if(!window.navigator.userAgent.match(/(iPhone|iPod|iPad|Android)/)) {
                 alert('Please open this link on a mobile device with Swish installed.');
                 return false;
              }">
-       Mobile Pay with Swish
+       Open Swish if on mobile
+   </a>
+   <br>
+   <a href="swish://paymentrequest?recipient=0705152540">
+       Try to open Swish
    </a>
 
            <form action="/" id="qr-generation-form">
@@ -56,8 +61,9 @@
 </body>
 <script>
 
-/* Exempel */
 
+idInfo.textContent=window.navigator.userAgent;
+/* Exempel */
 s1="C0705152540;3;S1;4";  // 7 alla öppna, ..., 4 msg öppet, 3 belopp+tel öppet, 2 belopp öppet, 1 tel öppet, 0 allt låst
 s2="https://app.swish.nu/1/p/sw/?sw=0760530601&amt=1&cur=SEK&msg=P2B2&src=qr";
 // Låst

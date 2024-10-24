@@ -157,9 +157,9 @@ window.onload = function() {
         }
         // const rect = table.getBoundingClientRect();
         // console.log("Table height (getBoundingClientRect):", rect.height);
-        let dpr = window.devicePixelRatio;
+        dpratio = window.devicePixelRatio;
 
-        logg(100,'size:'+w+'x'+h+' dpr:'+dpr+' screen:' + dpr*window.screen.width + 'x' + dpr*window.screen.height);
+        logg(100,'size:'+w+'x'+h+' dpratio:'+dpratio+' screen:' + dpratio*window.screen.width + 'x' + dpratio*window.screen.height);
 
         // logg(100,'resize:' + w + 'x' + h+' portrait='+portrait+" table:"+uh+" dt:"+dt);
     }
@@ -202,10 +202,10 @@ window.onload = function() {
     s3=[
     "Swisha",
     '-',
+    'Scanna och swisha enligt QR koden',
     '-',
-    '-',
-    '-',
-    '<button class="bigbutt" id="selbutt" onclick="payment(10)">Hämta</button>'
+    '<img id="idSwishImage" src="img\\qr1.png" width=150 height=150 >',
+    '<button class="bigbutt" id="selbutt" onclick="payment(10)">Hoppa över</button>'
     ];
     s4=[
     "Hämta",
@@ -229,12 +229,12 @@ window.onload = function() {
     '<button class="devbutt" id="upbutt" onclick="setDebugLine(0)">felsök 0</button>'
     ]; 
 
-    let price=100.0;
+    let price=5;
     let kilos=0.0;
     const DELIVER_TIMEOUT=60;
     let debugline=0;
     let loggstring="";
-
+    let dpratio=1;      // 
 
     function changeTable(s) {
             line1.innerHTML=s[0];
@@ -295,6 +295,9 @@ function changeState(newstate) {
         break;
         case STATE_PAYING:
             changeTable(s3);
+            if (price<1) price=1;
+            if (price>10) price=10;
+            document.getElementById("idSwishImage").src = "img\\qr"+price+".png";
             newproduct(pump);
             sessiontimer=60;
             break;
@@ -338,9 +341,12 @@ function newproduct(p) {
     newprice(price);
 }
 
+const MINPRICE=1;
+const MAXPRICE=10;
+
 function newprice(p) {
-    if (p<10) p=10;
-    if (p>100) p=100;
+    if (p<MINPRICE) p=MINPRICE;
+    if (p>MAXPRICE) p=MAXPRICE;
     price=p;
     // line5.textContent="Belopp "+p+" kr";
     kilos=p/productnow.price;

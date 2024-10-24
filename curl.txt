@@ -1,5 +1,3 @@
-# Macken
- 
 curl --request POST \
      --header "Content-Type: application/json" \
      --data '{

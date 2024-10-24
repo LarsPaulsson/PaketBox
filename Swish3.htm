@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swish QR Code Generator</title>
+</head>
+<body>
+    <h1>Swish QR Code Generator</h1>
+    <form id="qr-form">
+        <label for="payee">Payee Number:</label>
+        <input type="text" id="payee" name="payee" required><br>
+        <label for="amount">Amount (SEK):</label>
+        <input type="number" id="amount" name="amount" required><br>
+        <label for="message">Message:</label>
+        <input type="text" id="message" name="message"><br>
+        <button type="submit">Generate QR Code</button>
+    </form>
+    <div id="qrcode"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        document.getElementById('qr-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const payee = document.getElementById('payee').value;
+            const amount = document.getElementById('amount').value;
+            const message = document.getElementById('message').value;
+            const qrContent = `C${payee};${amount};${message}`;
+            new QRCode(document.getElementById('qrcode'), qrContent);
+        });
+    </script>
+</body>
+</html>

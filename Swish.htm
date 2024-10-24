@@ -40,13 +40,13 @@
             const message = document.getElementById('message').value;
 
             var format      = 'png'; // Can also be 'jpg' or 'svg'
-var size        = 400; // Between 300 and 2000
+var size        = 300; // Between 300 and 2000
 var border      = 2; // Between 0 and 4 (measured in blocks, not pixels)
-var transparent = 'true'; // Must be 'false' for 'jpg'
+var transparent = 'false'; // Must be 'false' for 'jpg'
 
 
             // Define the payload for Swish QR generation
-            var json = '{'
+            var json1 = '{'
     + '"payee":{"value":"' + recipient + '","editable":false},'
     + '"amount":{"value":' + amount + ',"editable":false},'
     + '"message":{"value":"' + message + '","editable":false},'
@@ -73,17 +73,75 @@ var transparent = 'true'; // Must be 'false' for 'jpg'
         "editable": false
     }
 }
+json3={
+    'payee': {
+        'value': '0705152540',
+        'editable': false,
+    },
+    'amount': {
+        'value': '1',
+        'editable': false,
+    },
+    'message': {
+        'value': 'Lars message',
+        'editable': false,
+    },
+    'format': 'png',
+    'size': 300,
+}
+
+const json4=JSON.stringify(json3); 
+
+/* denns python funkar
+import requests
+
+response = requests.post('https://mpc.getswish.net/qrg-swish/api/v1/prefilled', json={
+    'payee': {
+        'value': '0705152540',
+        'editable': False,
+    },
+    'amount': {
+        'value': '1',
+        'editable': False,
+    },
+    'message': {
+        'value': 'Lars message',
+        'editable': True,
+    },
+    'format': 'png',
+    'size': 300,
+})
+with open('qrcode.png', 'wb') as file_object:
+    file_object.write(response.content)
+*/
+
+
             // Send API request to Swish QR Generator API
             fetch('https://mpc.getswish.net/qrg-swish/api/v1/prefilled', {
                 method: "POST",
-                mode: 'no-cors', 
+                mode: 'no-cors', //Utan denna fås CORS error, med no-cors ges 415 media error
                 headers: {
-                    "Content-Type": "application/json"
+                   // "Content-Type": "application/json"
                 },
-                body: JSON.stringify(json2)
+                body: json4 /* {
+    'payee': {
+        'value': '0705152540',
+        'editable': false,
+    },
+    'amount': {
+        'value': '1',
+        'editable': false,
+    },
+    'message': {
+        'value': 'Lars message',
+        'editable': false,
+    },
+    'format': 'png',
+    'size': 300,
+                } */
             })
             .then(response => response.json())
-            .then(data => {
+           .then(data => {
                 // Display the QR code
                 const qrCodeData = data.qrCode;
                 document.getElementById("qrcode").innerHTML = `<img src="${qrCodeData}" alt="Swish QR Code" />`;

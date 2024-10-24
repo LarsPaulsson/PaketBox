@@ -12,58 +12,46 @@
 </head>
 <body>
 
-    <h2>Generate Prefilled Swish QR Code</h2>
-
-    <!-- Form for user inputs -->
-    <form id="swish-form">
-        <label for="swish-number">Recipient Swish Number:</label>
-        <input type="text" id="swish-number" value="1231181189" required><br><br>
-
-        <label for="amount">Amount (SEK):</label>
-        <input type="number" id="amount" value="100" required><br><br>
-
-        <label for="message">Message:</label>
-        <input type="text" id="message" value="Payment for services"><br><br>
-
-        <button type="submit">Generate QR Code</button>
-    </form>
-
     <div id="qrcode"></div>
 
     <script>
-        // Listen for form submission
-        document.getElementById('swish-form').addEventListener('submit', function(e) {
-            e.preventDefault();  // Prevent form submission
-            
-            // Get input values
-            const recipient = document.getElementById('swish-number').value;
-            const amount = document.getElementById('amount').value;
-            const message = document.getElementById('message').value;
 
             // Define the payload for Swish QR generation
-            const requestData = {
-                format: "png",
-                payee: { value: recipient },
-                amount: { value: amount, currency: "SEK" },
-                message: message
-            };
+const requestData = {
+    "format": "png",
+    "size": 300,
+    "transparent": false,
+    "amount": {
+        "value": 1,
+        "editable": true
+    },
+    "payee": {
+        "value": "0705152540",
+        "editable": false
+    },
+    "message": {
+        "value": "Hello",
+        "editable": false
+    }
+}
 
+const json1=JSON.stringify(requestData); 
+console.log(json1);
+
+  // "Content-Type": "application/json"
             // Send API request to Swish QR Generator API
-            fetch("https://mpc.getswish.net/qrg-swish/api/v1/prefilled", {
+const res= fetch("https://mpc.getswish.net/qrg-swish/api/v1/prefilled", {
                 method: "POST",
+                mode: 'no-cors',
                 headers: {
-                    "Content-Type": "application/json"
+                 "Content-Type": "application/json"
                 },
-                body: JSON.stringify(requestData)
+                body: json1,
             })
-            .then(response => response.blob())  // The API returns an image blob
-            .then(blob => {
-                // Create an object URL for the blob and display the image
-                const url = URL.createObjectURL(blob);
-                document.getElementById("qrcode").innerHTML = `<img src="${url}" alt="Swish QR Code" />`;
-            })
-            .catch(error => console.error("Error:", error));
-        });
+
+    console.log(`${res.status}`);
+    console.log(`${res.data}`);
+
     </script>
 
 </body>

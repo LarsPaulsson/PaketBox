@@ -30,7 +30,15 @@
         <h3>Enter QR code content and generate QR</h3>
     </header>
     <main>
-        <form action="/" id="qr-generation-form">
+      <a href="swish://paymentrequest?token=SWISH_PAYMENT_TOKEN"
+      onclick="if(!window.navigator.userAgent.match(/(iPhone|iPod|iPad|Android)/)) {
+                alert('Please open this link on a mobile device with Swish installed.');
+                return false;
+             }">
+       Mobile Pay with Swish
+   </a>
+
+           <form action="/" id="qr-generation-form">
             <input type="text"
                    name="qr-code-content"
                    id="qr-content" 

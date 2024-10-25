@@ -129,6 +129,7 @@ window.onload = function() {
 let sessionstate=0;
 let sessionresult="Okänt avslut";
 let paid=0;
+let account=0;
 const TIMEOUT=30;
 const TIMEPAUSEPAGE=5;
 let pumpstate=0;
@@ -165,6 +166,7 @@ function setDebugLine(dm) {
 
     
     async function stopPump() {
+        paid=0;
         await setDigital(pump,0);
         d6=0;
         await setDigital(6,d6);
@@ -172,7 +174,9 @@ function setDebugLine(dm) {
 
     function changePaid(p) {
         paid=p;
+        // account=p;
         msg.command="Paid";
+//        msg.account=account;
         msg.paid=paid;
         msg.pcount=pcount;
         msg.pumpstate=pumpstate;

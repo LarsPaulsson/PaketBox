@@ -57,6 +57,12 @@ th {
 .devtable {
     background-color: white;
     display: inline-block;
+    margin: 0px 0px 0px 0px;
+    padding: 0px;
+    display:none;
+    position:fixed;
+    bottom: 0px;
+    left: 200px;
 }
 
 .bigbutt {
@@ -82,11 +88,11 @@ th {
             /* left:400px; */  /* Adjust the left position */
             /* display: inline-block; */
             width: 500px;
-            height: 40px;
+            height: 80px;
             background-color: #f4f4f4;
             /* border: 1px solid #ddd; */
-            padding: 1px;
-            margin: 1px 1px 1px 1px;
+            padding: 0px;
+            margin: 0px 0px 0px 0px;
             text-align: left;
 }
 </style>
@@ -99,9 +105,9 @@ th {
   src="iframePumps.htm">
 </iframe>
 
-<div id="idDev" style="display:none; position:fixed; top: 572px; left: 200px;">
-<table class="devtable">
-    <tr><td>State</td><td>Timer</td><td>Tillgängliga</td><td>Prodnr</td><td>Betalt</td><td>pulsespaid</td><td>Räknare</td><td>PumpState</td><td>Logg</td></tr>
+<table id="idDev" class="devtable">
+    <tr><td>State</td><td>Timer</td><td>Tillgängliga</td><td>Prodnr</td><td>Betalt</td>
+        <td>pulsespaid</td><td>Räknare</td><td>PumpState</td><td rowspan="2"><pre class="tankpre" id="output"></pre></td></tr>
     <tr>
         <td><div id="idState">-</div></td>
         <td><div id="idTimer">-</div></td>
@@ -112,10 +118,10 @@ th {
         <td><div id="idCounter" >-</div></td>
   
         <td><div id="idPumpState" >-</div></td>
-        <td><pre class="tankpre" id="output"></pre></td>
+        
         </tr>
 </table>
-</div>
+
 <button class="bigbutt" style=" position:fixed; bottom: 0px; left: 0px;" id="idTopDebugButton" onclick="setDebugLine(debugline+1)">Felsök Top</button>
 
 <script src="js/SerialPort.js"></script>

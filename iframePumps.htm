@@ -85,11 +85,11 @@ th {
 
 .devbutt {
     padding: 0px 0px;  /* Adjusts the space inside the button */
-    font-size: 16px;      /* Increases the size of the text inside */
-    width: 200px;   /* Set button width */
-    height:30px;   /* Set button height */
+    font-size: 20px;      /* Increases the size of the text inside */
+    width: 100px;   /* Set button width */
+    height:100px;   /* Set button height */
       /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-      margin: 1px 1px 1px 1px; /* Top, Right, Bottom, Left */
+      margin: 0px 0px 0px 0px; /* Top, Right, Bottom, Left */
       background-color: #400de7;
       color: white;
       border: black;
@@ -235,9 +235,8 @@ window.onload = function() {
     'Välkommen åter'
     ];
     debuglines=[
-    '<button class="devbutt" id="upbutt" onclick="setDebugLine(1)">felsök 1</button>',
-    '<button class="devbutt" id="upbutt" onclick="setDebugLine(2)">felsök 2</button>',
-    '<button class="devbutt" id="upbutt" onclick="setDebugLine(0)">felsök 0</button>'
+    '<button class="devbutt" style="position: fixed; bottom: 0px; left: 100px;" id="upbutt" onclick="setDebugLine(debugline+1)">Felsök UI</button>',
+    '<button class="devbutt" style="position: fixed; bottom: 0px; left: 100px;" id="upbutt" onclick="setDebugLine(debugline+1)">Felsök UI</button>',
     ]; 
 
     let price=5;
@@ -258,12 +257,16 @@ window.onload = function() {
 
     
     function setDebugLine(dm) {
-        if (dm<=0 || dm>=debuglines.length) {
+ /*       if (dm<=0 || dm>=debuglines.length) {
             debugline=0;
         } else {
             debugline++;
             if (debugline<=0 || debugline>=debuglines.length) debugline=0;
         }
+*/  
+        if (dm<0) dm=0;
+        if (dm>1) dm=0;
+        debugline=dm;
         line8.innerHTML=debuglines[debugline];
         if (debugline>0) line7.innerHTML=loggstring;
         else line7.innerHTML="-";

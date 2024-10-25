@@ -293,6 +293,8 @@ function changeState(newstate) {
                 
         switch (newstate) {
         case STATE_PAUSE:
+            paid=0;
+            pulsespaid=0;
             changeTable(s0);
             newproduct(1);
             sessiontimer=TIMEPAUSEPAGE;
@@ -333,6 +335,7 @@ function changeState(newstate) {
             newproduct(pump);
             line6.textContent=sessionresult;
             sessiontimer=20;
+
         break;
        /* case MSG_LOADED:
             // logg(10, "MSG_LOADED");

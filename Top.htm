@@ -82,7 +82,7 @@ th {
             /* left:400px; */  /* Adjust the left position */
             /* display: inline-block; */
             width: 500px;
-            height: 100px;
+            height: 40px;
             background-color: #f4f4f4;
             /* border: 1px solid #ddd; */
             padding: 1px;
@@ -99,14 +99,15 @@ th {
   src="iframePumps.htm">
 </iframe>
 
-<div id="dev" style="display: none;">
+<div id="idDev" style="display:none; position:fixed; top: 572px; left: 200px;">
 <table class="devtable">
-    <tr><td>State</td><td>Timer</td><td>Tillgängliga</td><td>Vara</td><td>pulsespaid</td><td>Räknare</td><td>PumpState</td><td>Logg</td></tr>
+    <tr><td>State</td><td>Timer</td><td>Tillgängliga</td><td>Prodnr</td><td>Betalt</td><td>pulsespaid</td><td>Räknare</td><td>PumpState</td><td>Logg</td></tr>
     <tr>
         <td><div id="idState">-</div></td>
         <td><div id="idTimer">-</div></td>
         <td><div id="idAvailable">-</div></td>
         <td><div id="idProduct"></div></td>
+        <td><div id="idPaid"></div></td>
         <td><div id="idPulses"></div></td>
         <td><div id="idCounter" >-</div></td>
   
@@ -115,7 +116,7 @@ th {
         </tr>
 </table>
 </div>
-<button class="bigbutt" style=" position:fixed; bottom: 0px; left: 0px;" id="idTopDebugButton" onclick="changeDebug(1)">Felsök Top</button>
+<button class="bigbutt" style=" position:fixed; bottom: 0px; left: 0px;" id="idTopDebugButton" onclick="setDebugLine(debugline+1)">Felsök Top</button>
 
 <script src="js/SerialPort.js"></script>
 <script src="js/Util.js"></script>
@@ -145,6 +146,14 @@ let msg={};
 
 let counter0=0;
 
+let debugline=0;
+function setDebugLine(dm) {
+        if (dm<0) dm=0;
+        if (dm>1) dm=0;
+        debugline=dm;
+        if (debugline>0) idDev.style.display="inline";
+        else idDev.style.display="none";
+    }
 
     async function startPump() {
 //        logg (10,"startPump="+pump);
@@ -161,7 +170,16 @@ let counter0=0;
         await setDigital(6,d6);
     }
 
-    
+    function changePaid(p) {
+        paid=p;
+        msg.command="Paid";
+        msg.paid=paid;
+        msg.pcount=pcount;
+        msg.pumpstate=pumpstate;
+        sendiframe(msg);
+        document.getElementById('idPaid').textContent=paid;
+    }
+
 function navigateIframe(newsrc) {
     
     document.getElementById('useriframe').src = newsrc;
@@ -280,8 +298,9 @@ socketPy.onclose = function(event) {
 const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Din Pushbullet API-nyckel
 
 // Skapa en WebSocket-anslutning till Pushbullet
-// *** VÄNTA TILL SENARE const socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
-const socket = new WebSocket(`wss://stream...com`);
+// *** VÄNTA TILL SENARE 
+const socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
+// *** DEBUG const socket = new WebSocket(`wss://stream...com`);
 
 // Lyssna efter WebSocket-anslutningens öppnande
 socket.onopen = function(event) {
@@ -312,8 +331,8 @@ socket.onmessage = function(event) {
             logg(100, `ws body: ${l3}`);
             switch (l1) {
                 case "Pushbullet":
-                    logg(100, "ws Pushbullet");
-                    document.getElementById('tank4').click();
+                    changePaid(10);                    
+                    logg(80, "ws Pushbullet");
                     // document.getElementById('pulseDTR').click();
                     // audio = new Audio('mp3/pusbullet.mp3'); audio.play();
                     break;
@@ -322,8 +341,8 @@ socket.onmessage = function(event) {
                 // audio = new Audio('mp3/tapo.mp3'); audio.play();
                     break;
                 case "Swish":
-                    logg(100, "Swish");
-                    document.getElementById('tank1').click();
+                    changePaid(1);
+                    logg(80, "ws Swish");
                     // document.getElementById('pulseDTR').click();
                     // audio = new Audio('mp3/swish.mp3'); audio.play();
                     break;

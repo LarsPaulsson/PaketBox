@@ -313,7 +313,7 @@ function changeState(newstate) {
             if (price>10) price=10;
             // document.getElementById("idSwishImage").src = "img\\qr"+price+".png";
             // console.log(phone1, price);
-            generateSwishQrCode("idSwishImage", phone2, price, "S1", 200, 1);
+            generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);
             // newproduct(pump);
             newprice(price);
             sessiontimer=60;
@@ -322,9 +322,8 @@ function changeState(newstate) {
             changeTable(s4);
             newproduct(pump);
             // newprice(price);
-            sessiontimer=DELIVER_TIMEOUT;
-         
-            kilos=price/productnow.price;
+            sessiontimer=DELIVER_TIMEOUT;         
+            kilos=paid/productnow.price;
             pulsespaid=Math.round(kilos*productnow.pulses);
             // idPulses.textContent=pulsespaid.toFixed(0);
             startPump();
@@ -408,7 +407,7 @@ let lastpcount=0;
 function payment(n) {
        paid=n;
        newprice(paid);
-       changeState(STATE_DELIVER);
+       // changeState(STATE_DELIVER);
     }
 
     function nextproduct() {
@@ -440,6 +439,10 @@ function payment(n) {
             }
         break;
         case STATE_PAYING:
+            if (paid>0) {
+
+            changeState(STATE_DELIVER);
+            }
             if (sessiontimer<=0) {
             changeState(STATE_PAUSE);
             }
@@ -610,6 +613,10 @@ let upsessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
       // if (event.origin !== 'http://your-parent-domain.com') { return;}
       try {
         recobj = JSON.parse(event.data);
+        if ('paid' in recobj) {         // Betalning inkommen via Swish e dyl
+            paid=recobj.paid;
+            
+        }
         if ('productnumber' in recobj) {
             // idVara.textContent=recobj.productnumber;
         }

@@ -326,6 +326,8 @@ let spCounters=[0,0,0,0];
 let spAinputs=[0,0,0,0,0,0,0,0];
 let spDoutputs=[0,0,0,0,0,0,0,0];
 let spTest=0;
+let spAinputsText="";
+let spDoutputsText="";
 
     function ArduinoParse (v) {
         let s;
@@ -336,11 +338,13 @@ let spTest=0;
         s=v.substring(0,2);
         if (s=="#a") {
           p1=v.indexOf("a");
+          spAinputsText=v.substr(p1+1,8); 
           for (i=0; i<8; i++) {
                 s=v.substr(p1+1+i,1); 
                 spAinputs[i]=parseInt(s);
             }
           p1=v.indexOf("d");
+          spDoutputsText=v.substr(p1+1,8); 
           for (i=0; i<8; i++) {
                   s=v.substr(p1+1+i,1); 
                   spDoutputs[i]=parseInt(s);

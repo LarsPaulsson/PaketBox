@@ -81,6 +81,23 @@ th {
       text-align: center;
       line-height: 50px;   
 }
+.devbutt {
+    padding: 0px 0px;  /* Adjusts the space inside the button */
+    font-size: 16px;      /* Increases the size of the text inside */
+    width: 60px;   /* Set button width */
+    height:20px;   /* Set button height */
+      /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
+      margin: 0px 0px 0px 0px; /* Top, Right, Bottom, Left */
+      background-color: #400de7;
+      color: white;
+      border: black;
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      /* line-height: 50px; */   
+}
+
 
 .tankpre {
             /* position: absolute; */
@@ -106,23 +123,25 @@ th {
 </iframe>
 
 <table id="idDev" class="devtable">
-    <tr><td>State</td><td>Timer</td><td>Tillgängliga</td><td>Prodnr</td><td>Betalt</td>
-        <td>pulsespaid</td><td>Räknare</td><td>PumpState</td><td rowspan="2"><pre class="tankpre" id="output"></pre></td></tr>
+    <tr><td>A0-5</td><td>D0-3</td><td>Räknare</td><td>State</td>
+        <td>Pulser Bet</td><td>Pulser Lev</td><td>PumpStatus</td><td rowspan="2"><pre class="tankpre" id="output"></pre></td></tr>
     <tr>
-        <td><div id="idState">-</div></td>
-        <td><div id="idTimer">-</div></td>
-        <td><div id="idAvailable">-</div></td>
-        <td><div id="idProduct"></div></td>
-        <td><div id="idPaid"></div></td>
-        <td><div id="idPulses"></div></td>
-        <td><div id="idCounter" >-</div></td>
-  
+        <td><div id="idAvailable">------</div></td>
+        <td><div id="idPump">----</div>
+        <td><div id="idRawCount">-</div></td>
+        <td><button class="devbutt" onclick="startDev()">Start</button><div id="idState">-</div></td>
+
+        <td><div id="idPulsesPaid">0</div></td>
+
+        <td><div id="idCounter">0</div></td>
         <td><div id="idPumpState" >-</div></td>
         
         </tr>
 </table>
 
 <button class="bigbutt" style=" position:fixed; bottom: 0px; left: 0px;" id="idTopDebugButton" onclick="setDebugLine(debugline+1)">Felsök Top</button>
+
+
 
 <script src="js/SerialPort.js"></script>
 <script src="js/Util.js"></script>
@@ -140,7 +159,7 @@ const TIMEOUT=30;
 const TIMEPAUSEPAGE=5;
 let pumpstate=0;
 let pumptimer=0;
-let pump=0;
+let pump=-1;
 let pulsespaid=0;
 let pulsestart=0;
 let pcount=0;
@@ -160,25 +179,46 @@ function setDebugLine(dm) {
         debugline=dm;
         if (debugline>0) {
             idDev.style.display="inline";
-            debuglevel=100;
+            debuglevel=80;
         }
         else idDev.style.display="none";
     }
 
-    async function startPump() {
-//        logg (10,"startPump="+pump);
-       await setDigital(pump,1);
+    function startDev() {
+        pump=0;
+        changePulsesPaid(10);
+        startPump();
+    }
+
+    function setNextPump(v) {
+        if (v<0) v=-1;
+        if (v>3) v=-1;
+        setDigital(pump,0);
+        pump=v;
+        setDigital(0, pump==0);
+        setDigital(1, pump==1);
+        setDigital(2, pump==2);
+        setDigital(3, pump==3);
+    }
+
+    function startPump() {
+       setDigital(pump,1);
        logg (10,"startPump="+pump);
        pumpstate=1;
        pulsestart=spCounters[0];
     }
 
     
-    async function stopPump() {
+    function stopPump() {
         paid=0;
-        await setDigital(pump,0);
+        setDigital(pump,0);
         d6=0;
-        await setDigital(6,d6);
+        setDigital(6,d6);
+    }
+
+    function changePulsesPaid(p) {
+        pulsespaid=p;
+        document.getElementById('idPulsesPaid').textContent=pulsespaid;
     }
 
     function changePaid(p) {
@@ -202,12 +242,27 @@ function navigateIframe(newsrc) {
     function execCommand(msg) {
       logg(10, "command="+msg.command);
       switch (msg.command) {
+        /*
+      case "changeState":
+            sessionstate=msg.state;
+            idState.textContent=sessionstate;
+            if (msg.state==STATE_STARTING) {    // Session started
+                logg(1,"Session Start")
+                setNextPump(-1);
+                changePulsesPaid(msg.pulsespaid);
+            }
+            if (msg.state==STATE_PAUSE) {
+                logg(1,"Session Connect")
+                setNextPump(-1);
+                changePulsesPaid(msg.pulsespaid);
+            }
+      break; */
       case "startPump":
         
-      pump=msg.productnumber;
-      idProduct.textContent=pump;
-      pulsespaid=msg.pulsespaid;
-      startPump();
+            pump=msg.productnumber;
+      //idProduct.textContent=pump;
+            changePulsesPaid(msg.pulsespaid);
+            startPump();
       
       break;
       case "stopPump":  stopPump();  break;
@@ -234,7 +289,7 @@ async function timerStuff() {
       stopPump();
   }
   idPumpState.textContent=pumpstate;
-  sendtoPort("$S00");
+  sendtoPort("$s00");
 }
 
 logglines=0;
@@ -257,11 +312,15 @@ logglines=0;
       if (s=="#a") {
         ArduinoParse(v);
         // diginp=v.substring(2,6);
-        idAvailable.textContent=spAinputs[0]+spAinputs[1]+spAinputs[4]+spAinputs[5];
+        // idAvailable.textContent=String(spAinputs[0])+spAinputs[1]+spAinputs[2]+spAinputs[3]+spAinputs[4]+spAinputs[5];
+        idAvailable.textContent=spAinputsText;
+        // idPump.textContent=String(spDoutputs[0])+spDoutputs[1]+spDoutputs[2]+spDoutputs[3]+spDoutputs[4]+spDoutputs[5];
+        idPump.textContent=spDoutputsText;
+        idRawCount.textContent=spCounters[0];
         pcount=spCounters[0]-pulsestart;
         idCounter.textContent=pcount;
  
-        if (pcount > pulsespaid) {
+        if (pcount >= pulsespaid) {
             stopPump();
             pumpstate=2;
         }
@@ -344,7 +403,7 @@ socket.onmessage = function(event) {
             logg(100, `ws body: ${l3}`);
             switch (l1) {
                 case "Pushbullet":
-                    changePaid(10);                    
+                    changePaid(20);                    
                     logg(80, "ws Pushbullet");
                     // document.getElementById('pulseDTR').click();
                     // audio = new Audio('mp3/pusbullet.mp3'); audio.play();
@@ -423,32 +482,23 @@ async function doLucka(nr, button) {
       try {
         recobj = JSON.parse(event.data);
 
-        if ('productnumber' in recobj) {
+/*        if ('productnumber' in recobj) {
            pump=recobj.productnumber;
            sessionobj.productnumber=recobj.productnumber;
            productindex=pump;
            productnow=prods[productindex];
-           idProduct.textContent=recobj.productnumber;
         }
         if ('pulsespaid' in recobj) {
-          // sessionobj.price=recobj.price;
-          // p=recobj.price;
-          // kiloprice=prods[recobj.productnumber].price;
-          // kilos=p/kiloprice;
-          // pulses=Math.round(kilos*prods[recobj.productnumber].pulses);
           pulses=recobj.pulsespaid;
           sessionobj.pulsespaid=pulses;        
-          idPulses.textContent=pulses.toFixed(0);
-          // logg(10,"paid");
+          idPulsesPaid.textContent=pulses.toFixed(0);
         }
-
+*/
         if ('command' in recobj) {
           // changeState(recobj.command);
            execCommand(recobj);
         }
 
-        // const obj = JSON.parse('{"name": "Alice"}');
-        // console.log(obj);
       } catch (error) {
         logg(7,'Error parsing JSON:'+error.message);
       }

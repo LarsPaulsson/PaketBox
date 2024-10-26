@@ -216,7 +216,7 @@ window.onload = function() {
     '-',
     // '<img id="idSwishImage" src="img\\qr1.png" width=150 height=150 >',
     '<div class="center-container" id="idSwishImage"></div>',
-    '<button class="bigbutt" id="selbutt" onclick="payment(10)">Hoppa över</button>'
+    '<button class="bigbutt" id="selbutt" onclick="payment(price)">Hoppa över</button>'
     ];
     s4=[
     "Hämta",
@@ -289,8 +289,15 @@ window.onload = function() {
 function changeState(newstate) {
       
         logg(100, "changeState="+newstate);
+/*        let msg={};
+        msg.command="changeState";
+        msg.fromstate=sessionstate;
+        msg.state=newstate;
+        msg.productnumber=productindex;
+        msg.pulsespaid=pulsespaid;
+        sendup(msg); */
         sessionstate=newstate;
-                
+        
         switch (newstate) {
         case STATE_PAUSE:
             paid=0;
@@ -298,11 +305,17 @@ function changeState(newstate) {
             changeTable(s0);
             newproduct(1);
             sessiontimer=TIMEPAUSEPAGE;
-
             break;
         case STATE_STARTING:
+            paid=0;
+            pulsespaid=0;
             changeTable(s1);
             sessiontimer=60;
+/*            msg.command="changeState";
+            msg.state=newstate;
+            msg.productnumber=productindex;
+            msg.pulsespaid=pulsespaid;
+            sendup(msg); */
             break;
         case STATE_SELECTING:
             changeTable(s2);
@@ -376,10 +389,10 @@ function select(newsel) {
 
     sessiontimer=60;
     switch (newsel) {
-    case 0: msg.command=STATE_PAYING;
-            msg.productnumber=productindex;
-            msg.price=price;
-            changeState(STATE_PAYING);
+    case 0: changeState(STATE_PAYING);
+            // msg.command=STATE_PAYING;
+            // msg.productnumber=productindex;
+            // msg.price=price;
             // sendup(msg); break;
     case -1: newproduct(productindex-1); break;
     case 1: newproduct(productindex+1); break;
@@ -443,17 +456,16 @@ function payment(n) {
         break;
         case STATE_PAYING:
             if (paid>0) {
-
-            changeState(STATE_DELIVER);
+                changeState(STATE_DELIVER);
             }
             if (sessiontimer<=0) {
-            changeState(STATE_PAUSE);
+                changeState(STATE_PAUSE);
             }
         break;
         case STATE_DELIVER:
             if (sessiontimer>0) {
                 // Omvandla pcount till kr
-                if (pcount!=lastpcount) {sessiontimer=DELIVER_TIMEOUT; }
+                if (pcount!=lastpcount) {sessiontimer=DELIVER_TIMEOUT; }    // Om pulser så förläng timeout
                 kilos=pcount/productnow.pulses;
                 pdeliv=kilos*productnow.price;
                 sessionobj.paydelivered=pdeliv.toFixed(2);

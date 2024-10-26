@@ -19,7 +19,7 @@
         ]);
     }
 
-    const debuglevel=89;
+    let debuglevel=89;
     let lockcounter=0;
 
     function logg (l, v) {

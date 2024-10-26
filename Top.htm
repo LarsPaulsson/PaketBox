@@ -158,7 +158,10 @@ function setDebugLine(dm) {
         if (dm<0) dm=0;
         if (dm>1) dm=0;
         debugline=dm;
-        if (debugline>0) idDev.style.display="inline";
+        if (debugline>0) {
+            idDev.style.display="inline";
+            debuglevel=100;
+        }
         else idDev.style.display="none";
     }
 

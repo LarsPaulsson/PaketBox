@@ -25,7 +25,6 @@
     color: white;
     /* background-color: #2d5e17; */
     background-color: rgba(0, 64, 0, 0.8);
-/*    background-color: rgba(255, 255, 255, 1); */
     position: relative;
 
     margin: 0 auto; /* Center the table itself */
@@ -85,11 +84,11 @@ th {
 
 .devbutt {
     padding: 0px 0px;  /* Adjusts the space inside the button */
-    font-size: 20px;      /* Increases the size of the text inside */
-    width: 100px;   /* Set button width */
-    height:100px;   /* Set button height */
+    font-size: 16px;      /* Increases the size of the text inside */
+    width: 200px;   /* Set button width */
+    height:30px;   /* Set button height */
       /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-      margin: 0px 0px 0px 0px; /* Top, Right, Bottom, Left */
+      margin: 1px 1px 1px 1px; /* Top, Right, Bottom, Left */
       background-color: #400de7;
       color: white;
       border: black;
@@ -110,14 +109,6 @@ th {
             border: 1px solid #ddd;
             padding: 10px;
 }
-.center-container {
-            display: flex;
-            justify-content: center; /* Horizontally center */
-            align-items: center;     /* Vertically center */
-            /* height: 100vh; */    /* 100% of the viewport height */
-            background-color: white;
-            padding: 10px;
-        }
 </style>
 
 <table id="utable" class="usertable">
@@ -131,7 +122,6 @@ th {
     <tr><td class="devline"><div id="line8"></div></td></tr>
 </table>
 
-<script src="js/qrcode.js"></script>
 <script src="js/Util.js"></script>
 <script>
 
@@ -211,11 +201,10 @@ window.onload = function() {
     ];
     s3=[
     "Swisha",
-    '',
-    '',
     '-',
-    // '<img id="idSwishImage" src="img\\qr1.png" width=150 height=150 >',
-    '<div class="center-container" id="idSwishImage"></div>',
+    'Scanna och swisha enligt QR koden',
+    '-',
+    '<img id="idSwishImage" src="img\\qr1.png" width=150 height=150 >',
     '<button class="bigbutt" id="selbutt" onclick="payment(10)">Hoppa över</button>'
     ];
     s4=[
@@ -235,8 +224,9 @@ window.onload = function() {
     'Välkommen åter'
     ];
     debuglines=[
-    '<button class="devbutt" style="position: fixed; bottom: 0px; left: 100px;" id="upbutt" onclick="setDebugLine(debugline+1)">Felsök UI</button>',
-    '<button class="devbutt" style="position: fixed; bottom: 0px; left: 100px;" id="upbutt" onclick="setDebugLine(debugline+1)">Felsök UI</button>',
+    '<button class="devbutt" id="upbutt" onclick="setDebugLine(1)">felsök 1</button>',
+    '<button class="devbutt" id="upbutt" onclick="setDebugLine(2)">felsök 2</button>',
+    '<button class="devbutt" id="upbutt" onclick="setDebugLine(0)">felsök 0</button>'
     ]; 
 
     let price=5;
@@ -257,16 +247,12 @@ window.onload = function() {
 
     
     function setDebugLine(dm) {
- /*       if (dm<=0 || dm>=debuglines.length) {
+        if (dm<=0 || dm>=debuglines.length) {
             debugline=0;
         } else {
             debugline++;
             if (debugline<=0 || debugline>=debuglines.length) debugline=0;
         }
-*/  
-        if (dm<0) dm=0;
-        if (dm>1) dm=0;
-        debugline=dm;
         line8.innerHTML=debuglines[debugline];
         if (debugline>0) line7.innerHTML=loggstring;
         else line7.innerHTML="-";
@@ -279,7 +265,7 @@ window.onload = function() {
 
     function logg(v,s) {
         if (loggstring.length>200) loggstring="";
-        loggstring +="-----"+v+" "+s;
+        loggstring +="//"+v+" "+s;
         if (debugline>0) line7.innerHTML=loggstring;
         // console.log(v+", logg="+s);
 
@@ -293,8 +279,6 @@ function changeState(newstate) {
                 
         switch (newstate) {
         case STATE_PAUSE:
-            paid=0;
-            pulsespaid=0;
             changeTable(s0);
             newproduct(1);
             sessiontimer=TIMEPAUSEPAGE;
@@ -313,19 +297,17 @@ function changeState(newstate) {
             changeTable(s3);
             if (price<1) price=1;
             if (price>10) price=10;
-            // document.getElementById("idSwishImage").src = "img\\qr"+price+".png";
-            // console.log(phone1, price);
-            generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);
-            // newproduct(pump);
-            newprice(price);
+            document.getElementById("idSwishImage").src = "img\\qr"+price+".png";
+            newproduct(pump);
             sessiontimer=60;
             break;
         case STATE_DELIVER: 
             changeTable(s4);
             newproduct(pump);
             // newprice(price);
-            sessiontimer=DELIVER_TIMEOUT;         
-            kilos=paid/productnow.price;
+            sessiontimer=DELIVER_TIMEOUT;
+         
+            kilos=price/productnow.price;
             pulsespaid=Math.round(kilos*productnow.pulses);
             // idPulses.textContent=pulsespaid.toFixed(0);
             startPump();
@@ -335,7 +317,6 @@ function changeState(newstate) {
             newproduct(pump);
             line6.textContent=sessionresult;
             sessiontimer=20;
-
         break;
        /* case MSG_LOADED:
             // logg(10, "MSG_LOADED");
@@ -410,7 +391,7 @@ let lastpcount=0;
 function payment(n) {
        paid=n;
        newprice(paid);
-       // changeState(STATE_DELIVER);
+       changeState(STATE_DELIVER);
     }
 
     function nextproduct() {
@@ -442,10 +423,6 @@ function payment(n) {
             }
         break;
         case STATE_PAYING:
-            if (paid>0) {
-
-            changeState(STATE_DELIVER);
-            }
             if (sessiontimer<=0) {
             changeState(STATE_PAUSE);
             }
@@ -616,10 +593,6 @@ let upsessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
       // if (event.origin !== 'http://your-parent-domain.com') { return;}
       try {
         recobj = JSON.parse(event.data);
-        if ('paid' in recobj) {         // Betalning inkommen via Swish e dyl
-            paid=recobj.paid;
-            
-        }
         if ('productnumber' in recobj) {
             // idVara.textContent=recobj.productnumber;
         }

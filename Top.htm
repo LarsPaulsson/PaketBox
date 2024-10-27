@@ -176,13 +176,29 @@ let counter0=0;
 let debugline=0;
 function setDebugLine(dm) {
         if (dm<0) dm=0;
-        if (dm>1) dm=0;
+        if (dm>3) dm=0;
         debugline=dm;
-        if (debugline>0) {
+        switch(debugline) {
+        case 1:
             idDev.style.display="inline";
             debuglevel=80;
+        break;
+        case 2:
+            idDev.style.display="none";
+            debuglevel=80;
+            navigateIframe("iframeqr.htm");
+        break;
+        case 3:
+            idDev.style.display="inline";
+            debuglevel=80;
+            navigateIframe("iframeControllinoMini.htm");
+        break;
+        default:
+            idDev.style.display="none";
+            debuglevel=80;
+            navigateIframe("iframePumps.htm");
         }
-        else idDev.style.display="none";
+               
     }
 
     function startDev() {
@@ -267,7 +283,10 @@ function navigateIframe(newsrc) {
       
       break;
       case "stopPump":  stopPump();  break;
-      case "": break;
+      case "setDigital": setDigital(msg.pinnumber,  msg.pinvalue);
+      break;
+      case "": 
+      break;
       default: break;
       }
     }
@@ -321,14 +340,17 @@ logglines=0;
         pcount=spCounters[0]-pulsestart;
         idCounter.textContent=pcount;
  
-        if (pcount >= pulsespaid) {
+        if (pumpstate>0 && pcount >= pulsespaid) {
             stopPump();
             pumpstate=2;
         }
+        // Skicka info för ev animering av tankning
         msg.command="Delivery";
         msg.pcount=pcount;
         msg.pumpstate=pumpstate;
+        msg.io=v;     // rådata
         sendiframe(msg);
+
       }
       // logg(1,"HERE:"+s);
     }

@@ -19,28 +19,30 @@
   <input type="text" id="recid" name="recname" placeholder="received here">
   <br>
 
-  
-  <span id="a0">A0</span><button class="tbutt" id="sd01">D0 on</button><span id="d0">0</span><button class="tbutt" id="sd00">D0 off</button>
-  <button class="tbutt" id="buttStatus">Status</button><input type="text" id="counter4id"><br>
-  <span id="a1">A1</span><button class="tbutt" id="sd11">D1 on</button><span id="d1">0</span><button class="tbutt" id="sd10">D1 off</button>
-  <button class="tbutt" id="butt2">-</button><input type="text" id="counterxxid"><br>
-  <span id="a2">A2</span><button class="tbutt" id="sd21">D2 on</button><span id="d2">0</span><button class="tbutt" id="sd20">D2 off</button>
-  <button class="tbutt" id="butt3">-</button><input type="text" id="counter2id"><br>
-  <span id="a3">A3</span><button class="tbutt" id="sd31">D3 on</button><span id="d3">0</span><button class="tbutt" id="sd30">D3 off</button>
-  <button class="tbutt" id="butt4">-</button><input type="text" id="counter3id"><br>
-  <span id="a4">A4</span><button class="tbutt" id="sd41">D4 on</button><span id="d4">0</span><button class="tbutt" id="sd40">D4 off</button>
-  <button class="tbutt" id="sp40">D4 pulse</button><input type="text" id="counterxxxid"><br>
-  <span id="a5">A5</span><button class="tbutt" id="sd51">D5 on</button><span id="d5">0</span><button class="tbutt" id="sd50">D5 off</button>
-  <button class="tbutt" id="butt4">-</button><input type="text" id="counterxyid"><br>
-  <span id="a6">A6</span><button class="tbutt" id="sd61">D6 on</button><span id="d6">0</span><button class="tbutt" id="sd60">D6 off</button>
-  <button class="tbutt" id="butt4">-</button><input type="text" id="counter0id"><br>
-  <span id="a7">A7</span><button class="tbutt" id="sd71">D7 on</button><span id="d7">0</span><button class="tbutt" id="sd70">D7 off</button>
-  <button class="tbutt" id="hatch1">D7 on+D4 pulse</button><input type="text" id="counter1id"><br>
-  <span id="ax">--</span><button class="tbutt" id="sda1">ALL on</button><span id="dx">-</span><button class="tbutt" id="sda0">ALL off</button><br>
  
-  <pre class="outputpre" id="output"></pre>
+
+  <span id="a0">A0</span><button class="tbutt" onclick="s(0,1)">D0 on</button><span id="d0">0</span><button class="tbutt" onclick="s(0,0)">D0 off</button>
+  <input type="text" id="counter0id"><br>
+  <span id="a1">A1</span><button class="tbutt" onclick="s(1,1)">D1 on</button><span id="d1">0</span><button class="tbutt" onclick="s(1,0)">D1 off</button>
+  <input type="text" id="counter1id"><br>
+  <span id="a2">A2</span><button class="tbutt" onclick="s(2,1)">D2 on</button><span id="d2">0</span><button class="tbutt" onclick="s(2,0)">D2 off</button>
+  <input type="text" id="counter2id"><br>
+  <span id="a3">A3</span><button class="tbutt" onclick="s(3,1)">D3 on</button><span id="d3">0</span><button class="tbutt" onclick="s(3,0)">D3 off</button>
+  <input type="text" id="counter3id"><br>
+  <span id="a4">A4</span><button class="tbutt" onclick="s(4,1)">D4 on</button><span id="d4">0</span><button class="tbutt" onclick="s(4,0)">D4 off</button>
+  <input type="text" id="counter4id"><br>
+  <span id="a5">A5</span><button class="tbutt" onclick="s(5,1)">D5 on</button><span id="d5">0</span><button class="tbutt" onclick="s(5,0)">D5 off</button>
+  <input type="text" id="counter5id"><br>
+  <span id="a6">A6</span><button class="tbutt" onclick="s(6,1)">D6 on</button><span id="d6">0</span><button class="tbutt" onclick="s(6,0)">D6 off</button>
+  <input type="text" id="counter6id"><br>
+  <span id="a7">A7</span><button class="tbutt" onclick="s(7,1)">D7 on</button><span id="d7">0</span><button class="tbutt" onclick="s(7,0)">D7 off</button>
+  <input type="text" id="counter7id"><br>
+  
+    <pre class="outputpre" id="output"></pre>
 
   <script src="js/SerialPort.js"></script>
+  <script src="js/Util.js"></script>
+
   <script>
 
 /*    function showBuffer (v) {
@@ -53,6 +55,7 @@
     }
 
     function recCallback (v) {
+      // logg(10,"recCallback:"+v);
       recid.value=v;
       ArduinoParse(v);
       counter0id.value=spCounters[0];
@@ -102,16 +105,25 @@
       }*/
     }
 
-    document.getElementById('sd01').addEventListener('click', setD01 ); document.getElementById('sd00').addEventListener('click', setD00 );
-    document.getElementById('sd11').addEventListener('click', setD11 ); document.getElementById('sd10').addEventListener('click', setD10 );
-    document.getElementById('sd21').addEventListener('click', setD21 ); document.getElementById('sd20').addEventListener('click', setD20 );
-    document.getElementById('sd31').addEventListener('click', setD31 ); document.getElementById('sd30').addEventListener('click', setD30 );
-    document.getElementById('sd41').addEventListener('click', setD41 ); document.getElementById('sd40').addEventListener('click', setD40 );
-    document.getElementById('sd51').addEventListener('click', setD51 ); document.getElementById('sd50').addEventListener('click', setD50 );
-    document.getElementById('sd61').addEventListener('click', setD61 ); document.getElementById('sd60').addEventListener('click', setD60 );
-    document.getElementById('sd71').addEventListener('click', async () => {setDigital(7,1) });
+    function s(n,v) {
+        let msg={};
+        msg.command="setDigital";
+        msg.pinnumber=n;
+        msg.pinvalue=v;
+        sendup(msg);
+    }
 
-    document.getElementById('sd70').addEventListener('click', async () => {setDigital(7,0) });
+/*
+    document.getElementById('sd01').addEventListener('click', s(0,1) ); document.getElementById('sd00').addEventListener('click', s(0,0) );
+    document.getElementById('sd11').addEventListener('click', s(1,1) ); document.getElementById('sd10').addEventListener('click', s(1,0) );
+    document.getElementById('sd21').addEventListener('click', s(2,1) ); document.getElementById('sd20').addEventListener('click', s(2,0) );
+
+    document.getElementById('sd31').addEventListener('click', s(3,1) ); document.getElementById('sd30').addEventListener('click', s(3,0) );
+    document.getElementById('sd41').addEventListener('click', s(4,1) ); document.getElementById('sd40').addEventListener('click', s(4,0) );
+    document.getElementById('sd51').addEventListener('click', s(5,1) ); document.getElementById('sd50').addEventListener('click', s(5,0) );
+    document.getElementById('sd61').addEventListener('click', s(6,1) ); document.getElementById('sd60').addEventListener('click', s(6,0) );
+    document.getElementById('sd71').addEventListener('click', s(7,1) ); document.getElementById('sd70').addEventListener('click', s(7,0) );
+
     document.getElementById('sda1').addEventListener('click', setDa1 ); document.getElementById('sda0').addEventListener('click', setDa0 );
 
     document.getElementById('buttStatus').addEventListener('click',  async () => {
@@ -127,7 +139,7 @@
     });
 
     document.getElementById('hatch1').addEventListener('click',  async () => { openHatch(1); });
- 
+*/ 
     document.getElementById('connect').addEventListener('click', connectPort );
     document.getElementById('disconnect').addEventListener('click', disconnectPort );
     document.getElementById('send').addEventListener('click', async () => {
@@ -142,8 +154,22 @@
         }
     });
 
+   // Listen for messages from the parent page
+   window.addEventListener('message', function(event) {
+      // Check the origin of the message for security reasons
+      // if (event.origin !== 'http://your-parent-domain.com') { return;}
+      try {
+        recobj = JSON.parse(event.data);
+        if ('io' in recobj) {         // io inkommen
+            recCallback(recobj.io);
+        }
+      } catch (error) {
+        console.log('Error parsing JSON:'+error.message);
+      }
+      // event.source.postMessage("Ok", event.origin); // Return channel
+  });
 
-readLoop();
+// readLoop();
 
   </script>
 </body>

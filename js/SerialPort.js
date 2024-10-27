@@ -218,7 +218,7 @@
         sendtoPort(s);
 
     }
-
+/*
     function setD00() { setDigital(0,0); }
     function setD01() { setDigital(0,1); }
     function setD10() { setDigital(1,0); }
@@ -255,7 +255,7 @@
             await delay(100);
         } 
     }
-
+*/
     async function openHatch(hatchno) { 
         setDigital(7,1);
         await delay(2000);

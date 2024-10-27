@@ -21,7 +21,7 @@
     }
 .usertable {
     border-collapse: collapse;
-    font-size: 80px;
+    font-size: 60px;
     color: white;
     /* background-color: #2d5e17; */
     background-color: rgba(0, 64, 0, 0.8);
@@ -305,7 +305,7 @@ function changeState(newstate) {
             paid=0;
             pulsespaid=0;
             changeTable(s0);
-            newproduct(1);
+            goproduct(0,1);
             sessiontimer=TIMEPAUSEPAGE;
             break;
         case STATE_STARTING:
@@ -321,7 +321,9 @@ function changeState(newstate) {
             break;
         case STATE_SELECTING:
             changeTable(s2);
-            newproduct(pump);
+            // if (productnumber<1) goproduct(0,0);
+
+            goproduct(0,0);
             sessiontimer=60;
         break;
         case STATE_PAYING:
@@ -331,8 +333,8 @@ function changeState(newstate) {
             // document.getElementById("idSwishImage").src = "img\\qr"+price+".png";
             // console.log(phone1, price);
             generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);
-            // newproduct(pump);
-            newprice(price);
+            newproduct(pump);
+            //newprice(price);
             sessiontimer=60;
             break;
         case STATE_DELIVER: 
@@ -342,7 +344,7 @@ function changeState(newstate) {
             sessiontimer=DELIVER_TIMEOUT;         
             kilos=paid/productnow.price;
             pulsespaid=Math.round(kilos*productnow.pulses);
-            // idPulses.textContent=pulsespaid.toFixed(0);
+            lastpcount=0;
             startPump();
         break;
         case STATE_FINISH:
@@ -361,12 +363,16 @@ function changeState(newstate) {
       }
 
 function newproduct(p) {
+    let i;
     if (p<0) p=prods.length-1;
     if (p>=prods.length) p=0;
+
     productindex=p;
     pump=p;
-   
     productnow=prods[productindex];
+    let productnumber=productnow.number;
+    if (productnumber>0) utable.style.visibility = "visible";
+    else utable.style.visibility = "hidden";
     // idProduct.textContent=productnow.number;
     line2.textContent="Pump "+productnow.number+" har "+productnow.volume+" kg "+productnow.name+" "+productnow.price+" kr/kg";
     document.body.style.backgroundImage = 'url('+productnow.image+')';
@@ -396,8 +402,8 @@ function select(newsel) {
             // msg.productnumber=productindex;
             // msg.price=price;
             // sendup(msg); break;
-    case -1: newproduct(productindex-1); break;
-    case 1: newproduct(productindex+1); break;
+    case -1: goproduct(-1,0); break;
+    case 1: goproduct(1,0); break;
     case -2: newprice(price-1); break;
     case 2: newprice(price+1); break;
     }
@@ -428,8 +434,18 @@ function payment(n) {
        // changeState(STATE_DELIVER);
     }
 
-    function nextproduct() {
-       newproduct(productindex+1);
+    function goproduct(diff, showall) {
+        let p=productindex;
+        if (diff==0) {p=-1; diff=1;}
+        for (i=0; i<prods.length; i++) {
+            p+=diff;
+            if (p<0) p=prods.length-1;
+            if (p>=prods.length) p=0;
+            if (prods[p].number>0 || showall) {
+                newproduct(p);
+                break;
+            }
+       }
     }
 
       function timerState(cmd) {
@@ -442,7 +458,7 @@ function payment(n) {
            if (sessiontimer<=0) {
               // msg.command=MSG_NEXT;
               // sendiframe(msg);
-              nextproduct();
+              goproduct(1,1);
               sessiontimer=TIMEPAUSEPAGE;
             }
         break;
@@ -467,7 +483,15 @@ function payment(n) {
         case STATE_DELIVER:
             if (sessiontimer>0) {
                 // Omvandla pcount till kr
-                if (pcount!=lastpcount) {sessiontimer=DELIVER_TIMEOUT; }    // Om pulser så förläng timeout
+                if (pcount!=lastpcount) {
+                    lastpcount=pcount;
+                    logg(10,"pling1");
+                    sessiontimer=DELIVER_TIMEOUT;
+                    playSound("mp3/pling.mp4");
+                    // const audio = new Audio(fname);
+                    // audio.play();
+
+                }    // Om pulser så förläng timeout
                 kilos=pcount/productnow.pulses;
                 pdeliv=kilos*productnow.price;
                 sessionobj.paydelivered=pdeliv.toFixed(2);
@@ -658,8 +682,8 @@ let upsessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
   });
 
   
-  function playSound() {
-            const audio = new Audio('mp3/file.mp3');
+  function playSound(fname) {
+            const audio = new Audio(fname);
             audio.play();
   }
 

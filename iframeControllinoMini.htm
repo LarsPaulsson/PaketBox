@@ -8,19 +8,12 @@
 </head>
 <body>
 
-    <a href="index.html" class="navbutt" >Startsida</a>
-    <button class="connectbutt" id="connect">Manual Connect</button>
+  <center><h2>Controllino Test.    VARNING: Tänk på skarpa anslutningar kan aktiveras!</h2></center>
 
-    <center><h2>Controllino Test.    VARNING: Tänk på skarpa anslutningar kan aktiveras!</h2></center>
-
-  <button id="disconnect">Disconnect</button>
   <input type="text" id="sendid" name="sendname" placeholder="enter message here">
   <button id="send">Send</button>
   <input type="text" id="recid" name="recname" placeholder="received here">
   <br>
-
- 
-
   <span id="a0">A0</span><button class="tbutt" onclick="s(0,1)">D0 on</button><span id="d0">0</span><button class="tbutt" onclick="s(0,0)">D0 off</button>
   <input type="text" id="counter0id"><br>
   <span id="a1">A1</span><button class="tbutt" onclick="s(1,1)">D1 on</button><span id="d1">0</span><button class="tbutt" onclick="s(1,0)">D1 off</button>
@@ -38,7 +31,7 @@
   <span id="a7">A7</span><button class="tbutt" onclick="s(7,1)">D7 on</button><span id="d7">0</span><button class="tbutt" onclick="s(7,0)">D7 off</button>
   <input type="text" id="counter7id"><br>
   
-    <pre class="outputpre" id="output"></pre>
+  <pre class="outputpre" id="output"></pre>
 
   <script src="js/SerialPort.js"></script>
   <script src="js/Util.js"></script>

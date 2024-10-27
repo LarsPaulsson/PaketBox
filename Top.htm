@@ -176,19 +176,19 @@ let counter0=0;
 let debugline=0;
 function setDebugLine(dm) {
         if (dm<0) dm=0;
-        if (dm>3) dm=0;
+        if (dm>2) dm=0;
         debugline=dm;
         switch(debugline) {
         case 1:
             idDev.style.display="inline";
             debuglevel=80;
         break;
-        case 2:
+/*        case 2:
             idDev.style.display="none";
             debuglevel=80;
             navigateIframe("iframeqr.htm");
-        break;
-        case 3:
+        break; */
+        case 2:
             idDev.style.display="inline";
             debuglevel=80;
             navigateIframe("iframeControllinoMini.htm");

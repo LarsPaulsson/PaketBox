@@ -611,22 +611,7 @@ socketPy.onclose = function(event) {
 };
 */
 
-
-async function doTanka(nr, button) {
-    // socketPy.send("$D01\r\n");
-    setDigital(nr-1,1);
-    // try {const audio = new Audio('mp3/sound3.mp3'); audio.play(); } catch{};
-    for (i=0; i<60; i++) {
-    document.getElementById(button).style.backgroundColor = 'red';
-    await new Promise(resolve => setTimeout(resolve, 500));
-    sendReceivePort("$S00");
-    document.getElementById(button).style.backgroundColor = 'green';
-    await new Promise(resolve => setTimeout(resolve, 500));
-    sendReceivePort("$S00");
-    }
-    setDigital(nr-1,0);
-}
-
+/*
 async function doLucka(nr, button) {
 
     try {const audio = new Audio('mp3/sound4.mp3'); audio.play(); } catch{};
@@ -643,6 +628,7 @@ async function doLucka(nr, button) {
 
     setDigital(7,0);
 }
+*/
 
 // document.getElementById('connect').addEventListener('click', connectPort );
 
@@ -655,10 +641,8 @@ let upsessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
       // if (event.origin !== 'http://your-parent-domain.com') { return;}
       try {
         recobj = JSON.parse(event.data);
-        if ('paid' in recobj) {         // Betalning inkommen via Swish e dyl
-            paid=recobj.paid;
-            
-        }
+
+        // console.log("iframeMessage"+event.data);
         if ('productnumber' in recobj) {
             // idVara.textContent=recobj.productnumber;
         }
@@ -670,7 +654,22 @@ let upsessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
         }
         if ('loggline' in recobj) {
             logg(100, "Top:"+recobj.loggline);
-        }       
+        }  
+        if ('paid' in recobj) {         // Betalning inkommen via Swish e dyl
+            paid=recobj.paid;
+            price=paid;
+            // console.log("paid="+paid);
+            if ('swishmsg' in recobj) {
+                
+            }
+            if ('forceproduct' in recobj) {
+                // console.log ("forceproduct:+recobj.forceproduct")
+                newproduct(recobj.forceproduct);
+            }
+            
+            changeState(STATE_DELIVER);
+            
+        }     
 //        if ('paydelivered' in recobj) { idDelivered.textContent=recobj.paydelivered; }
 //        if ('price' in recobj)  { idPaid.textContent=recobj.price; }
         
@@ -684,9 +683,11 @@ let upsessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
 
   
   function playSound(fname) {
+    try {
             const audio = new Audio(fname);
             audio.play();
-  }
+    } catch {error};
+   }
 
 </script>
 </body>

@@ -238,16 +238,25 @@ function setDebugLine(dm) {
         document.getElementById('idPulsesPaid').textContent=pulsespaid;
     }
 
-    function changePaid(p) {
+    function changePaid(p,m) {
         paid=p;
+        let msg={};
         // account=p;
+        let letter=m.substr(0,1);
+        if (letter=="L") doLucka(1,"");
+        if (letter=="T") {
+            msg.forceproduct=0;
+        }
+
         msg.command="Paid";
 //        msg.account=account;
         msg.paid=paid;
         msg.pcount=pcount;
         msg.pumpstate=pumpstate;
+        msg.swishmsg=m;
         sendiframe(msg);
-        document.getElementById('idPaid').textContent=paid;
+
+       // document.getElementById('idPaid').textContent=paid;
     }
 
 function navigateIframe(newsrc) {
@@ -421,25 +430,39 @@ socket.onmessage = function(event) {
              l3=`${data.push.body}`;
             }
             catch {    }
-            logg(100, `ws application_name: ${l1}`);
-            logg(100, `ws title: ${l2}`);
-            logg(100, `ws body: ${l3}`);
+
+            logg(80, `ws application_name: ${l1}`); // !:80 ws application_name: Swish
+            logg(80, `ws title: ${l2}`);            // !:80 ws title: Ny betalning
+            logg(80, `ws body: ${l3}`);             // !:80 ws body: Pålsson Viktor har swishat dig 5 kr. \n  “S1”
             switch (l1) {
                 case "Pushbullet":
-                    changePaid(20);                    
+                    changePaid(20,"T1 Test");                    
                     logg(80, "ws Pushbullet");
+                    // l3='Pålsson Viktor har swishat dig 5 kr.\n “S1”'
+                break;
+
+                case "Swish":
+                    // if (l2=="Ny betalning")
+                    // Efternamn förnamn har swishat dig 5 kr. \n  “S1”
+                    // OBS det är INT " runt meddelandet, liknande! logg(1,'“' '”' 
+
+                    let p1=l3.indexOf("dig "); logg(1,"p1="+p1);
+                    let p2=l3.indexOf("kr.",p1+4); logg(2,"p2="+p2);
+                    let s1=l3.substring(p1+4,p2); logg(3,"s1="+s1);
+                    let kr=parseInt(s1);
+                    p1=l3.indexOf(`“`,p2); logg(1,"p1="+p1);
+                    p2=l3.indexOf('”',p1+1); logg(2,"p2="+p2);
+                    let s2=l3.substring(p1+1,p2);
+                    changePaid(kr,s2);
+                    logg(80, "ws Swish kr:"+kr+" m:"+s2);
+ 
                     // document.getElementById('pulseDTR').click();
-                    // audio = new Audio('mp3/pusbullet.mp3'); audio.play();
+                    // audio = new Audio('mp3/swish.mp3'); audio.play();
                     break;
+
                 case "Tapo":
                     logg(100, "ws Tapo");
                 // audio = new Audio('mp3/tapo.mp3'); audio.play();
-                    break;
-                case "Swish":
-                    changePaid(1);
-                    logg(80, "ws Swish");
-                    // document.getElementById('pulseDTR').click();
-                    // audio = new Audio('mp3/swish.mp3'); audio.play();
                     break;
             
                 default:
@@ -484,9 +507,11 @@ async function doLucka(nr, button) {
     try {const audio = new Audio('mp3/sound4.mp3'); audio.play(); } catch{};
     setDigital(7,1);    // D7 on i minst 1,3 s före puls
     for (i=0; i<8; i++) {
-    document.getElementById(button).style.backgroundColor = 'red';
+    // document.getElementById(button).style.backgroundColor = 'red';
+    setDigital(6,1); 
     await delay(250);
-    document.getElementById(button).style.backgroundColor = 'green';
+    // document.getElementById(button).style.backgroundColor = 'green';
+    setDigital(6,0); 
     await delay(250);
     }
     setDigital(4,1);

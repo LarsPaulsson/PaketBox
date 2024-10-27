@@ -12,3 +12,11 @@ https://app.swish.nu/1/p/sw/?sw=0705152540&amt=99&cur=SEK&msg=Msg1&edit=amt&src=
 
 Båda öppna
 https://app.swish.nu/1/p/sw/?sw=0705152540&amt=99&cur=SEK&msg=MsgAllOpen&edit=amt,msg&src=qr
+
+
+
+!:80 ws application_name: Swish
+!:80 ws title: Ny betalning
+!:80 ws body: Pålsson Viktor har swishat dig 5 kr.
+“S1”
+!:80 ws Swish

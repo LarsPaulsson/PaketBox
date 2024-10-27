@@ -305,6 +305,7 @@ function changeState(newstate) {
             paid=0;
             pulsespaid=0;
             changeTable(s0);
+            price=100;
             goproduct(0,1);
             sessiontimer=TIMEPAUSEPAGE;
             break;
@@ -382,7 +383,7 @@ function newproduct(p) {
 }
 
 const MINPRICE=1;
-const MAXPRICE=10;
+const MAXPRICE=100;
 
 function newprice(p) {
     if (p<MINPRICE) p=MINPRICE;

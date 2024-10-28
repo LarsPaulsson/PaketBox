@@ -26,7 +26,7 @@
 
 <body>
     <header>
-        <h3>QR code generator using qrcode.js</h3>
+      
         <h3>Enter QR code content and generate QR</h3>
     </header>
     <main>
@@ -37,7 +37,7 @@
                 alert('Please open this link on a mobile device with Swish installed.');
                 return false;
              }">
-       Open Swish if on mobile
+       Open Swish if on mobile 
    </a>
    <br>
    <a href="swish://paymentrequest?recipient=0760530601">
@@ -65,9 +65,9 @@
   </a>
   <br><br><br><br><br>
   <a href="https://app.swish.nu/1/p/sw/?sw=0760530601&amt=1&cur=SEK&msg=L1&src=qr">
-    Try to open https://app.swish.nu/1/p/sw/?sw=0705152540&amt=1&cur=SEK&msg=L1&src=qr
+    FUNKAR!!! https://app.swish.nu/1/p/sw/?sw=0705152540&amt=1&cur=SEK&msg=L1&src=qr
   </a>
-  <br>
+  <br><br><br><br><br>
   
            <form action="/" id="qr-generation-form">
             <input type="text"
@@ -150,8 +150,9 @@ s5="https://app.swish.nu/1/p/sw/?sw=0705152540&amt=99&cur=SEK&msg=MsgAllOpen&edi
     qrGenerationForm.addEventListener("submit", function (event) {
       // Prevent form submission
       event.preventDefault();
-      generateSwishQrCode("qr-code", phone2, 1, "Hejsan",200,0);
-      generateSwishQrCode("qr-code2", phone2, 1, "Hejsan",300,1);
+      // generateSwishQrCode("qr-code", phone2, 1, "Hejsan",200,0);
+      // generateSwishQrCode("qr-code2", phone2, 1, "Hejsan",300,1);
+      SwishQRorNavigate("qr-code2", phone2, 1, "Hejsan",300,1);
 
  /*     let qrContent = qrContentInput.value;
       if (qrCode == null) {

@@ -26,7 +26,15 @@ function sendup(m) {
 
 
   // För test, se SwishSimple.htm
+  // Doc https://developer.swish.nu/documentation/guides/generate-qr-codes
+  // https://app.swish.nu/1/p/sw/?sw=46701234567
+  // https://app.swish.nu/1/p/sw/?sw=1231561596&amt=170.0
+  // https://app.swish.nu/1/p/sw/?sw=46701234567&amt=170.0&msg=Hot%20Dog
+  // https://app.swish.nu/1/p/sw/?sw=46701234567&amt=170.0&edit=amt
+  // https://app.swish.nu/1/p/sw/?sw=46701234567&amt=170.0&msg=Hot%20Dog&edit=amt,msg
+  // https://app.swish.nu/1/p/sw/?sw=46701234567&amt=170.0&msg=Hot%20Dog&edit=msg
   // använder <script src="js/qrcode.js">
+  // https://app.swish.nu/1/p/sw/?sw=0705152540&amt=1&cur=SEK&msg=L1&src=qr
   // generateSwishQrCode("qr-code", phone2, 1, "Hejsan", 200, 0);
   // generateSwishQrCode("qr-code2", phone2, 1, "Hejsan", 300, 1);
   
@@ -48,3 +56,20 @@ function sendup(m) {
          correctLevel: QRCode.CorrectLevel.H,
         });
     }
+  
+    function SwishQRorNavigate(idDestination, phone, amt, swmsg, w, mode) {
+      let qrContent;
+      qrContent="https://app.swish.nu/1/p/sw/?sw="+phone+"&amt="+amt+"&cur=SEK&msg="+swmsg+"&src=qr";
+      if(window.navigator.userAgent.match(/(iPhone|iPod|iPad|Android)/)) {
+        // i mobil
+          window.open(qrContent, '_blank');
+      } else {
+        // i dator
+           const qrobj= new QRCode(idDestination, {
+           text: qrContent,
+           width:w, height: w,
+           colorDark: "#000000", colorLight: "#ffffff",
+           correctLevel: QRCode.CorrectLevel.H,
+          });
+        }
+      }

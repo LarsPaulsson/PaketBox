@@ -175,28 +175,47 @@ let counter0=0;
 
 let debugline=0;
 function setDebugLine(dm) {
+    let msg={};
+
         if (dm<0) dm=0;
-        if (dm>2) dm=0;
+
+        if (dm>5) dm=0;
         debugline=dm;
         switch(debugline) {
         case 1:
             idDev.style.display="inline";
             debuglevel=80;
         break;
-/*        case 2:
-            idDev.style.display="none";
-            debuglevel=80;
-            navigateIframe("iframeqr.htm");
-        break; */
         case 2:
+           idDev.style.display="none";
+           debuglevel=80;
+           msg.command="setUseCase";
+           msg.usecase=STATE_USECASE1;
+           sendiframe(msg);
+        break;
+        case 3:
             idDev.style.display="inline";
             debuglevel=80;
-            navigateIframe("iframeControllinoMini.htm");
+        break;
+        case 4:
+           idDev.style.display="none";
+           debuglevel=80;
+           msg.command="setUseCase";
+           msg.usecase=STATE_USECASE2;
+           sendiframe(msg);
+        break;
+        case 5:
+            idDev.style.display="inline";
+            debuglevel=80;
         break;
         default:
             idDev.style.display="none";
             debuglevel=80;
-            navigateIframe("iframePumps.htm");
+            // navigateIframe("iframePumps.htm");
+
+            msg.command="setUseCase";
+            msg.usecase=STATE_PAUSE;
+            sendiframe(msg);
         }
                
     }

@@ -21,7 +21,7 @@
     }
 .usertable {
     border-collapse: collapse;
-    font-size: 40px;
+    font-size: 60px;
     color: white;
     /* background-color: #2d5e17; */
     background-color: rgba(0, 64, 0, 0.8);
@@ -31,6 +31,8 @@
     margin: 0 auto; /* Center the table itself */
     text-align: center; /* Center the content in the table */
     width: 80%; /* Optional: define the table width */
+    table-layout: fixed;
+
     /* height:80%; */
   }
   .usertablemobile {
@@ -216,7 +218,7 @@ window.onload = function() {
     '-',
     // '<img id="idSwishImage" src="img\\qr1.png" width=150 height=150 >',
     '<div class="center-container" id="idSwishImage"></div>',
-    '<button class="bigbutt" id="selbutt" onclick="payment(10)">Hoppa över</button>'
+    '<button class="bigbutt" id="selbutt" onclick="payment(price)">Hoppa över</button>'
     ];
     s4=[
     "Hämta",
@@ -289,24 +291,41 @@ window.onload = function() {
 function changeState(newstate) {
       
         logg(100, "changeState="+newstate);
+/*        let msg={};
+        msg.command="changeState";
+        msg.fromstate=sessionstate;
+        msg.state=newstate;
+        msg.productnumber=productindex;
+        msg.pulsespaid=pulsespaid;
+        sendup(msg); */
         sessionstate=newstate;
-                
+        
         switch (newstate) {
         case STATE_PAUSE:
             paid=0;
             pulsespaid=0;
+            utable.style.visibility = "visible";
             changeTable(s0);
-            newproduct(1);
+            price=100;
+            goproduct(0,1);
             sessiontimer=TIMEPAUSEPAGE;
-
             break;
         case STATE_STARTING:
+            paid=0;
+            pulsespaid=0;
             changeTable(s1);
             sessiontimer=60;
+/*            msg.command="changeState";
+            msg.state=newstate;
+            msg.productnumber=productindex;
+            msg.pulsespaid=pulsespaid;
+            sendup(msg); */
             break;
         case STATE_SELECTING:
             changeTable(s2);
-            newproduct(pump);
+            // if (productnumber<1) goproduct(0,0);
+
+            goproduct(0,0);
             sessiontimer=60;
         break;
         case STATE_PAYING:
@@ -315,9 +334,10 @@ function changeState(newstate) {
             if (price>10) price=10;
             // document.getElementById("idSwishImage").src = "img\\qr"+price+".png";
             // console.log(phone1, price);
-            generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);
-            // newproduct(pump);
-            newprice(price);
+            // generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);
+            SwishQRorNavigate("idSwishImage", phone1, price, "S1", 200, 1);
+            newproduct(pump);
+            //newprice(price);
             sessiontimer=60;
             break;
         case STATE_DELIVER: 
@@ -327,7 +347,7 @@ function changeState(newstate) {
             sessiontimer=DELIVER_TIMEOUT;         
             kilos=paid/productnow.price;
             pulsespaid=Math.round(kilos*productnow.pulses);
-            // idPulses.textContent=pulsespaid.toFixed(0);
+            lastpcount=0;
             startPump();
         break;
         case STATE_FINISH:
@@ -337,21 +357,33 @@ function changeState(newstate) {
             sessiontimer=20;
 
         break;
-       /* case MSG_LOADED:
-            // logg(10, "MSG_LOADED");
-            sendiframe(sessionobj);
-            break;
-        */
+        case STATE_USECASE1:
+            // console.log("Usecase 1");
+            utable.style.visibility = "hidden";
+            document.body.style.backgroundImage = 'url(img/qr.png)';
+            sessiontimer=600;
+        break;
+        case STATE_USECASE2:
+            // console.log("Usecase 1");
+            utable.style.visibility = "hidden";
+            document.body.style.backgroundImage = 'url(img/qr2.png)';
+            sessiontimer=600;
+        break;
+        
         }
       }
 
 function newproduct(p) {
+    let i;
     if (p<0) p=prods.length-1;
     if (p>=prods.length) p=0;
+
     productindex=p;
     pump=p;
-   
     productnow=prods[productindex];
+    let productnumber=productnow.number;
+    if (productnumber>0) utable.style.visibility = "visible";
+    else utable.style.visibility = "hidden";
     // idProduct.textContent=productnow.number;
     line2.textContent="Pump "+productnow.number+" har "+productnow.volume+" kg "+productnow.name+" "+productnow.price+" kr/kg";
     document.body.style.backgroundImage = 'url('+productnow.image+')';
@@ -361,7 +393,7 @@ function newproduct(p) {
 }
 
 const MINPRICE=1;
-const MAXPRICE=10;
+const MAXPRICE=100;
 
 function newprice(p) {
     if (p<MINPRICE) p=MINPRICE;
@@ -376,18 +408,19 @@ function select(newsel) {
 
     sessiontimer=60;
     switch (newsel) {
-    case 0: msg.command=STATE_PAYING;
-            msg.productnumber=productindex;
-            msg.price=price;
-            changeState(STATE_PAYING);
+    case 0: changeState(STATE_PAYING);
+            // msg.command=STATE_PAYING;
+            // msg.productnumber=productindex;
+            // msg.price=price;
             // sendup(msg); break;
-    case -1: newproduct(productindex-1); break;
-    case 1: newproduct(productindex+1); break;
+    case -1: goproduct(-1,0); break;
+    case 1: goproduct(1,0); break;
     case -2: newprice(price-1); break;
     case 2: newprice(price+1); break;
     }
 }
 
+let usecase=0;
 let sessionstate=0;
 let sessionresult="Okänt avslut";
 let paid=0;
@@ -413,8 +446,18 @@ function payment(n) {
        // changeState(STATE_DELIVER);
     }
 
-    function nextproduct() {
-       newproduct(productindex+1);
+    function goproduct(diff, showall) {
+        let p=productindex;
+        if (diff==0) {p=-1; diff=1;}
+        for (i=0; i<prods.length; i++) {
+            p+=diff;
+            if (p<0) p=prods.length-1;
+            if (p>=prods.length) p=0;
+            if (prods[p].number>0 || showall) {
+                newproduct(p);
+                break;
+            }
+       }
     }
 
       function timerState(cmd) {
@@ -427,7 +470,7 @@ function payment(n) {
            if (sessiontimer<=0) {
               // msg.command=MSG_NEXT;
               // sendiframe(msg);
-              nextproduct();
+              goproduct(1,1);
               sessiontimer=TIMEPAUSEPAGE;
             }
         break;
@@ -443,17 +486,24 @@ function payment(n) {
         break;
         case STATE_PAYING:
             if (paid>0) {
-
-            changeState(STATE_DELIVER);
+                changeState(STATE_DELIVER);
             }
             if (sessiontimer<=0) {
-            changeState(STATE_PAUSE);
+                changeState(STATE_PAUSE);
             }
         break;
         case STATE_DELIVER:
             if (sessiontimer>0) {
                 // Omvandla pcount till kr
-                if (pcount!=lastpcount) {sessiontimer=DELIVER_TIMEOUT; }
+                if (pcount!=lastpcount) {
+                    lastpcount=pcount;
+                    logg(10,"pling1");
+                    sessiontimer=DELIVER_TIMEOUT;
+                    // playSound("mp3/pling.mp4");  // orsakar hängning?
+                    // const audio = new Audio(fname);
+                    // audio.play();
+
+                }    // Om pulser så förläng timeout
                 kilos=pcount/productnow.pulses;
                 pdeliv=kilos*productnow.price;
                 sessionobj.paydelivered=pdeliv.toFixed(2);
@@ -481,9 +531,17 @@ function payment(n) {
                 changeState(STATE_PAUSE);
             }
         break;
+        case STATE_USECASE1:
+        if (sessiontimer<=0) {
+            changeState(STATE_PAUSE);
         }
-        // timerStuff();
-
+        break;
+        case STATE_USECASE2:
+        if (sessiontimer<=0) {
+            changeState(STATE_PAUSE);
+        }
+        break;
+        }
       }
 
 
@@ -572,22 +630,7 @@ socketPy.onclose = function(event) {
 };
 */
 
-
-async function doTanka(nr, button) {
-    // socketPy.send("$D01\r\n");
-    setDigital(nr-1,1);
-    // try {const audio = new Audio('mp3/sound3.mp3'); audio.play(); } catch{};
-    for (i=0; i<60; i++) {
-    document.getElementById(button).style.backgroundColor = 'red';
-    await new Promise(resolve => setTimeout(resolve, 500));
-    sendReceivePort("$S00");
-    document.getElementById(button).style.backgroundColor = 'green';
-    await new Promise(resolve => setTimeout(resolve, 500));
-    sendReceivePort("$S00");
-    }
-    setDigital(nr-1,0);
-}
-
+/*
 async function doLucka(nr, button) {
 
     try {const audio = new Audio('mp3/sound4.mp3'); audio.play(); } catch{};
@@ -604,6 +647,7 @@ async function doLucka(nr, button) {
 
     setDigital(7,0);
 }
+*/
 
 // document.getElementById('connect').addEventListener('click', connectPort );
 
@@ -616,10 +660,14 @@ let upsessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
       // if (event.origin !== 'http://your-parent-domain.com') { return;}
       try {
         recobj = JSON.parse(event.data);
-        if ('paid' in recobj) {         // Betalning inkommen via Swish e dyl
-            paid=recobj.paid;
-            
+        if ('usecase' in recobj) {
+            console.log(usecase);
+            usecase=recobj.usecase;
+            if (usecase==STATE_USECASE1 || usecase==STATE_USECASE2) changeState(usecase);
+            else changeState(STATE_PAUSE);
+
         }
+        // console.log("iframeMessage"+event.data);
         if ('productnumber' in recobj) {
             // idVara.textContent=recobj.productnumber;
         }
@@ -631,7 +679,22 @@ let upsessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
         }
         if ('loggline' in recobj) {
             logg(100, "Top:"+recobj.loggline);
-        }       
+        }  
+        if ('paid' in recobj) {         // Betalning inkommen via Swish e dyl
+            paid=recobj.paid;
+            price=paid;
+            // console.log("paid="+paid);
+            if ('swishmsg' in recobj) {
+                
+            }
+            if ('forceproduct' in recobj) {
+                // console.log ("forceproduct:+recobj.forceproduct")
+                newproduct(recobj.forceproduct);
+            }
+            
+            changeState(STATE_DELIVER);
+            
+        }     
 //        if ('paydelivered' in recobj) { idDelivered.textContent=recobj.paydelivered; }
 //        if ('price' in recobj)  { idPaid.textContent=recobj.price; }
         
@@ -644,10 +707,12 @@ let upsessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
   });
 
   
-  function playSound() {
-            const audio = new Audio('mp3/file.mp3');
+  function playSound(fname) {
+    try {
+            const audio = new Audio(fname);
             audio.play();
-  }
+    } catch {error};
+   }
 
 </script>
 </body>

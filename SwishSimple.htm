@@ -119,7 +119,9 @@ s5="https://app.swish.nu/1/p/sw/?sw=0705152540&amt=99&cur=SEK&msg=MsgAllOpen&edi
     // qrContentInput.value="C"+phone2+";"+amt+";"+swmsg+";0";
     // Med webblänk
 //    qrContentInput.value="https://app.swish.nu/1/p/sw/?sw="+phone2+"&amt="+amt+"&cur=SEK&msg="+swmsg+"&src=qr";
-    qrContentInput.value="Disabled";
+
+    qrContentInput.value="https://larspaulsson.github.io/PaketBox/Station1.htm";
+    qrCode = generateQrCode(qrContentInput.value);
 
     function generateQrCode(qrContent) {
       return new QRCode("qr-code", {

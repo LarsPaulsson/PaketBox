@@ -304,6 +304,7 @@ function changeState(newstate) {
         case STATE_PAUSE:
             paid=0;
             pulsespaid=0;
+            utable.style.visibility = "visible";
             changeTable(s0);
             price=100;
             goproduct(0,1);
@@ -333,7 +334,8 @@ function changeState(newstate) {
             if (price>10) price=10;
             // document.getElementById("idSwishImage").src = "img\\qr"+price+".png";
             // console.log(phone1, price);
-            generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);
+            // generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);
+            SwishQRorNavigate("idSwishImage", phone1, price, "S1", 200, 1);
             newproduct(pump);
             //newprice(price);
             sessiontimer=60;
@@ -355,11 +357,19 @@ function changeState(newstate) {
             sessiontimer=20;
 
         break;
-       /* case MSG_LOADED:
-            // logg(10, "MSG_LOADED");
-            sendiframe(sessionobj);
-            break;
-        */
+        case STATE_USECASE1:
+            // console.log("Usecase 1");
+            utable.style.visibility = "hidden";
+            document.body.style.backgroundImage = 'url(img/qr.png)';
+            sessiontimer=600;
+        break;
+        case STATE_USECASE2:
+            // console.log("Usecase 1");
+            utable.style.visibility = "hidden";
+            document.body.style.backgroundImage = 'url(img/qr2.png)';
+            sessiontimer=600;
+        break;
+        
         }
       }
 
@@ -410,6 +420,7 @@ function select(newsel) {
     }
 }
 
+let usecase=0;
 let sessionstate=0;
 let sessionresult="Okänt avslut";
 let paid=0;
@@ -520,9 +531,17 @@ function payment(n) {
                 changeState(STATE_PAUSE);
             }
         break;
+        case STATE_USECASE1:
+        if (sessiontimer<=0) {
+            changeState(STATE_PAUSE);
         }
-        // timerStuff();
-
+        break;
+        case STATE_USECASE2:
+        if (sessiontimer<=0) {
+            changeState(STATE_PAUSE);
+        }
+        break;
+        }
       }
 
 
@@ -641,7 +660,13 @@ let upsessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
       // if (event.origin !== 'http://your-parent-domain.com') { return;}
       try {
         recobj = JSON.parse(event.data);
+        if ('usecase' in recobj) {
+            console.log(usecase);
+            usecase=recobj.usecase;
+            if (usecase==STATE_USECASE1 || usecase==STATE_USECASE2) changeState(usecase);
+            else changeState(STATE_PAUSE);
 
+        }
         // console.log("iframeMessage"+event.data);
         if ('productnumber' in recobj) {
             // idVara.textContent=recobj.productnumber;

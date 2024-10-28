@@ -62,7 +62,8 @@ function sendup(m) {
       qrContent="https://app.swish.nu/1/p/sw/?sw="+phone+"&amt="+amt+"&cur=SEK&msg="+swmsg+"&src=qr";
       if(window.navigator.userAgent.match(/(iPhone|iPod|iPad|Android)/)) {
         // i mobil
-          window.open(qrContent, '_blank');
+          // window.open(qrContent, '_blank');
+          window.location.href = qrContent;
       } else {
         // i dator
            const qrobj= new QRCode(idDestination, {

@@ -179,7 +179,7 @@ function setDebugLine(dm) {
 
         if (dm<0) dm=0;
 
-        if (dm>5) dm=0;
+        if (dm>6) dm=0;
         debugline=dm;
         switch(debugline) {
         case 1:
@@ -208,10 +208,15 @@ function setDebugLine(dm) {
             idDev.style.display="inline";
             debuglevel=80;
         break;
-        default:
-            idDev.style.display="none";
+        case 6:
+            navigateIframe("iframeControllinoMini.htm")
+            // idDev.style.display="inline";
             debuglevel=80;
-            // navigateIframe("iframePumps.htm");
+        break;
+        default:
+            debuglevel=80;
+            navigateIframe("iframePumps.htm");
+            idDev.style.display="none";
 
             msg.command="setUseCase";
             msg.usecase=STATE_PAUSE;
@@ -344,7 +349,10 @@ logglines=0;
 
     function showLogg (v) {
       logglines++;
-      if (logglines>10) output.textContent="";
+      if (logglines>5) {
+         output.textContent="";
+         logglines=0;
+      }
       // const totalHeight = output.clientHeight;
       // if (totalHeight>200) output.textContent="";
       output.textContent += v+'\r\n';

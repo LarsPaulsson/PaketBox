@@ -8,28 +8,29 @@
 </head>
 <body>
 
-  <center><h2>Controllino Test.    VARNING: Tänk på skarpa anslutningar kan aktiveras!</h2></center>
+  <center><h2>Controllino Test VARNING: Tänk på skarpa anslutningar kan aktiveras! OBS: Stationen är nu stängd!</h2></center>
 
   <input type="text" id="sendid" name="sendname" placeholder="enter message here">
   <button id="send">Send</button>
   <input type="text" id="recid" name="recname" placeholder="received here">
   <br>
-  <span id="a0">A0</span><button class="tbutt" onclick="s(0,1)">D0 on</button><span id="d0">0</span><button class="tbutt" onclick="s(0,0)">D0 off</button>
-  <input type="text" id="counter0id"><br>
-  <span id="a1">A1</span><button class="tbutt" onclick="s(1,1)">D1 on</button><span id="d1">0</span><button class="tbutt" onclick="s(1,0)">D1 off</button>
-  <input type="text" id="counter1id"><br>
-  <span id="a2">A2</span><button class="tbutt" onclick="s(2,1)">D2 on</button><span id="d2">0</span><button class="tbutt" onclick="s(2,0)">D2 off</button>
-  <input type="text" id="counter2id"><br>
-  <span id="a3">A3</span><button class="tbutt" onclick="s(3,1)">D3 on</button><span id="d3">0</span><button class="tbutt" onclick="s(3,0)">D3 off</button>
-  <input type="text" id="counter3id"><br>
-  <span id="a4">A4</span><button class="tbutt" onclick="s(4,1)">D4 on</button><span id="d4">0</span><button class="tbutt" onclick="s(4,0)">D4 off</button>
-  <input type="text" id="counter4id"><br>
-  <span id="a5">A5</span><button class="tbutt" onclick="s(5,1)">D5 on</button><span id="d5">0</span><button class="tbutt" onclick="s(5,0)">D5 off</button>
-  <input type="text" id="counter5id"><br>
-  <span id="a6">A6</span><button class="tbutt" onclick="s(6,1)">D6 on</button><span id="d6">0</span><button class="tbutt" onclick="s(6,0)">D6 off</button>
-  <input type="text" id="counter6id"><br>
-  <span id="a7">A7</span><button class="tbutt" onclick="s(7,1)">D7 on</button><span id="d7">0</span><button class="tbutt" onclick="s(7,0)">D7 off</button>
-  <input type="text" id="counter7id"><br>
+  
+  <button class="tbutt" onclick="s(0,1)">D0 on</button><span id="d0">0</span><button class="tbutt" onclick="s(0,0)">D0 off</button>
+  <span id="a0">A0</span>  <input type="text" id="counter0id"><br>
+  <button class="tbutt" onclick="s(1,1)">D1 on</button><span id="d1">0</span><button class="tbutt" onclick="s(1,0)">D1 off</button>
+  <span id="a1">A1</span>  <input type="text" id="counter1id"><br>
+  <button class="tbutt" onclick="s(2,1)">D2 on</button><span id="d2">0</span><button class="tbutt" onclick="s(2,0)">D2 off</button>
+  <span id="a2">A2</span>  <input type="text" id="counter2id"><br>
+  <button class="tbutt" onclick="s(3,1)">D3 on</button><span id="d3">0</span><button class="tbutt" onclick="s(3,0)">D3 off</button>
+  <span id="a3">A3</span>  <input type="text" id="counter3id"><br>
+  <button class="tbutt" onclick="s(4,1)">D4 on</button><span id="d4">0</span><button class="tbutt" onclick="s(4,0)">D4 off</button>
+  <span id="a4">A4</span>  <input type="text" id="counter4id"><br>
+  <button class="tbutt" onclick="s(5,1)">D5 on</button><span id="d5">0</span><button class="tbutt" onclick="s(5,0)">D5 off</button>
+  <span id="a5">A5</span>  <input type="text" id="counter5id"><br>
+  <button class="tbutt" onclick="s(6,1)">D6 on</button><span id="d6">0</span><button class="tbutt" onclick="s(6,0)">D6 off</button>
+  <span id="a6">A6</span>  <input type="text" id="counter6id"><br>
+  <button class="tbutt" onclick="s(7,1)">D7 on</button><span id="d7">0</span><button class="tbutt" onclick="s(7,0)">D7 off</button>
+  <span id="a7">A7</span>  <input type="text" id="counter7id"><br>
   
   <pre class="outputpre" id="output"></pre>
 
@@ -55,7 +56,7 @@
       counter1id.value=spCounters[1];
       counter2id.value=spCounters[2];
       counter3id.value=spCounters[3];
-      counter4id.value=spTest;
+      // counter4id.value=spTest;
 
       a0.textContent=spAinputs[0];
       a1.textContent=spAinputs[1];
@@ -133,8 +134,8 @@
 
     document.getElementById('hatch1').addEventListener('click',  async () => { openHatch(1); });
 */ 
-    document.getElementById('connect').addEventListener('click', connectPort );
-    document.getElementById('disconnect').addEventListener('click', disconnectPort );
+   //  document.getElementById('connect').addEventListener('click', connectPort );
+   //  document.getElementById('disconnect').addEventListener('click', disconnectPort );
     document.getElementById('send').addEventListener('click', async () => {
     try {
       var inputElement = document.getElementById("sendid");

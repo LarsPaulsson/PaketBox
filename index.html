@@ -10,10 +10,10 @@
 
     <h2>Välkommen!</h2>
     
-    <a href="Top.htm" class="tbutt" >Alfa Styrenhet</a>
-    <a href="iframePumps.htm" class="tbutt" >Alfa User</a>
-    <a href="TopStation1.htm" class="tbutt">Release Styrenhett</a>
-    <a href="Station1.htm" class="tbutt">Release User</a>
+    <a href="TopStation1.htm" class="tbutt">Styrenhet</a>
+    <a href="Station1.htm" class="tbutt">User</a>
+    <a href="Top.htm" class="tbutt" >Styrtest</a>
+    <a href="iframePumps.htm" class="tbutt" >Usertest</a>
     
     <a href="https://larspaulsson.github.io/PaketBox/index.html" class="tbutt">Github</a>
    
@@ -22,6 +22,8 @@
     <input type="text" id="urlInput" placeholder="ange websida här" style="width: 400px; padding: 10px;  margin: 10px 20px 10px 10px;">
     <button type="submit" style="padding: 10px 20px;  margin: 10px 20px 10px 10px;">Välj</button>
   </form>
+  <div id="idScreen"></div> 
+  <div id="idUserAgent"></div> 
 
   <script>
     // Function to handle the navigation
@@ -42,6 +44,28 @@
         alert('Please enter a valid URL');
       }
     }
+
+    let portrait=0;
+    function CheckScreenSize() {
+        let w=window.innerWidth;
+        let h=window.innerHeight;
+        let p=0;
+        if (w<h) p=1;
+        if (p != portrait) {
+            portrait=p;
+        }
+        dpratio = window.devicePixelRatio;
+
+        idScreen.textContent='innerWidth:'+w+'x'+h+' dpratio:'+dpratio+
+                 ' outerWidth:'+window.outerWidth+'x'+window.outerHeight+
+                 ' screen:' + window.screen.width + 'x' + window.screen.height;
+
+        // logg(100,'resize:' + w + 'x' + h+' portrait='+portrait+" table:"+uh+" dt:"+dt);
+    }
+
+    window.addEventListener('resize', CheckScreenSize);
+    CheckScreenSize();
+    idUserAgent.textContent= window.navigator.userAgent;
   </script>
 </body>
 </html>

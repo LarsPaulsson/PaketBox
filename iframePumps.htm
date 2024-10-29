@@ -170,8 +170,11 @@ window.onload = function() {
         // const rect = table.getBoundingClientRect();
         // console.log("Table height (getBoundingClientRect):", rect.height);
         dpratio = window.devicePixelRatio;
+        // let z=document.body.style.zoom; // ej definierad
 
-        logg(100,'size:'+w+'x'+h+' dpratio:'+dpratio+' screen:' + dpratio*window.screen.width + 'x' + dpratio*window.screen.height);
+        logg(100,'innerWidth:'+w+'x'+h+' dpratio:'+dpratio+
+                 ' outerWidth:'+window.outerWidth+'x'+window.outerHeight+
+                 ' screen:' + window.screen.width + 'x' + window.screen.height);
 
         // logg(100,'resize:' + w + 'x' + h+' portrait='+portrait+" table:"+uh+" dt:"+dt);
     }

@@ -3,27 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Centered Fixed-Size Table</title>
     <style>
         /* Full page height and width */
         html, body {
-            height: 100%;
-            width: 100%;
             margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
-            align-items: center; /* Vertical centering */
-            justify-content: center; /* Horizontal centering */
-            background-color: #f0f0f0; /* Optional background color */
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            overflow: auto; 
         }
 
         /* Styling for the table */
         table {
-            width: 400px; /* Fixed width */
-            height: 200px; /* Fixed height */
+            width: 80%; /* Fixed width */
+            height: 80%; /* Fixed height */
+            margin: 0;
+            padding: 0; 
             background-color: #ffffff;
             border: 1px solid #cccccc;
             border-collapse: collapse;
             text-align: center;
+         
+             /* Allows scrolling if table is larger than container */
         }
 
         /* Optional cell styling */
@@ -35,18 +42,19 @@
 </head>
 <body>
     
-
-    <table id="utable" class="usertable">
+ 
+    <table id="utable">
         <tr><td><div id="line1"></div></td></tr>
-        <tr><td><div id="idScreen"></div></td></tr>
+
         <tr><td><div id="idUserAgent"></div></td></tr>
         <tr><td><div id="idInfo"></div></td></tr>
+        <tr><td><div id="idScreen"></div></td></tr>
         <tr><td><div id="idPlatform"></div></td></tr>
         <tr><td><div id="idBrands"></div></td></tr>
         <tr><td class="devline"><div id="line7"></div></td></tr>
         <tr><td class="devline"><div id="line8"></div></td></tr>
     </table>
-    
+
     <script>
       // Function to handle the navigation
       function navigateToURL(event) {
@@ -81,6 +89,7 @@
           idScreen.textContent='innerWidth:'+w+'x'+h+' dpratio:'+dpratio+
                    ' outerWidth:'+window.outerWidth+'x'+window.outerHeight+
                    ' screen:' + window.screen.width + 'x' + window.screen.height;
+            line1.textContent="Table:"+utable.offsetWidth+'x'+utable.offsetHeight;
   
           // logg(100,'resize:' + w + 'x' + h+' portrait='+portrait+" table:"+uh+" dt:"+dt);
       }
@@ -106,13 +115,14 @@
       }
 
       document.body.style.backgroundImage = 'url(img/vete.jpg)';
-      line1.textContent="Table:"+utable.offsetWidth+'x'+utable.offsetHeight;
+
 
 // 1920x1080 fysisk upplösning är standard full HD
 // 1,25 är normal skalfaktor för de flesta websites, Windows systemskalning 1,25 zoom 1, Linux zoom 1,25
-// 1536x865px blir då CSS upplösning
-// På Mobil tillgängligt 461x857
-// på tablet 
+// 1536x865px blir då CSS upplösning i fullskärm F11
+// 1536x701 (Raspberry Chromium) resp 1528x738 (Windows Edge) i normalläge
+// På Mobil OneNord tillgängligt 384x713 eller
+// på gammal tablet 800x1159 eller 1280x679
 
   </script>
 </body>

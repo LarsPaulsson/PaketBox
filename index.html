@@ -22,8 +22,10 @@
     <input type="text" id="urlInput" placeholder="ange annan websida här" style="width: 400px; padding: 10px;  margin: 10px 20px 10px 10px;">
     <button type="submit" style="padding: 10px 20px;  margin: 10px 20px 10px 10px;">Välj</button>
   </form>
-  <div id="idScreen"></div> 
+  <div id="idScreen"></div>
   <div id="idUserAgent"></div> 
+  <div id="idInfo"></div> 
+  <div id="idPlatform"></div> 
 
   <script>
     // Function to handle the navigation
@@ -66,6 +68,12 @@
     window.addEventListener('resize', CheckScreenSize);
     CheckScreenSize();
     idUserAgent.textContent= window.navigator.userAgent;
+    idInfo.textContent='mobile:'+navigator.userAgentData.mobile;
+    idPlatform.textContent='platform:'+navigator.userAgentData.platform;
+    // '\nuserAgentData.brands:'+navigator.userAgentData.brands;
+    arrayBrands=navigator.userAgentData.brands;  // array of objects with brand and version strings
+    console.log(navigator.userAgentData.platform);
+
   </script>
 </body>
 </html>

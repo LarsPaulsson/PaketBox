@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Fixed-Size Table</title>
+    <style>
+        /* Full page height and width */
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            display: flex;
+            align-items: center; /* Vertical centering */
+            justify-content: center; /* Horizontal centering */
+            background-color: #f0f0f0; /* Optional background color */
+        }
+
+        /* Styling for the table */
+        table {
+            width: 400px; /* Fixed width */
+            height: 200px; /* Fixed height */
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        /* Optional cell styling */
+        td {
+            padding: 20px;
+            border: 1px solid #cccccc;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <table id="utable" class="usertable">
+        <tr><td><div id="line1"></div></td></tr>
+        <tr><td><div id="idScreen"></div></td></tr>
+        <tr><td><div id="idUserAgent"></div></td></tr>
+        <tr><td><div id="idInfo"></div></td></tr>
+        <tr><td><div id="idPlatform"></div></td></tr>
+        <tr><td><div id="idBrands"></div></td></tr>
+        <tr><td class="devline"><div id="line7"></div></td></tr>
+        <tr><td class="devline"><div id="line8"></div></td></tr>
+    </table>
+    
+    <script>
+      // Function to handle the navigation
+      function navigateToURL(event) {
+        event.preventDefault();  // Prevent form from submitting
+  
+        // Get the input value (URL)
+        const url = document.getElementById('urlInput').value;
+        
+        // Basic validation to check if the URL is not empty
+        if (url) {
+          // Check if the URL starts with "http://" or "https://", otherwise prepend it
+          const fullURL = url.startsWith('http://') || url.startsWith('https://') ? url : 'http://' + url;
+  
+          // Navigate to the entered URL
+          window.location.href = fullURL;
+        } else {
+          alert('Please enter a valid URL');
+        }
+      }
+  
+      let portrait=0;
+      function CheckScreenSize() {
+          let w=window.innerWidth;
+          let h=window.innerHeight;
+          let p=0;
+          if (w<h) p=1;
+          if (p != portrait) {
+              portrait=p;
+          }
+          dpratio = window.devicePixelRatio;
+  
+          idScreen.textContent='innerWidth:'+w+'x'+h+' dpratio:'+dpratio+
+                   ' outerWidth:'+window.outerWidth+'x'+window.outerHeight+
+                   ' screen:' + window.screen.width + 'x' + window.screen.height;
+  
+          // logg(100,'resize:' + w + 'x' + h+' portrait='+portrait+" table:"+uh+" dt:"+dt);
+      }
+  
+      window.addEventListener('resize', CheckScreenSize);
+      CheckScreenSize();
+      idUserAgent.textContent= window.navigator.userAgent;
+      const isMobileDevice = 'isMobile:'+window.navigator.userAgent.toLowerCase().includes("mobi");
+  
+      let onmobile="info not available";
+      let splatform="info not available";
+      let arrayBrands=[];
+      try {
+      onmobile=navigator.userAgentData.mobile;
+      splatform=navigator.userAgentData.platform;
+      arrayBrands=navigator.userAgentData.brands;  // array of objects with brand and version strings
+    } catch (err) {}
+    idInfo.textContent='Mobile detection metod1:'+isMobileDevice+' metod2:'+onmobile;
+    idPlatform.textContent='platform:'+splatform;
+    idBrands.textContent='brands:';
+    for (i=0; i<arrayBrands.length; i++) {
+       idBrands.textContent+=arrayBrands[i].brand+' '+arrayBrands[i].version+',';
+      }
+
+      document.body.style.backgroundImage = 'url(img/vete.jpg)';
+      line1.textContent="Table:"+utable.offsetWidth+'x'+utable.offsetHeight;
+
+// 1920x1080 fysisk upplösning är standard full HD
+// 1,25 är normal skalfaktor för de flesta websites, Windows systemskalning 1,25 zoom 1, Linux zoom 1,25
+// 1536x865px blir då CSS upplösning
+// På Mobil tillgängligt 461x857
+// på tablet 
+
+  </script>
+</body>
+</html>

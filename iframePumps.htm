@@ -210,9 +210,6 @@ window.onload = function() {
 
     }
 
-function openSwish() {
-    SwishQRorNavigate("idSwishImage", phone1, price, "S1", 200, 1);
-}
 
 function changeState(newstate) {
       
@@ -263,10 +260,11 @@ function changeState(newstate) {
             // generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);
             if (isMobileDevice) {
                 // SwishQRorNavigate("idSwishImage", phone1, price, "S1", 200, 1);
-                line5.innerHTML='<button class="bigbutt" onclick="openSwish()">Öppna Swish</button>';
+                line5.innerHTML='<button class="bigbutt" onclick="SwishNavigate(phone1, price, swishmsg)">Öppna Swish</button>';
+                // SwishNavigate(phone1, price, "S1");
             }
             else {
-                generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);
+                generateSwishQrCode("idSwishImage", phone1, price, swishmsg, 200, 1);
             }
             newproduct(pump);
             //newprice(price);

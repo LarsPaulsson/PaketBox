@@ -42,6 +42,7 @@ function sendup(m) {
   
   let phone1="0705152540"
   let phone2="0760530601";
+  let swishmsg="S1";
   /*
   let amt="1";
   let swmsg="S1Ostlunda";
@@ -58,7 +59,15 @@ function sendup(m) {
          correctLevel: QRCode.CorrectLevel.H,
         });
     }
-  
+
+    function SwishNavigate(phone, amt, swmsg) {
+      let qrContent;
+      qrContent="https://app.swish.nu/1/p/sw/?sw="+phone+"&amt="+amt+"&cur=SEK&msg="+swmsg+"&src=qr";
+      // const isMobileDevice = window.navigator.userAgent.toLowerCase().includes("mobi");
+      // if (isMobileDevice) {
+      window.location.href = qrContent;
+    }
+
     function SwishQRorNavigate(idDestination, phone, amt, swmsg, w, mode) {
       let qrContent;
       qrContent="https://app.swish.nu/1/p/sw/?sw="+phone+"&amt="+amt+"&cur=SEK&msg="+swmsg+"&src=qr";

@@ -62,10 +62,11 @@
             border: 1px solid black;
 
         }
-        /* Optional cell styling */
-        tdstop {
+
+        .tdheadline {
             height: 5vh;
-            font-size: clamp(20px, 5vh, 40px); 
+            font-size: clamp(20px, 6vh, 50px);
+            font-family: Arial, sans-serif;
             overflow: hidden; /* Hide overflow if text is too large */
             padding: 1vh;
             border: 1px solid black;
@@ -73,7 +74,7 @@
 
         .bigbutt {
     padding: 2vw 2vh;  /* Adjusts the space inside the button */
-    font-size: clamp(20px, 5vh, 40px); 
+    font-size: clamp(20px, 4vh, 40px); 
     width: 30%;   /* Set button width */
     height:fit-content;   /* Set button height */
     width: fit-content;
@@ -94,7 +95,7 @@
     
  
     <table id="utable" class="usertable">
-        <tr><td>Rubrik <span id="line1"></span></td></tr>
+        <tr><td class="tdheadline">Rubrik <span id="line1"></span></td></tr>
 
         <tr><td><div id="line2">Rad 2 med beskrivande text</div></td></tr>
         <tr><td><div id="idInfo"></div></td></tr>

@@ -4,57 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Swisha och tanka!</title>
+    <link rel="stylesheet" href="css/style1.css">
+
 </head>
 <body>
 <style>
-    body, html {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    /* display: flex; */
-    /* display: grid; */
-    justify-content: center;  /* Center horizontally */
-    align-items: center;      /* Center vertically */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    }
-.usertable {
-    border-collapse: collapse;
-    font-size: 60px;
-    color: white;
-    /* background-color: #2d5e17; */
-    background-color: rgba(0, 64, 0, 0.8);
-/*    background-color: rgba(255, 255, 255, 1); */
-    position: relative;
-
-    margin: 0 auto; /* Center the table itself */
-    text-align: center; /* Center the content in the table */
-    width: 80%; /* Optional: define the table width */
-    table-layout: fixed;
-
-    /* height:80%; */
-  }
-  .usertablemobile {
-    border-collapse: collapse;
-    font-size: 40px;
-    color: white;
-    background-color: rgba(0, 64, 0, 0.6);
-    margin: 0 auto; /* Center the table itself */
-    text-align: center; /* Center the content in the table */
-    width: 100%; /* Optional: define the table width */
-    height:100%;       
-  }
-
-th, td {
-    padding: 8px;
-    text-align: center;
-    border: 1px solid black;
-  
-  }
-th {
-    background-color: #f2f2f2;
-}
 
 .devline {
     background-color: rgb(9, 49, 31);
@@ -68,39 +22,7 @@ th {
     background-color: white;
 }
 
-.bigbutt {
-    padding: 10px 20px;  /* Adjusts the space inside the button */
-    font-size: 24px;      /* Increases the size of the text inside */
-    width: 10%px;   /* Set button width */
-    height:10%;   /* Set button height */
-      /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-      margin: 10px 10px 10px 10px; /* Top, Right, Bottom, Left */
-      background-color: #400de7;
-      color: white;
-      border: black;
-      border-radius: 5px;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-      line-height: 50px;   
-}
 
-.devbutt {
-    padding: 0px 0px;  /* Adjusts the space inside the button */
-    font-size: 20px;      /* Increases the size of the text inside */
-    width: 100px;   /* Set button width */
-    height:100px;   /* Set button height */
-      /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-      margin: 0px 0px 0px 0px; /* Top, Right, Bottom, Left */
-      background-color: #400de7;
-      color: white;
-      border: black;
-      border-radius: 2px;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-      /* line-height: 50px; */   
-}
 
 .tankpre {
             // position: absolute;
@@ -112,25 +34,18 @@ th {
             border: 1px solid #ddd;
             padding: 10px;
 }
-.center-container {
-            display: flex;
-            justify-content: center; /* Horizontally center */
-            align-items: center;     /* Vertically center */
-            /* height: 100vh; */    /* 100% of the viewport height */
-            background-color: white;
-            padding: 10px;
-        }
+
 </style>
 
 <table id="utable" class="usertable">
-    <tr><td><div id="line1"></div></td></tr>
+    <tr><td class="tdheadline"><div id="line1"></div></td></tr>
     <tr><td><div id="line2"></div></td></tr>
     <tr><td><div id="line3"></div></td></tr>
     <tr><td><div id="line4"></div></td></tr>
     <tr><td><div id="line5"></div></td></tr>
     <tr><td><div id="line6"></div></td></tr>
-    <tr><td class="devline"><div id="line7"></div></td></tr>
-    <tr><td class="devline"><div id="line8"></div></td></tr>
+    <tr><td class="tdfooterline"><div id="line7"></div></td></tr>
+    <tr><td class="tdfooterline"><div id="line8"></div></td></tr>
 </table>
 
 <script src="js/qrcode.js"></script>
@@ -220,6 +135,7 @@ window.onload = function() {
     '',
     '-',
     // '<img id="idSwishImage" src="img\\qr1.png" width=150 height=150 >',
+    // '<img id="idSwishImage" width=300 height=300 >',
     '<div class="center-container" id="idSwishImage"></div>',
     '<button class="bigbutt" id="selbutt" onclick="payment(price)">Hoppa över</button>'
     ];
@@ -240,8 +156,8 @@ window.onload = function() {
     'Välkommen åter'
     ];
     debuglines=[
-    '<button class="devbutt" style="position: fixed; bottom: 0px; left: 100px;" id="upbutt" onclick="setDebugLine(debugline+1)">Felsök UI</button>',
-    '<button class="devbutt" style="position: fixed; bottom: 0px; left: 100px;" id="upbutt" onclick="setDebugLine(debugline+1)">Felsök UI</button>',
+    '<button class="devbutt" style="position: fixed; bottom: 0px; right: 0px;" id="upbutt" onclick="setDebugLine(debugline+1)">Felsök UI</button>',
+    '<button class="devbutt" style="position: fixed; bottom: 0px; right: 0px;" id="upbutt" onclick="setDebugLine(debugline+1)">Felsök UI</button>',
     ]; 
 
     let price=5;
@@ -284,7 +200,7 @@ window.onload = function() {
 
     function logg(v,s) {
         if (loggstring.length>200) loggstring="";
-        loggstring +="-----"+v+" "+s;
+        loggstring +="...."+v+" "+s;
         if (debugline>0) line7.innerHTML=loggstring;
         // console.log(v+", logg="+s);
 

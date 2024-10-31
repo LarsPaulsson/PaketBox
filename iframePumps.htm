@@ -163,6 +163,8 @@ window.onload = function() {
     '<button class="devbutt" style="position: fixed; bottom: 0px; right: 0px;" id="upbutt" onclick="setDebugLine(debugline+1)">Felsök UI</button>',
     ]; 
 
+    sSwishButt='<button class="bigbutt" id="selbutt" onclick="openSwish()">Öppna Swish</button>';
+
     let price=5;
     let kilos=0.0;
     const DELIVER_TIMEOUT=60;
@@ -209,6 +211,9 @@ window.onload = function() {
 
     }
 
+function openSwish() {
+    SwishQRorNavigate("idSwishImage", phone1, price, "S1", 200, 1);
+}
 
 function changeState(newstate) {
       
@@ -257,7 +262,13 @@ function changeState(newstate) {
             // document.getElementById("idSwishImage").src = "img\\qr"+price+".png";
             // console.log(phone1, price);
             // generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);
-            SwishQRorNavigate("idSwishImage", phone1, price, "S1", 200, 1);
+            if (isMobileDevice) {
+                // SwishQRorNavigate("idSwishImage", phone1, price, "S1", 200, 1);
+                idSwishImage.textContent=sSwishButt;
+            }
+            else {
+                generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);
+            }
             newproduct(pump);
             //newprice(price);
             sessiontimer=60;

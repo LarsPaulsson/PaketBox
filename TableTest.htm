@@ -28,14 +28,18 @@
             width: 80%; /* Fixed width */
             height: 90%; /* Fixed height */
             margin: 0 auto;
-            padding: 0; 
+            /* padding: 0; */ 
             color: white;
 
             /* border: 1px solid #cccccc; */
             border-collapse: collapse;
             text-align: center;
             background-color: rgba(0, 64, 0, 0.8);
-         
+
+            font-size: clamp(20px, 5vh, 40px); 
+            overflow: hidden; /* Hide overflow if text is too large */
+            padding: 1vh;
+            border: 1px solid black;
              /* Allows scrolling if table is larger than container */
         }
 
@@ -44,16 +48,22 @@
             width: 100%; /* Fixed width */
             height: 90%; /* Fixed height */
             margin: 0 auto;
-            padding: 0; 
+        
             color: white;
 
             /* border: 1px solid #cccccc; */
             border-collapse: collapse;
             text-align: center;
             background-color: rgba(0, 64, 0, 0.6);
+
+            font-size: clamp(20px, 4vh, 30px); 
+            overflow: hidden; /* Hide overflow if text is too large */
+            padding: 1vh;
+            border: 1px solid black;
+
         }
         /* Optional cell styling */
-        td {
+        tdstop {
             height: 5vh;
             font-size: clamp(20px, 5vh, 40px); 
             overflow: hidden; /* Hide overflow if text is too large */

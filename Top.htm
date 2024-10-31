@@ -4,26 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Swisha och tanka!</title>
+    <link rel="stylesheet" href="css/style1.css">
 </head>
 <body>
 <style>
-
-body, html {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    /* display: flex; */
-    /* display: grid; */
-    /*
-    justify-content: center;  /* Center horizontally *
-    align-items: center;      /* Center vertically *
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    */
-    }
     
 .iframe {
     width: 100%;
@@ -33,27 +17,11 @@ body, html {
     border: none;
     }
 
-.usertable {
-    border-collapse: collapse;
-    
-    font-size: 40px;
-    color: white;
-    background-color: #2d5e17;
-    margin: 0 auto; /* Center the table itself */
-    padding: 0;
-    text-align: center; /* Center the content in the table */
-    width: 80%; /* Optional: define the table width */
-    height:80%;
-  }
 th, td {
-    padding: 8px;
+    padding: 0px;
     text-align: center;
     border: 1px solid black;
-  
   }
-th {
-    background-color: #f2f2f2;
-}
 
 .devtable {
     background-color: white;
@@ -63,42 +31,11 @@ th {
     display:none;
     position:fixed;
     bottom: 0px;
-    left: 200px;
+    left: 100px;
+    text-align: center;
+    border: 1px solid black;
+    border-collapse: collapse;
 }
-
-.bigbutt {
-    padding: 0px 0px;  /* Adjusts the space inside the button */
-    font-size: 20px;      /* Increases the size of the text inside */
-    width: 100px;   /* Set button width */
-    height:100px;   /* Set button height */
-      /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-      margin: 0px 0px 0px 0px; /* Top, Right, Bottom, Left */
-      background-color: #400de7;
-      color: white;
-      border: black;
-      border-radius: 5px;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-      line-height: 50px;   
-}
-.devbutt {
-    padding: 0px 0px;  /* Adjusts the space inside the button */
-    font-size: 16px;      /* Increases the size of the text inside */
-    width: 60px;   /* Set button width */
-    height:20px;   /* Set button height */
-      /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-      margin: 0px 0px 0px 0px; /* Top, Right, Bottom, Left */
-      background-color: #400de7;
-      color: white;
-      border: black;
-      border-radius: 2px;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-      /* line-height: 50px; */   
-}
-
 
 .tankpre {
             /* position: absolute; */
@@ -131,25 +68,20 @@ th {
         <td><div id="idPump">----</div>
         <td><div id="idRawCount">-</div></td>
         <td><button class="devbutt" onclick="startDev()">Start</button><div id="idState">-</div></td>
-
         <td><div id="idPulsesPaid">0</div></td>
-
         <td><div id="idCounter">0</div></td>
         <td><div id="idPumpState" >-</div></td>
         
         </tr>
 </table>
 
-<button class="bigbutt" style=" position:fixed; bottom: 0px; left: 0px;" id="idTopDebugButton" onclick="setDebugLine(debugline+1)">Felsök Top</button>
-
-
+<button class="devbutt" style=" position:fixed; bottom: 0px; left: 0px;" id="idTopDebugButton" onclick="setDebugLine(debugline+1)">Felsök Top</button>
 
 <script src="js/SerialPort.js"></script>
 <script src="js/Util.js"></script>
 <script>
 
 window.onload = function() {
-    // changeState(0);
 };
 
 let sessionstate=0;

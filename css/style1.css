@@ -12,7 +12,8 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            overflow: auto;
+            /* overflow: auto; */
+            overflow: hidden;
         }
 
         /* Styling for the table */

@@ -77,6 +77,8 @@ th, td {
 
 <button class="devbutt" style=" position:fixed; bottom: 0px; left: 0px;" id="idTopDebugButton" onclick="setDebugLine(debugline+1)">Felsök Top</button>
 
+<button class="devbutt" style="width:100%; visibility:hidden; position:fixed; top: 0px; left: 0px;" id="idRedErrorButton" onclick=""></button>
+
 <script src="js/SerialPort.js"></script>
 <script src="js/Util.js"></script>
 <script>
@@ -256,13 +258,48 @@ function navigateIframe(newsrc) {
       }
     }
 
+errorflags=[0, 0, 0];
+errorstrings=["", "", ""];
+
+function changeRedFlag(errorindex, stat, s) {
+    logg(1,"Red no="+errorindex+" stat="+stat);
+    errorflags[errorindex]=stat;
+    errorstrings[errorindex]=s;
+    const b = document.getElementById("idRedErrorButton");
+
+    if (stat!=0) {
+        b.style.backgroundColor = "red";
+        b.textContent=s;
+        b.style.visibility ="visible";
+    } 
+    else {
+        let anyflag=0;
+        for (i=0; i<errorflags.length; i++)
+           if (errorflags[i]) {
+              anyflag=1;
+              b.style.backgroundColor = "red";
+              b.textContent=errorstrings[i];
+              b.style.visibility ="visible";
+           }
+        if (anyflag==0) {
+            b.style.backgroundColor = "gray";
+            b.style.visibility ="hidden";
+        }
+    }
+
+}
 
 let intervalId = setInterval(timerStuff, 1000);
 
 // Stop the interval  clearInterval(intervalId);
+let lastSerialStatus=0;
 
 async function timerStuff() {
-    
+  let sp=(getSerialStatus()<1 );
+  if (sp!=lastSerialStatus) {
+    lastSerialStatus=sp;
+    changeRedFlag(1, sp, "Ingen kontakt med styrsystemet");
+  }
   if (pumpstate==1) {     // Pumpar
        d6++;
        if (d6>1) d6=0;
@@ -361,13 +398,14 @@ socketPy.onclose = function(event) {
 const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Din Pushbullet API-nyckel
 
 // Skapa en WebSocket-anslutning till Pushbullet
-// *** VÄNTA TILL SENARE 
+// TODO återtstarta socket i timer om den inte är igång 
 const socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
 // *** DEBUG const socket = new WebSocket(`wss://stream...com`);
 
 // Lyssna efter WebSocket-anslutningens öppnande
 socket.onopen = function(event) {
     logg (100, "ws open");
+    changeRedFlag(2, 0, "Ingen kontakt med swish");
 };
 
 // Hantera inkommande meddelanden från Pushbullet
@@ -435,12 +473,18 @@ socket.onmessage = function(event) {
 // Hantera eventuella fel med WebSocket
 socket.onerror = function(error) {
     logg("ws onerror=",error);
+    changeRedFlag(2, 1, "Ingen kontakt med swish");
+
 };
 
 // Stäng WebSocket-anslutningen när det behövs
 socket.onclose = function(event) {
     logg ("ws onclose");
+    changeRedFlag(2, 1, "Ingen kontakt med swish");
+
 };
+
+
 /*
 function showSocket(line1,line2,line3) {
         document.getElementById('Message1').textContent = line1 + "   " + line2 + "   " + line3;

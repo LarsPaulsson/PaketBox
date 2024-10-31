@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Serial Port Communication</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <a href="index.html" class="navbutt" >Startsida</a>
+  
+
+  <center><h2>Serieport test</h2></center>
+  <div id="idSerialport"></div> 
+  <button id="connect" onclick="connectPort()">Manual Connect</button>
+  <button id="disconnect" onclick="disconnectPort()">Disconnect</button>
+  <button id="disconnectAndForget" onclick="disconnectAndForgetPort()">disconnectAndForget</button>
+  <br>
+  <input type="text" id="sendid" name="sendname" placeholder="$S00">
+  <button id="send">Send</button>
+  <input type="text" id="recid" name="recname" placeholder="received here">
+  <br>
+  <button id="sd01" onclick="setDigital(0,1)" >D0 on</button><button id="sd00" onclick="setDigital(0,0)">D0 off</button><br>
+ 
+  <p id="result"></p>
+  <pre class="outputpre" id="output"></pre>
+
+  <script src="js/SerialPort.js"></script>
+  <script>
+
+    function showLogg (v) {
+      const totalHeight = output.clientHeight;
+      if (totalHeight>650) output.textContent="";
+            output.textContent += v+'\n';
+    }
+    
+    function recCallback (v) {
+      recid.value=v;
+      // document.getElementById('recid').textContent=v;
+      // logg(100,"FINE"+v)
+    }
+    
+  function toHex(number) {
+    // Ensure it's a number and return in hexadecimal format
+    return '0x'+number.toString(16);
+  }
+  
+  async function checkPorts () {
+      const ports = await navigator.serial.getPorts();
+      const nports = ports.length;
+      idSerialport.textContent="Serial supported n="+nports;
+      if (nports>0) {
+          const { usbProductId, usbVendorId } = ports[0].getInfo();
+          idSerialport.textContent="Serial supported n="+nports+" usbVendorId="+toHex(usbVendorId)+" usbProductId="+toHex(usbProductId);
+      } 
+    }
+
+    if ("serial" in navigator) {
+  // The Web Serial API is supported.
+      checkPorts();
+  } else idSerialport.textContent="Serial NOT supported";
+
+readLoop();
+
+  </script>
+</body>
+</html>

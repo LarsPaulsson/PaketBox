@@ -1,6 +1,6 @@
     const MAXLEN_GLOBALBUFFER=100;
 
-    let portstate=0;    // 0 not connected, 1 running
+    // let portstate=0;    // 0 not connected, 1 running
     let globalState=0;
     let globalBuffer='';
     let port;
@@ -44,6 +44,9 @@
         logg(100,v);
     }
 
+    function getSerialStatus() 
+       {return(globalState);
+    }
 
     // I vanlig webbrowser är serieporten skyddad av att användaren godkänner en första gång
     // så då behöver en första connect göras strax efter en "User Gesture"
@@ -74,8 +77,8 @@
             }
             if (port==null) {       // If still no port
                 logg(1010, 'port null:'+nports);
-                try { port = await navigator.serial.requestPort(); } // Ask User for permission and select port
-                catch (error) {return 6; }       //Probably needs User gesture
+                //*** try { port = await navigator.serial.requestPort(); } // Ask User for permission and select port
+                //*** catch (error) {return 6; }       //Probably needs User gesture
             }
 
             if (port==null) {

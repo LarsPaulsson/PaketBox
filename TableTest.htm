@@ -24,7 +24,7 @@
         }
 
         /* Styling for the table */
-        table {
+        .usertable {
             width: 80%; /* Fixed width */
             height: 90%; /* Fixed height */
             margin: 0 auto;
@@ -39,6 +39,19 @@
              /* Allows scrolling if table is larger than container */
         }
 
+                /* Styling for the table */
+        .usertablemobile {
+            width: 100%; /* Fixed width */
+            height: 90%; /* Fixed height */
+            margin: 0 auto;
+            padding: 0; 
+            color: white;
+
+            /* border: 1px solid #cccccc; */
+            border-collapse: collapse;
+            text-align: center;
+            background-color: rgba(0, 64, 0, 0.6);
+        }
         /* Optional cell styling */
         td {
             height: 5vh;
@@ -69,7 +82,7 @@
 <body>
     
  
-    <table id="utable">
+    <table id="utable" class="usertable">
         <tr><td>Rubrik <span id="line1"></span></td></tr>
 
         <tr><td><div id="line2">Rad 2 med beskrivande text</div></td></tr>
@@ -116,10 +129,14 @@
           let w=window.innerWidth;
           let h=window.innerHeight;
           let p=0;
+          const tab = document.getElementById("utable");
           if (w<h) p=1;
           if (p != portrait) {
-              portrait=p;
-          }
+            portrait=p;
+            if (portrait) tab.className = "usertablemobile";
+            else tab.className="usertable";
+            }
+
           dpratio = window.devicePixelRatio;
   
           idScreen.textContent='innerWidth:'+w+'x'+h+' dpratio:'+dpratio+

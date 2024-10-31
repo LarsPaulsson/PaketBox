@@ -100,12 +100,14 @@
         <tr><td><div id="idScreen"></div></td></tr>
         <tr><td><div id="idPlatform"></div></td></tr>
         <tr><td>
-        <button class="bigbutt" >Förra</button><button class="bigbutt">Nästa</button
+        <button class="bigbutt" onclick="openFullscreen()">Fullscreen</button>
+        <button class="bigbutt" onclick="closeFullscreen()">Exit F11</button
         </td></tr>
         <tr><td class="devline"><div id="idBrands"></div></td></tr>
         <tr><td class="devline"><div id="line8">Debug info/logo</div></td></tr>
     </table>
 
+ 
     <script>
 /*      Justeras med script:
         Om table height>vievport så behövs body.align-items: top; isf center
@@ -156,7 +158,36 @@
   
           // logg(100,'resize:' + w + 'x' + h+' portrait='+portrait+" table:"+uh+" dt:"+dt);
       }
-  
+
+
+
+      /* Get the documentElement (<html>) to display the page in fullscreen */
+
+
+/* View in fullscreen */
+function openFullscreen() {
+  var elem = document.documentElement;
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE11 */
+    elem.msRequestFullscreen();
+  }
+}
+
+/* Close fullscreen */
+function closeFullscreen() {
+  var elem = document.documentElement;
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.webkitExitFullscreen) { /* Safari */
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) { /* IE11 */
+    document.msExitFullscreen();
+  }
+}
+
       window.addEventListener('resize', CheckScreenSize);
       CheckScreenSize();
       // idUserAgent.textContent= window.navigator.userAgent;
@@ -188,6 +219,11 @@
 // på gammal tablet 800x1159 eller 1280x679
 
 
+// javascript: (function(){
+// document.querySelector("body").requestFullscreen(); // .then(() => {
+// document.querySelector("body").style.overflow = "auto";
+// });
+// })();​
 
   </script>
 </body>

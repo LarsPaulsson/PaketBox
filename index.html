@@ -28,7 +28,8 @@
   <div id="idUserAgent"></div> 
   <div id="idInfo"></div> 
   <div id="idPlatform"></div> 
-  <div id="idBrands"></div> 
+  <div id="idBrands"></div>
+  <div id="idSerialport"></div> 
   <script>
     // Function to handle the navigation
     function navigateToURL(event) {
@@ -86,6 +87,27 @@
   for (i=0; i<arrayBrands.length; i++) {
      idBrands.textContent+=arrayBrands[i].brand+' '+arrayBrands[i].version+',';
     }
+
+    if ("serial" in navigator) {
+  // The Web Serial API is supported.
+      checkPorts();
+  } else idSerialport.textContent="Serial NOT supported";
+
+  function toHex(number) {
+    // Ensure it's a number and return in hexadecimal format
+    return '0x'+number.toString(16);
+  }
+  
+  async function checkPorts () {
+      const ports = await navigator.serial.getPorts();
+      const nports = ports.length;
+      idSerialport.textContent="Serial supported n="+nports;
+      if (nports>0) {
+          const { usbProductId, usbVendorId } = ports[0].getInfo();
+          idSerialport.textContent="Serial supported n="+nports+" usbVendorId="+toHex(usbVendorId)+" usbProductId="+toHex(usbProductId);
+      } 
+    }
+
 </script>
 </body>
 </html>

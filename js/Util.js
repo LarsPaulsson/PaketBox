@@ -62,7 +62,9 @@ function sendup(m) {
     function SwishQRorNavigate(idDestination, phone, amt, swmsg, w, mode) {
       let qrContent;
       qrContent="https://app.swish.nu/1/p/sw/?sw="+phone+"&amt="+amt+"&cur=SEK&msg="+swmsg+"&src=qr";
-      if(window.navigator.userAgent.match(/(iPhone|iPod|iPad|Android)/)) {
+      const isMobileDevice = window.navigator.userAgent.toLowerCase().includes("mobi");
+      if (isMobileDevice) {
+      // if(window.navigator.userAgent.match(/(iPhone|iPod|iPad|Android)/)) {
         // i mobil
           // window.open(qrContent, '_blank');
           window.location.href = qrContent;

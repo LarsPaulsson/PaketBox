@@ -52,13 +52,15 @@
 <script src="js/Util.js"></script>
 <script>
 
+const isMobileDevice = window.navigator.userAgent.toLowerCase().includes("mobi");
+let portrait=0;
+
 window.onload = function() {
     changeState(0);
     setDebugLine(debugline);
     CheckScreenSize();
     }
 
-    let portrait=0;
     function CheckScreenSize() {
         let w=window.innerWidth;
         let h=window.innerHeight;
@@ -67,9 +69,10 @@ window.onload = function() {
         if (w<h) p=1;
         if (p != portrait) {
             portrait=p;
-            if (portrait) tab.className = "usertablemobile";
+            if (portrait) tab.className = "usertablePortrait";
             else tab.className="usertable";
         }
+        /*
         let uh=tab.offsetHeight ;
         let dt=h-uh;
         if (dt>10) {
@@ -82,8 +85,7 @@ window.onload = function() {
             // tab.style.position = "absolute";
             tab.style.top="0 px";
         }
-        // const rect = table.getBoundingClientRect();
-        // console.log("Table height (getBoundingClientRect):", rect.height);
+        */
         dpratio = window.devicePixelRatio;
         // let z=document.body.style.zoom; // ej definierad
 

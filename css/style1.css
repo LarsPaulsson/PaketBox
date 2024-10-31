@@ -36,7 +36,7 @@
         }
 
                 /* Styling for the table */
-        .usertablemobile {
+        .usertablePortrait {
             width: 100%; /* Fixed width */
             height: 90%; /* Fixed height */
             margin: 0 auto;

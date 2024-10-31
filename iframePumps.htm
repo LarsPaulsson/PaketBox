@@ -264,7 +264,7 @@ function changeState(newstate) {
             // generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);
             if (isMobileDevice) {
                 // SwishQRorNavigate("idSwishImage", phone1, price, "S1", 200, 1);
-                idSwishImage.textContent=sSwishButt;
+                idSwishImage.innerHTML=sSwishButt;
             }
             else {
                 generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);

@@ -4,57 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Swisha och tanka!</title>
+    <link rel="stylesheet" href="css/style1.css">
+
 </head>
 <body>
 <style>
-    body, html {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    /* display: flex; */
-    /* display: grid; */
-    justify-content: center;  /* Center horizontally */
-    align-items: center;      /* Center vertically */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    }
-.usertable {
-    border-collapse: collapse;
-    font-size: 60px;
-    color: white;
-    /* background-color: #2d5e17; */
-    background-color: rgba(0, 64, 0, 0.8);
-/*    background-color: rgba(255, 255, 255, 1); */
-    position: relative;
-
-    margin: 0 auto; /* Center the table itself */
-    text-align: center; /* Center the content in the table */
-    width: 80%; /* Optional: define the table width */
-    table-layout: fixed;
-
-    /* height:80%; */
-  }
-  .usertablemobile {
-    border-collapse: collapse;
-    font-size: 40px;
-    color: white;
-    background-color: rgba(0, 64, 0, 0.6);
-    margin: 0 auto; /* Center the table itself */
-    text-align: center; /* Center the content in the table */
-    width: 100%; /* Optional: define the table width */
-    height:100%;       
-  }
-
-th, td {
-    padding: 8px;
-    text-align: center;
-    border: 1px solid black;
-  
-  }
-th {
-    background-color: #f2f2f2;
-}
 
 .devline {
     background-color: rgb(9, 49, 31);
@@ -68,39 +22,7 @@ th {
     background-color: white;
 }
 
-.bigbutt {
-    padding: 10px 20px;  /* Adjusts the space inside the button */
-    font-size: 24px;      /* Increases the size of the text inside */
-    width: 10%px;   /* Set button width */
-    height:10%;   /* Set button height */
-      /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-      margin: 10px 10px 10px 10px; /* Top, Right, Bottom, Left */
-      background-color: #400de7;
-      color: white;
-      border: black;
-      border-radius: 5px;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-      line-height: 50px;   
-}
 
-.devbutt {
-    padding: 0px 0px;  /* Adjusts the space inside the button */
-    font-size: 20px;      /* Increases the size of the text inside */
-    width: 100px;   /* Set button width */
-    height:100px;   /* Set button height */
-      /* margin: 20px; */ /* Adds 20px space outside the button on all sides */
-      margin: 0px 0px 0px 0px; /* Top, Right, Bottom, Left */
-      background-color: #400de7;
-      color: white;
-      border: black;
-      border-radius: 2px;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-      /* line-height: 50px; */   
-}
 
 .tankpre {
             // position: absolute;
@@ -112,30 +34,26 @@ th {
             border: 1px solid #ddd;
             padding: 10px;
 }
-.center-container {
-            display: flex;
-            justify-content: center; /* Horizontally center */
-            align-items: center;     /* Vertically center */
-            /* height: 100vh; */    /* 100% of the viewport height */
-            background-color: white;
-            padding: 10px;
-        }
+
 </style>
 
 <table id="utable" class="usertable">
-    <tr><td><div id="line1"></div></td></tr>
+    <tr><td class="tdheadline"><div id="line1"></div></td></tr>
     <tr><td><div id="line2"></div></td></tr>
     <tr><td><div id="line3"></div></td></tr>
     <tr><td><div id="line4"></div></td></tr>
     <tr><td><div id="line5"></div></td></tr>
     <tr><td><div id="line6"></div></td></tr>
-    <tr><td class="devline"><div id="line7"></div></td></tr>
-    <tr><td class="devline"><div id="line8"></div></td></tr>
+    <tr><td class="tdfooterline"><div id="line7"></div></td></tr>
+    <tr><td class="tdfooterline"><div id="line8"></div></td></tr>
 </table>
 
 <script src="js/qrcode.js"></script>
 <script src="js/Util.js"></script>
 <script>
+
+const isMobileDevice = window.navigator.userAgent.toLowerCase().includes("mobi");
+let portrait=0;
 
 window.onload = function() {
     changeState(0);
@@ -143,7 +61,6 @@ window.onload = function() {
     CheckScreenSize();
     }
 
-    let portrait=0;
     function CheckScreenSize() {
         let w=window.innerWidth;
         let h=window.innerHeight;
@@ -152,9 +69,10 @@ window.onload = function() {
         if (w<h) p=1;
         if (p != portrait) {
             portrait=p;
-            if (portrait) tab.className = "usertablemobile";
+            if (portrait) tab.className = "usertablePortrait";
             else tab.className="usertable";
         }
+        /*
         let uh=tab.offsetHeight ;
         let dt=h-uh;
         if (dt>10) {
@@ -167,11 +85,13 @@ window.onload = function() {
             // tab.style.position = "absolute";
             tab.style.top="0 px";
         }
-        // const rect = table.getBoundingClientRect();
-        // console.log("Table height (getBoundingClientRect):", rect.height);
+        */
         dpratio = window.devicePixelRatio;
+        // let z=document.body.style.zoom; // ej definierad
 
-        logg(100,'size:'+w+'x'+h+' dpratio:'+dpratio+' screen:' + dpratio*window.screen.width + 'x' + dpratio*window.screen.height);
+        logg(100,'innerWidth:'+w+'x'+h+' dpratio:'+dpratio+
+                 ' outerWidth:'+window.outerWidth+'x'+window.outerHeight+
+                 ' screen:' + window.screen.width + 'x' + window.screen.height);
 
         // logg(100,'resize:' + w + 'x' + h+' portrait='+portrait+" table:"+uh+" dt:"+dt);
     }
@@ -217,6 +137,7 @@ window.onload = function() {
     '',
     '-',
     // '<img id="idSwishImage" src="img\\qr1.png" width=150 height=150 >',
+    // '<img id="idSwishImage" width=300 height=300 >',
     '<div class="center-container" id="idSwishImage"></div>',
     '<button class="bigbutt" id="selbutt" onclick="payment(price)">Hoppa över</button>'
     ];
@@ -236,10 +157,12 @@ window.onload = function() {
     'Tack för besöket',
     'Välkommen åter'
     ];
+    
     debuglines=[
-    '<button class="devbutt" style="position: fixed; bottom: 0px; left: 100px;" id="upbutt" onclick="setDebugLine(debugline+1)">Felsök UI</button>',
-    '<button class="devbutt" style="position: fixed; bottom: 0px; left: 100px;" id="upbutt" onclick="setDebugLine(debugline+1)">Felsök UI</button>',
+    '<button class="devbutt" style="position: fixed; bottom: 0px; right: 0px;" id="upbutt" onclick="setDebugLine(debugline+1)">Felsök UI</button>',
+    '<button class="devbutt" style="position: fixed; bottom: 0px; right: 0px;" id="upbutt" onclick="setDebugLine(debugline+1)">Felsök UI</button>',
     ]; 
+
 
     let price=5;
     let kilos=0.0;
@@ -281,7 +204,7 @@ window.onload = function() {
 
     function logg(v,s) {
         if (loggstring.length>200) loggstring="";
-        loggstring +="-----"+v+" "+s;
+        loggstring +="...."+v+" "+s;
         if (debugline>0) line7.innerHTML=loggstring;
         // console.log(v+", logg="+s);
 
@@ -335,7 +258,14 @@ function changeState(newstate) {
             // document.getElementById("idSwishImage").src = "img\\qr"+price+".png";
             // console.log(phone1, price);
             // generateSwishQrCode("idSwishImage", phone1, price, "S1", 200, 1);
-            SwishQRorNavigate("idSwishImage", phone1, price, "S1", 200, 1);
+            if (isMobileDevice) {
+                // SwishQRorNavigate("idSwishImage", phone1, price, "S1", 200, 1);
+                line5.innerHTML='<button class="bigbutt" onclick="SwishNavigate(phone1, price, swishmsg)">Öppna Swish</button>';
+                // SwishNavigate(phone1, price, "S1");
+            }
+            else {
+                generateSwishQrCode("idSwishImage", phone1, price, swishmsg, 200, 1);
+            }
             newproduct(pump);
             //newprice(price);
             sessiontimer=60;

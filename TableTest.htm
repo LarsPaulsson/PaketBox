@@ -167,7 +167,10 @@
 
 
 /* View in fullscreen */
+// Måste föregås av användarhandling för att funka, annars fås:
+// Failed to execute 'requestFullscreen' on 'Element': API can only be initiated by a user gesture.
 function openFullscreen() {
+try {
   var elem = document.documentElement;
   if (elem.requestFullscreen) {
     elem.requestFullscreen();
@@ -176,6 +179,8 @@ function openFullscreen() {
   } else if (elem.msRequestFullscreen) { /* IE11 */
     elem.msRequestFullscreen();
   }
+} catch(err) {}
+
 }
 
 /* Close fullscreen */
@@ -212,6 +217,7 @@ function closeFullscreen() {
 
       document.body.style.backgroundImage = 'url(img/vete.jpg)';
 
+  // openFullscreen();  // Failed to execute 'requestFullscreen' on 'Element': API can only be initiated by a user gesture.
 
 // 1920x1080 fysisk upplösning är standard full HD
 // 1,25 är normal skalfaktor för de flesta websites, Windows systemskalning 1,25 zoom 1, Linux zoom 1,25
@@ -220,12 +226,6 @@ function closeFullscreen() {
 // På Mobil OneNord tillgängligt 384x713 eller
 // på gammal tablet 800x1159 eller 1280x679
 
-
-// javascript: (function(){
-// document.querySelector("body").requestFullscreen(); // .then(() => {
-// document.querySelector("body").style.overflow = "auto";
-// });
-// })();​
 
   </script>
 </body>

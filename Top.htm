@@ -258,11 +258,11 @@ function navigateIframe(newsrc) {
       }
     }
 
-errorflags=[0, 0, 0];
-errorstrings=["", "", ""];
+errorflags=[0, 0, 0, 0];
+errorstrings=["", "", "", ""];
 
 function changeRedFlag(errorindex, stat, s) {
-    logg(1,"Red no="+errorindex+" stat="+stat);
+    logg(1,"Redflag no="+errorindex+" stat="+stat);
     errorflags[errorindex]=stat;
     errorstrings[errorindex]=s;
     const b = document.getElementById("idRedErrorButton");
@@ -294,7 +294,10 @@ let intervalId = setInterval(timerStuff, 1000);
 // Stop the interval  clearInterval(intervalId);
 let lastSerialStatus=0;
 
-async function timerStuff() {
+function timerStuff() {
+//async function timerStuff() {
+  onlineWatch();
+  socketWatch();
   let sp=(getSerialStatus()<1 );
   if (sp!=lastSerialStatus) {
     lastSerialStatus=sp;
@@ -303,8 +306,10 @@ async function timerStuff() {
   if (pumpstate==1) {     // Pumpar
        d6++;
        if (d6>1) d6=0;
-       await setDigital(6,d6);
-       await delay(100);
+       setDigital(6,d6);
+       // await setDigital(6,d6);
+       delay(100);
+       // await delay(100);
        sendtoPort("$s00");
   }
   if (pumpstate==2) {     // Uppnått antal pulser
@@ -396,20 +401,44 @@ socketPy.onclose = function(event) {
 */
 
 const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Din Pushbullet API-nyckel
+var socket;
 
 // Skapa en WebSocket-anslutning till Pushbullet
-// TODO återtstarta socket i timer om den inte är igång 
-const socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
+// const socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
 // *** DEBUG const socket = new WebSocket(`wss://stream...com`);
+// Skapa en WebSocket-anslutning till Pushbullet
+// Denna funkade inte på Raspberry Pi eftersom dess Chromium hade en extension som blockerade, "ublock origin".
+function openSocket() {
+try {
+   socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
+   // var socket = new WebSocket(`wss://echo.websocket.org`);
+   logg (100, "ws New");
+   // socket.addEventListener("open", (event) => { socketOpen(event); });
+   // socket.addEventListener("close", (event) => { socketOpen(event); });
+   // socket.addEventListener("error", (event) => { socketOpen(event); });
+   // socket.addEventListener("message", (event) => { socketMessage(event); });
+   socket.onopen = socketOnopen;
+   socket.onmessage = socketOnmessage;
+   socket.onerror = socketOnerror;
+   socket.onclose =socketOnclose;
+
+} catch (err) {
+    logg (8, "ws Error:"+err.message);
+};
+}
+
 
 // Lyssna efter WebSocket-anslutningens öppnande
-socket.onopen = function(event) {
-    logg (100, "ws open");
+function socketOnopen(event) {
+// socket.onopen = function(event) {
+    logg (70, "ws open");
     changeRedFlag(2, 0, "Ingen kontakt med swish");
 };
 
 // Hantera inkommande meddelanden från Pushbullet
-socket.onmessage = function(event) {
+// Hantera inkommande meddelanden från Pushbullet
+function socketOnmessage(event) {
+// socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
     let l2="";
     let l3="";
@@ -471,19 +500,43 @@ socket.onmessage = function(event) {
 };
 
 // Hantera eventuella fel med WebSocket
-socket.onerror = function(error) {
-    logg("ws onerror=",error);
+function socketOnerror(event) {
+// socket.onerror = function(error) {
+    logg(1, "ws onerror="+event.data);
     changeRedFlag(2, 1, "Ingen kontakt med swish");
 
 };
 
 // Stäng WebSocket-anslutningen när det behövs
-socket.onclose = function(event) {
-    logg ("ws onclose");
+function socketOnclose(event) {
+// socket.onclose = function(event) {
+    let s="unkown";
+    if ('code' in event) s=event.code;
+    logg (2, "ws onclose:"+s);
     changeRedFlag(2, 1, "Ingen kontakt med swish");
 
 };
 
+// WebSocket.CONNECTING (0) Socket has been created. The connection is not yet open.
+// WebSocket.OPEN (1) The connection is open and ready to communicate.
+// WebSocket.CLOSING (2) The connection is in the process of closing.
+// WebSocket.CLOSED (3) The connection is closed or couldn't be opened
+function socketWatch() {
+    let rs;
+    if (socket) rs=socket.readyState;
+    else rs=WebSocket.CLOSED;
+    if (rs>=WebSocket.CLOSED) openSocket();
+    if (rs==WebSocket.CLOSING) socket.close();
+}
+
+let lastonlineflag=-1;
+function onlineWatch() {
+    if (navigator.onLine) flag=0; else flag=1;
+    if (flag != lastonlineflag) {
+        changeRedFlag(3, flag, "Inget nätverk");
+        lastonlineflag=flag;
+    }
+}
 
 /*
 function showSocket(line1,line2,line3) {

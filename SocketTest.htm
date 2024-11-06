@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket test</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <style>
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding: 8px;
+          text-align: center;
+          border: 1px solid black;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+      </style>
+      
+      <style>
+          .tankbutton {
+              padding: 10px 20px;  /* Adjusts the space inside the button */
+              font-size: 18px;      /* Increases the size of the text inside */
+              width: 300px;   /* Set button width */
+              height: 50px;   /* Set button height */
+              background-color: green;
+          }
+          .tankpre {
+            position: absolute;
+            top: 250px;  /* Adjust the top position */
+            left:20px;  /* Adjust the left position */
+            width:600;
+            height: 500;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            }
+      </style>
+
+<a href="index.html" class="navbutt" >Startsida</a>
+
+
+    <table>
+        <tr>
+          <th>Socket 1 Pushbullet</th>
+          <th>Socket 2</th>
+          <th>Socket 3</th>
+          <th>Socket 4</th>
+        </tr>
+        <tr>
+        <td><button class="tbutt" id="open1">Öppna</button>
+            <button class="tbutt" id="close1">Stäng</button></td>
+        <td><button class="tbutt" id="open2">Öppna</button>
+            <button class="tbutt" id="close2">Stäng</button></td>
+        <td><button class="tbutt" id="open3">Öppna</button>
+            <button class="tbutt" id="close3">Stäng</button></td>
+        <td><button class="tbutt" id="open4">Öppna</button>
+            <button class="tbutt" id="close4">Stäng</button></td>
+        </tr>
+        <tr>
+            <td><input type="text" id="idSendmsg" name="counter0name" placeholder="sendmessage">
+            <button id="idSendButt" onclick="sendUp(idSendmsg.value)">Send</button>
+            <input type="text" id="idSocket1" name="counter0name" placeholder="socket"></td>
+        </tr>
+
+      </table>
+      
+      <pre class="tankpre" id="output"></pre>
+    
+
+
+    <script>
+
+let count=0;
+var cLastNop=0;
+
+
+    function showLogg (v) {
+      const totalHeight = output.clientHeight;
+      if (totalHeight>500) output.textContent="";
+            output.textContent += v+'\n';
+    }
+    let debuglevel=100;
+
+    function logg (l, v) {
+        let s;
+        let p;
+        if (l < 10) p=`*`;
+        else if (l==90) p=">";
+        else if (l==91) p="<";
+        else if (l==92) p="?";
+        else if (l<100) p="!";
+        else p="+";
+        s=`${count} ${v}`;
+        if (l<=debuglevel) {
+            showLogg (s);   // resides in html document
+            console.log(s);
+        }
+
+    }
+    function recCallback (v) {
+      // recid.value=v;
+      s=v.substring(0,2);
+      if (s=="#A") {
+        p1=v.indexOf("V");
+        p2=v.indexOf("W");
+        s=v.substring(p1+1);
+//        s=s.trim();
+        counter0id.value=parseInt(s);
+      // logg(1,"HERE:"+s);
+      }
+    }
+
+    debuglevel=100;
+    logg(0, 'Program start');
+
+document.getElementById('open1').addEventListener('click', async () => {
+    try {
+        openSocket();
+        // logg (100, "ws open");
+    } catch (err) {
+        logg (8, "click open Error:"+err.message);
+    };
+});
+
+document.getElementById('close1').addEventListener('click', async () => {
+    try {
+       socket.close();
+       // logg (100, "ws close");
+    } catch (err) {
+        logg (8, "click close Error:"+err.message);
+    };
+});
+
+document.getElementById('open2').addEventListener('click', async () =>{
+    logg (100, "Open");
+        });
+        
+document.getElementById('close2').addEventListener('click', async () =>{
+    logg (100, "Close");
+        });
+
+document.getElementById('open3').addEventListener('click', async () =>{
+    try {const audio = new Audio('mp3/sound3.mp3'); audio.play();} catch{};
+        });
+
+document.getElementById('close3').addEventListener('click', async () =>{
+    try {const audio = new Audio('mp3/sound1.mp3'); audio.play(); } catch{};
+        });
+
+document.getElementById('open4').addEventListener('click', async () =>{
+//    try {const audio = new Audio('mp3/sound3.mp3'); audio.play();} catch{};
+        });
+
+document.getElementById('close4').addEventListener('click', async () =>{
+//    try {const audio = new Audio('mp3/sound1.mp3'); audio.play(); } catch{};
+        });
+
+        /*
+// Skapa en WebSocket-anslutning till Python
+const socketPy = new WebSocket(`ws://localhost:8765/`);
+
+// Lyssna efter WebSocket-anslutningens öppnande
+socketPy.onopen = function(event) {
+//    showSocket("Ansluten!","","");
+    console.log("socketPy ansluten till Python!");
+};
+
+// Hantera inkommande meddelanden
+socketPy.onmessage = function(event) {
+    // const data = JSON.parse(event.data);
+    console.log("socketPy.onmessage:", event.data);
+};
+
+// Hantera eventuella fel med WebSocket
+socketPy.onerror = function(error) {
+    console.error("WebSocketPy fel:", error);
+    // showSocket("socket.onerror",error,"");
+};
+
+// Stäng WebSocket-anslutningen när det behövs
+socketPy.onclose = function(event) {
+    console.log("WebSocketPy stängd.");
+    // showSocket("socket.onclose","","");
+};
+*/
+
+const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Min Pushbullet API-nyckel
+var socket;
+
+/*
+function socketMessage(event) {
+    logg(1,"NewOnMessage:"+event.data)
+}
+
+function socketOpen(event) {
+    logg(1,"NewEvent type:"+event.type+" data:"+event.data)
+}
+ */
+
+// Skapa en WebSocket-anslutning till Pushbullet
+// Denna funkade inte på Raspberry Pi eftersom dess Chromium hade en extension som blockerade, "ublock origin".
+function openSocket() {
+try {
+   socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
+   // var socket = new WebSocket(`wss://echo.websocket.org`);
+   logg (100, "ws New");
+   // socket.addEventListener("open", (event) => { socketOpen(event); });
+   // socket.addEventListener("close", (event) => { socketOpen(event); });
+   // socket.addEventListener("error", (event) => { socketOpen(event); });
+   // socket.addEventListener("message", (event) => { socketMessage(event); });
+   // socket.onmessage=socketMessage;      // behövs på nytt om ny socket
+   socket.onopen = socketOnopen;
+   socket.onmessage = socketOnmessage;
+   socket.onerror = socketOnerror;
+   socket.onclose =socketOnclose;
+
+} catch (err) {
+    logg (8, "ws Error:"+err.message);
+};
+}
+
+/*
+try {
+   socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
+   // var socket = new WebSocket(`wss://echo.websocket.org`);
+   logg (100, "ws New");
+} catch (err) {
+    logg (8, "ws Error:"+err.message);
+};
+
+*/
+
+// Lyssna efter WebSocket-anslutningens öppnande
+function socketOnopen(event) {
+    logg (100, "ws open");
+};
+
+
+// Hantera inkommande meddelanden från Pushbullet
+function socketOnmessage(event) {
+    const data = JSON.parse(event.data);
+    let l2="";
+    let l3="";
+    let audio;
+
+    logg (100, "ws onmessage data.type="+data.type+" t:"+cLastNop);  // Var 30:e s kommer data.type=nop
+    if (data.type === 'nop') {
+        cLastNop=0;
+    }
+    // Kontrollera om det är ett pushmeddelande
+    if (data.type === 'push') {
+//        console.log("push:", data.push);
+        if (data.push.type === 'mirror') {
+            try {
+             l1=`${data.push.application_name}`;
+             l2=`${data.push.title}`;
+             l3=`${data.push.body}`;
+            }
+            catch {    }
+            logg(100, `ws application_name: ${l1}`);
+            logg(100, `ws title: ${l2}`);
+            logg(100, `ws body: ${l3}`);
+            switch (l1) {
+                case "Pushbullet":
+                    logg(100, "ws Pushbullet");
+                    document.getElementById('tank4').click();
+                    // document.getElementById('pulseDTR').click();
+                    // audio = new Audio('mp3/pusbullet.mp3'); audio.play();
+                    break;
+                case "Tapo":
+                    logg(100, "ws Tapo");
+                // audio = new Audio('mp3/tapo.mp3'); audio.play();
+                    break;
+                case "Swish":
+                    logg(100, "Swish");
+                    document.getElementById('tank1').click();
+                    // document.getElementById('pulseDTR').click();
+                    // audio = new Audio('mp3/swish.mp3'); audio.play();
+                    break;
+            
+                default:
+                    break;
+            }
+            
+        }
+    }
+};
+
+// Hantera eventuella fel med WebSocket
+
+function socketOnerror(event) {
+    let s="Unknown";
+    // if ('code' in event) s=event.code;
+    // if ('reason' in event) s=event.reason;
+    // if ('value' in event) s=event.value;
+    logg(1,"ws onerror");
+};
+
+// När WebSocket-anslutningen stängs
+function socketOnclose(event) {
+    let s="unkown";
+    if ('code' in event) s=event.code;
+    // if ('reason' in event) s=event.reason;
+    // if ('value' in event) s=event.value;
+    logg (2, "ws onclose:"+s);
+};
+
+/*
+function showSocket(line1,line2,line3) {
+        document.getElementById('Message1').textContent = line1 + "   " + line2 + "   " + line3;
+}
+*/
+
+function sendUp(s) {
+    socket.send(s);
+}
+
+
+// WebSocket.CONNECTING (0) Socket has been created. The connection is not yet open.
+// WebSocket.OPEN (1) The connection is open and ready to communicate.
+// WebSocket.CLOSING (2) The connection is in the process of closing.
+// WebSocket.CLOSED (3) The connection is closed or couldn't be opened
+function socketWatch() {
+    let rs;
+    if (socket) rs=socket.readyState;
+    else rs=WebSocket.CLOSED;
+    if (rs>=WebSocket.CLOSED) openSocket();
+    if (rs==WebSocket.CLOSING) socket.close();
+
+}
+
+
+
+let intervalId = setInterval(timerStuff, 1000);
+
+// Stop the interval  clearInterval(intervalId);
+let lastSerialStatus=0;
+let lastrs=-1;
+
+function timerStuff() {
+    count++;
+    cLastNop++;
+    if (socket) {
+        let rs=socket.readyState;
+        // if (rs>=WebSocket.CLOSED) openSocket();
+        // if (rs==WebSocket.CLOSING) socket.close();
+        // idSocket1.textContent=count;
+  
+        document.getElementById('idSocket1').value=count+" readystate:"+ rs+" online:"+navigator.onLine;
+        if (rs!=lastrs) {
+            logg(100,"readystate:"+rs)
+            lastrs=rs;
+        }
+    } else {
+        openSocket();
+        logg(1,"No socket");
+    }
+    socketWatch();
+}
+
+
+    // kortare wifi bortfall upp emot 30 s är ok, det funkar när wifi är tillbaka,
+    // men efter ca 35-40 s utan wifi kommer onclose och  readystate==3 CLOSED.
+    // (om man försöker skicka med send så kastas "WebSocket is already in CLOSING or CLOSED state.)
+    // När wifi kommer tillbaka startar den inte själv utan det krävs ny open
+    // Alla event listeners måste initieras om efter en close-open.
+
+
+openSocket();
+
+
+ </script>
+</body>
+</html>

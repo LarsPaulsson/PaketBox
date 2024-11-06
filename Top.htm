@@ -436,7 +436,6 @@ function socketOnopen(event) {
 };
 
 // Hantera inkommande meddelanden från Pushbullet
-// Hantera inkommande meddelanden från Pushbullet
 function socketOnmessage(event) {
 // socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
@@ -463,7 +462,7 @@ function socketOnmessage(event) {
             switch (l1) {
                 case "Pushbullet":
                     changePaid(20,"T1 Test");                    
-                    logg(80, "ws Pushbullet");
+                    logg(80, "ws Push");
                     // l3='Pålsson Viktor har swishat dig 5 kr.\n “S1”'
                 break;
 

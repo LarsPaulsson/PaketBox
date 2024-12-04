@@ -66,6 +66,11 @@
             <td><input type="text" id="idSendmsg" name="counter0name" placeholder="sendmessage">
             <button id="idSendButt" onclick="sendUp(idSendmsg.value)">Send</button>
             <input type="text" id="idSocket1" name="counter0name" placeholder="socket"></td>
+
+            <td><input type="text" id="idSendmsg2" name="counter1name" placeholder="sendmessage">
+                <button id="idSendButt2" onclick="sendUp2(idSendmsg2.value)">Send</button>
+                <input type="text" id="idSocket2" name="counter2name" placeholder="socket"></td>
+    
         </tr>
 
       </table>
@@ -164,7 +169,12 @@ document.getElementById('close4').addEventListener('click', async () =>{
 
 
 // Skapa en WebSocket-anslutning till Python
-const socketPy = new WebSocket(`ws://localhost:8765/`);
+//const socketPy = new WebSocket(`ws://localhost:8765/`); // funkar
+// const socketPy = new WebSocket(`ws://echo.websocket.org/.ws`); // denna failar
+// const socketPy = new WebSocket(`wss://echo.websocket.org/.ws`); // denna funkar
+ // const socketPy = new WebSocket(`ws://echo-websocket.fly.dev/:80`); // denna funkar
+// const socketPy = new WebSocket(`ws://66.241.124.119/`); // denna failar
+const socketPy = new WebSocket(`ws://192.168.1.83:3000/`); // denna 
 
 function open2() {
 try {
@@ -186,7 +196,7 @@ try {
 // Lyssna efter WebSocket-anslutningens öppnande
 socketPy.onopen = function(event) {
 //    showSocket("Ansluten!","","");
-    console.log("socketPy ansluten till Python!");
+    console.log("socketPy ansluten!!");
 };
 
 // Hantera inkommande meddelanden
@@ -210,6 +220,7 @@ socketPy.onclose = function(event) {
 
 const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Min Pushbullet API-nyckel
 var socket;
+
 
 /*
 function socketMessage(event) {
@@ -339,6 +350,9 @@ function sendUp(s) {
     socket.send(s);
 }
 
+function sendUp2(s) {
+    socketPy.send(s);
+}
 
 // WebSocket.CONNECTING (0) Socket has been created. The connection is not yet open.
 // WebSocket.OPEN (1) The connection is open and ready to communicate.

@@ -9,12 +9,15 @@ const STATE_USECASE2=7;
 const MSG_NEXT=90;
 const MSG_LOADED=91;
 
-let product1 = { number:1, name:"Vete", price:5.0, volume:1000, pulses: 5, image:"img/vete.jpg"};
-let product2 = { number:2, name:"Fågelfrö", price:5.5, volume:100, pulses: 10, image:"img/fågelfrö.jpg" };
-let product3 = { number:3, name:"Majs", price:3.8, volume:500, pulses: 7, image:"img/majs.jpg" };
-let product4 = { number:4, name:"Havre", price:3.9, volume:2000, pulses: 6, image:"img/havre.jpg" };
-let product5 = { number:0, name:"QRkoder", price:0, volume:20, pulses: 6, image:"img/qr.png" };
-let product6 = { number:0, name:"QRkoder", price:0, volume:20, pulses: 6, image:"img/qr.png" };
+const MINPRICE=1;
+const MAXPRICE=10;
+
+let product1 = { number:1, name:"Vete", price:1.0, volume:1000, pulses: 0.22, image:"img/vete.jpg"};
+let product2 = { number:2, name:"Fågelfrö", price:5.5, volume:100, pulses: 0.44, image:"img/fågelfrö.jpg" };
+let product3 = { number:3, name:"Majs", price:3.8, volume:500, pulses: 0.32, image:"img/majs.jpg" };
+let product4 = { number:4, name:"Havre", price:3.9, volume:2000, pulses: 0.25, image:"img/havre.jpg" };
+let product5 = { number:0, name:"QRkoder", price:0, volume:20, pulses: 1, image:"img/qr.png" };
+let product6 = { number:0, name:"QRkoder", price:0, volume:20, pulses: 1, image:"img/qr.png" };
 // let prods=[product1,product2,product3,product4,product5,product6];
 let prods=[product1,product2,product3,product4];
 let productindex=0;

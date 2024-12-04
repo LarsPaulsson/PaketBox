@@ -17,8 +17,8 @@
   <button id="disconnect" onclick="disconnectPort()">Disconnect</button>
   <button id="disconnectAndForget" onclick="disconnectAndForgetPort()">disconnectAndForget</button>
   <br>
-  <input type="text" id="sendid" name="sendname" placeholder="$S00">
-  <button id="send">Send</button>
+  <input type="text" id="sendid" name="sendname" placeholder="$s00">
+  <button id="send" onclick="sendtoPort(sendid.value)">Send</button>
   <input type="text" id="recid" name="recname" placeholder="received here">
   <br>
   <button id="sd01" onclick="setDigital(0,1)" >D0 on</button><button id="sd00" onclick="setDigital(0,0)">D0 off</button><br>

@@ -70,6 +70,8 @@
             logg(1001,'sp connecting, ports='+nports); // spammar loggen
             if (nports==0) {
                 logg(1019, "No serialports available");
+                try { port = await navigator.serial.requestPort(); } // Ask User for permission and select port
+                catch (error) {return 6; }       //Probably needs User gesture
                 // return 9;
             }
             if(nports==1) {

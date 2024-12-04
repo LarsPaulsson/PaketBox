@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Socket test</title>
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <style>
@@ -66,11 +65,31 @@
             <td><input type="text" id="idSendmsg" name="counter0name" placeholder="sendmessage">
             <button id="idSendButt" onclick="sendUp(idSendmsg.value)">Send</button>
             <input type="text" id="idSocket1" name="counter0name" placeholder="socket"></td>
+
+            <td><input type="text" id="idSocket2" placeholder="socket2">
+                <input type="text" id="idSendmsg2" placeholder="sendmessage">
+                <button id="idSendButt2" onclick="sendUp2(idSendmsg2.value)">Send</button>
+            </td>
+            <td><input type="text" id="idSocket3" placeholder="socket3">
+                <input type="text" id="idSendmsg3" placeholder="sendmessage">
+                <button id="idSendButt3" onclick="sendUp3(idSendmsg3.value)">Send</button>
+            </td>
+            <td><input type="text" id="idSocket4" placeholder="socket4">
+                <input type="text" id="idSendmsg4" placeholder="sendmessage">
+                <button id="idSendButt4" onclick="sendUp4(idSendmsg4.value)">Send</button>
+            </td>
+        </tr>
+        <tr>
+            <td><pre id="output"></pre></td>
+            <td><pre id="output2"></pre></td>
+            <td><pre id="output3"></pre></td>
+            <td><pre id="output4"></pre></td>
+      
         </tr>
 
       </table>
       
-      <pre class="tankpre" id="output"></pre>
+      
     
 
 
@@ -78,6 +97,9 @@
 
 let count=0;
 var cLastNop=0;
+var socket2;
+var socket3;
+var socket4;
 
 
     function showLogg (v) {
@@ -85,6 +107,23 @@ var cLastNop=0;
       if (totalHeight>500) output.textContent="";
             output.textContent += v+'\n';
     }
+    function showLogg2 (v) {
+      const totalHeight = output2.clientHeight;
+      if (totalHeight>500) output2.textContent="";
+            output2.textContent += v+'\n';
+    }
+    function showLogg3 (v) {
+      const totalHeight = output3.clientHeight;
+      if (totalHeight>500) output3.textContent="";
+            output3.textContent += v+'\n';
+    }
+    function showLogg4 (v) {
+      const totalHeight = output4.clientHeight;
+      if (totalHeight>500) output4.textContent="";
+            output4.textContent += v+'\n';
+    }
+
+
     let debuglevel=100;
 
     function logg (l, v) {
@@ -117,7 +156,7 @@ var cLastNop=0;
     }
 
     debuglevel=100;
-    logg(0, 'Program start');
+    // logg(0, 'Program start');
 
 document.getElementById('open1').addEventListener('click', async () => {
     try {
@@ -137,79 +176,120 @@ document.getElementById('close1').addEventListener('click', async () => {
     };
 });
 
-document.getElementById('open2').addEventListener('click', async () =>{
-    logg (100, "Open");
+document.getElementById('open2').addEventListener('click', async () =>{ open2();  });
+document.getElementById('close2').addEventListener('click', async () =>{ socket2.close(); });
 
-        });
-        
-document.getElementById('close2').addEventListener('click', async () =>{
-    logg (100, "Close");
-        });
+document.getElementById('open3').addEventListener('click', async () =>{ open3();  });
+document.getElementById('close3').addEventListener('click', async () =>{ socket3.close(); });
 
-document.getElementById('open3').addEventListener('click', async () =>{
-    try {const audio = new Audio('mp3/sound3.mp3'); audio.play();} catch{};
-        });
-
-document.getElementById('close3').addEventListener('click', async () =>{
-    try {const audio = new Audio('mp3/sound1.mp3'); audio.play(); } catch{};
-        });
-
-document.getElementById('open4').addEventListener('click', async () =>{
-//    try {const audio = new Audio('mp3/sound3.mp3'); audio.play();} catch{};
-        });
-
-document.getElementById('close4').addEventListener('click', async () =>{
-//    try {const audio = new Audio('mp3/sound1.mp3'); audio.play(); } catch{};
-        });
+document.getElementById('open4').addEventListener('click', async () =>{ open4();  });
+document.getElementById('close4').addEventListener('click', async () =>{ socket4.close(); });
 
 
 // Skapa en WebSocket-anslutning till Python
-const socketPy = new WebSocket(`ws://localhost:8765/`);
+//const socketPy = new WebSocket(`ws://localhost:8765/`); // funkar
+// const socketPy = new WebSocket(`ws://echo.websocket.org/.ws`); // denna failar
+// const socketPy = new WebSocket(`wss://echo.websocket.org/.ws`); // denna funkar
+ // const socketPy = new WebSocket(`ws://echo-websocket.fly.dev/:80`); // denna funkar
+// const socketPy = new WebSocket(`ws://66.241.124.119/`); // denna failar
+// const socketPy = new WebSocket(`ws://192.168.1.83:3000/`); // denna 
+// const socketPy = new WebSocket(`ws://echo-websocket.fly.dev/:80`); // denna funkar
+// ws:echo.websocket.org/.ws
+// const socketPy = new WebSocket(`wss://echo-websocket.fly.dev/:443`); // denna funkar
+ //const socketPy = new WebSocket(`ws://echo.websocket.org:80`); // funkar INTE
+// const socketPy = new WebSocket(`wss://echo.websocket.org`); // funkar
+// wss://ws.postman-echo.com/raw
+// const socketPy = new WebSocket(`wss://ws.postman-echo.com/raw`); // FUNKAR
+// const socketPy = new WebSocket(`ws://ws.postman-echo.com/raw`); // Funkar INTE
+
+ // const socketPy = new WebSocket(`ws://demos.kaazing.com/echo/`); // Funkar INTE
+ // const socketPy = new WebSocket(`ws://ws.ifelse.io`); // Funkar!!
+ // const socketPy = new WebSocket(`ws://broker.hivemq.com:8000`); // Funkar INTE
+
+idSocket2.value='ws://192.168.1.83:8765/';
+idSocket3.value='wss://echo.websocket.org';
+idSocket4.value='wss://ws.postman-echo.com/raw';
 
 function open2() {
 try {
-   // socket = new WebSocket(`wss://stream.pushbullet.com/websocket/${accessToken}`);
-   // Skapa en WebSocket-anslutning till Python
-    socketPy = new WebSocket(`ws://localhost:8765/`);
-   // var socket = new WebSocket(`wss://echo.websocket.org`);
-   logg (100, "ws New");
-   socketpy.onopen = socketOnopen;
-   socketpy.onmessage = socketOnmessage;
-   socketpy.onerror = socketOnerror;
-   socketpy.onclose =socketOnclose;
-
+   socket2 = new WebSocket(idSocket2.value);
+   console.log("ws2 New on "+idSocket2.value);
+   socket2.onopen = socket2any;
+   socket2.onmessage = socket2onmessage;
+   socket2.onerror = socket2any;
+   socket2.onclose =socket2any;
 } catch (err) {
-    logg (8, "ws Error:"+err.message);
+    showLogg2(err.message);    
+    console.log("open2 error:"+err.message);
 };
 }
 
-// Lyssna efter WebSocket-anslutningens öppnande
-socketPy.onopen = function(event) {
-//    showSocket("Ansluten!","","");
-    console.log("socketPy ansluten till Python!");
-};
-
-// Hantera inkommande meddelanden
-socketPy.onmessage = function(event) {
+function socket2onmessage(event) {
     // const data = JSON.parse(event.data);
-    console.log("socketPy.onmessage:", event.data);
+    showLogg2(event.data);
+
+}
+function socket2any(event) {
+
+    console.log("socket2 event:"+event.type);
+    showLogg2(event.type);
+
 };
 
-// Hantera eventuella fel med WebSocket
-socketPy.onerror = function(error) {
-    console.error("WebSocketPy fel:", error);
-    // showSocket("socket.onerror",error,"");
+function open3() {
+try {
+   socket3 = new WebSocket(idSocket3.value);
+   console.log("ws3 New on "+idSocket3.value);
+   socket3.onopen = socket3any;
+   socket3.onmessage = socket3onmessage;
+   socket3.onerror = socket3any;
+   socket3.onclose =socket3any;
+} catch (err) {
+    console.log("open3 error:"+err.message);
+};
+}
+
+function socket3onmessage(event) {
+    // const data = JSON.parse(event.data);
+    showLogg3(event.data);
+
+}
+function socket3any(event) {
+
+    console.log("socket3 event:"+event.type);
+    showLogg3(event.type);
+
 };
 
-// Stäng WebSocket-anslutningen när det behövs
-socketPy.onclose = function(event) {
-    console.log("WebSocketPy stängd.");
-    // showSocket("socket.onclose","","");
+function open4() {
+try {
+   socket4 = new WebSocket(idSocket4.value);
+   console.log("ws2 New on "+idSocket4.value);
+   socket4.onopen = socket4any;
+   socket4.onmessage = socket4onmessage;
+   socket4.onerror = socket4any;
+   socket4.onclose =socket4any;
+} catch (err) {
+    console.log("open4 error:"+err.message);
 };
+}
+
+function socket4onmessage(event) {
+    // const data = JSON.parse(event.data);
+    showLogg4(event.data);
+}
+function socket4any(event) {
+
+    console.log("socket4 event:"+event.type);
+    showLogg4(event.type);
+
+};
+
 
 
 const accessToken = 'o.2fBO20OkMwk7EzsQkSMGQiNzjwEKS4ra'; // Min Pushbullet API-nyckel
 var socket;
+
 
 /*
 function socketMessage(event) {
@@ -339,6 +419,15 @@ function sendUp(s) {
     socket.send(s);
 }
 
+function sendUp2(s) {
+    socket2.send(s);
+}
+function sendUp3(s) {
+    socket3.send(s);
+}
+function sendUp4(s) {
+    socket4.send(s);
+}
 
 // WebSocket.CONNECTING (0) Socket has been created. The connection is not yet open.
 // WebSocket.OPEN (1) The connection is open and ready to communicate.
@@ -354,8 +443,6 @@ function socketWatch() {
 }
 
 
-
-let intervalId = setInterval(timerStuff, 1000);
 
 // Stop the interval  clearInterval(intervalId);
 let lastSerialStatus=0;
@@ -390,7 +477,8 @@ function timerStuff() {
     // Alla event listeners måste initieras om efter en close-open.
 
 
-openSocket();
+    // let intervalId = setInterval(timerStuff, 1000);
+    // openSocket();
 
 
  </script>

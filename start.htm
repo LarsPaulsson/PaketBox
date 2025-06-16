@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <h2>Välkommen!</h2>
+    Välj version
+    <a href="https://larspaulsson.github.io/PaketBox/TopStation1.htm" class="tbutt">Senaste Internet</a>
+    <a href="/media/larsp/datapart/www/TopStation1.htm" class="tbutt">Sparad Lokalt</a>
+    <a href="TopStation1.htm" class="tbutt">Skrivskyddad Lokalt</a>
+    <a href="https://larspaulsson.github.io/PaketBox/index.html" class="tbutt">Test Internet</a>
+   
+   <!-- Input box with a button to navigate -->
+  <div id="idScreen"></div>
+  <div id="idUserAgent"></div> 
+  <div id="idInfo"></div> 
+  <div id="idPlatform"></div> 
+  <div id="idBrands"></div>
+  <div id="idSerialport"></div> 
+  <script>
+    // Function to handle the navigation
+    function navigateToURL(event) {
+      event.preventDefault();  // Prevent form from submitting
+
+      // Get the input value (URL)
+      const url = document.getElementById('urlInput').value;
+      
+      // Basic validation to check if the URL is not empty
+      if (url) {
+        // Check if the URL starts with "http://" or "https://", otherwise prepend it
+        const fullURL = url.startsWith('http://') || url.startsWith('https://') ? url : 'http://' + url;
+
+        // Navigate to the entered URL
+        window.location.href = fullURL;
+      } else {
+        alert('Please enter a valid URL');
+      }
+    }
+
+    let portrait=0;
+    function CheckScreenSize() {
+        let w=window.innerWidth;
+        let h=window.innerHeight;
+        let p=0;
+        if (w<h) p=1;
+        if (p != portrait) {
+            portrait=p;
+        }
+        dpratio = window.devicePixelRatio;
+
+        idScreen.textContent='innerWidth:'+w+'x'+h+' dpratio:'+dpratio+
+                 ' outerWidth:'+window.outerWidth+'x'+window.outerHeight+
+                 ' screen:' + window.screen.width + 'x' + window.screen.height;
+
+        // logg(100,'resize:' + w + 'x' + h+' portrait='+portrait+" table:"+uh+" dt:"+dt);
+    }
+
+    window.addEventListener('resize', CheckScreenSize);
+    CheckScreenSize();
+    idUserAgent.textContent= window.navigator.userAgent;
+    const isMobileDevice = 'isMobile:'+window.navigator.userAgent.toLowerCase().includes("mobi");
+
+    let onmobile="info not available";
+    let splatform="info not available";
+    let arrayBrands=[];
+    try {
+    onmobile=navigator.userAgentData.mobile;
+    splatform=navigator.userAgentData.platform;
+    arrayBrands=navigator.userAgentData.brands;  // array of objects with brand and version strings
+  } catch (err) {}
+  idInfo.textContent='Mobile detection metod1:'+isMobileDevice+' metod2:'+onmobile;
+  idPlatform.textContent='platform:'+splatform;
+  idBrands.textContent='brands:';
+  for (i=0; i<arrayBrands.length; i++) {
+     idBrands.textContent+=arrayBrands[i].brand+' '+arrayBrands[i].version+',';
+    }
+
+    if ("serial" in navigator) {
+  // The Web Serial API is supported.
+      checkPorts();
+  } else idSerialport.textContent="Serial NOT supported";
+
+  function toHex(number) {
+    // Ensure it's a number and return in hexadecimal format
+    return '0x'+number.toString(16);
+  }
+  
+  async function checkPorts () {
+      const ports = await navigator.serial.getPorts();
+      const nports = ports.length;
+      idSerialport.textContent="Serial supported n="+nports;
+      if (nports>0) {
+          const { usbProductId, usbVendorId } = ports[0].getInfo();
+          idSerialport.textContent="Serial supported n="+nports+" usbVendorId="+toHex(usbVendorId)+" usbProductId="+toHex(usbProductId);
+      } 
+    }
+
+</script>
+</body>
+</html>

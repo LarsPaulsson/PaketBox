@@ -99,6 +99,7 @@ let pulsespaid=0;
 let pulsestart=0;
 let pcount=0;
 let d6=0;
+let ManualPaidSignal=0;
 const sessionobj = { productnumber: "0", pulsespaid: 0, pulsesnow: 0 };
 
 // let sessioninterval = setInterval(timerState, 1000);
@@ -189,6 +190,7 @@ function setDebugLine(dm) {
         setDigital(pump,0);
         d6=0;
         setDigital(6,d6);
+        ManualPaidSignal=0;
     }
 
     function changePulsesPaid(p) {
@@ -349,7 +351,10 @@ logglines=0;
         idRawCount.textContent=spCounters[0];
         pcount=spCounters[0]-pulsestart;
         idCounter.textContent=pcount;
- 
+        if (ManualPaidSignal==0 && spAinputs[4]) {
+            ManualPaidSignal=spAinputs[4];
+            changePaid(20,"T1 Manual"); 
+        }
         if (pumpstate>0 && pcount >= pulsespaid) {
             stopPump();
             pumpstate=2;

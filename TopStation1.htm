@@ -462,8 +462,9 @@ function socketOnmessage(event) {
             catch {    }
 
             logg(80, `ws application_name: ${l1}`); // !:80 ws application_name: Swish
-            logg(80, `ws title: ${l2}`);            // !:80 ws title: Ny betalning
-            logg(80, `ws body: ${l3}`);             // !:80 ws body: Pålsson Viktor har swishat dig 5 kr. \n  “S1”
+            logg(80, `ws title: ${l2}`);            // !:80 ws title: Ny betalning ÄNDRAT, NU:undefined
+            logg(80, `ws body: ${l3}`);     // !:80 ws body: Pålsson Viktor har swishat dig 5 kr. \n  “S1”
+                                            // ÄNDRAT, NU:Du har fått en betalning.
             switch (l1) {
                 case "Pushbullet":
                     changePaid(1,"T1 Test");                    
@@ -475,7 +476,7 @@ function socketOnmessage(event) {
                     // if (l2=="Ny betalning")
                     // Efternamn förnamn har swishat dig 5 kr. \n  “S1”
                     // OBS det är INT " runt meddelandet, liknande! logg(1,'“' '”' 
-
+                    /*
                     let p1=l3.indexOf("dig "); logg(1,"p1="+p1);
                     let p2=l3.indexOf("kr.",p1+4); logg(2,"p2="+p2);
                     let s1=l3.substring(p1+4,p2); logg(3,"s1="+s1);
@@ -485,6 +486,8 @@ function socketOnmessage(event) {
                     let s2=l3.substring(p1+1,p2);
                     changePaid(kr,s2);
                     logg(80, "ws Swish kr:"+kr+" m:"+s2);
+                    */
+                    changePaid(1,"T1");
  
                     // document.getElementById('pulseDTR').click();
                     // audio = new Audio('mp3/swish.mp3'); audio.play();

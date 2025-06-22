@@ -43,27 +43,19 @@
     
   function toHex(number) {
     // Ensure it's a number and return in hexadecimal format
-    try {
-		return '0x'+number.toString(16);
-	}
-	catch {
-		return 0;
-	}
+    return '0x'+number.toString(16);
   }
-  // Controllino har VendorId=0x2341 usbProductId=0x43
   
   async function checkPorts () {
       const ports = await navigator.serial.getPorts();
       const nports = ports.length;
-      idSerialport.textContent="Serial supported n="+nports+",";
-      for (i=0; i<nports; i++) {
-          const { usbProductId, usbVendorId } = ports[i].getInfo();
-          idSerialport.textContent += " usbVendorId="+toHex(usbVendorId)+" usbProductId="+toHex(usbProductId);
+      idSerialport.textContent="Serial supported n="+nports;
+      if (nports>0) {
+          const { usbProductId, usbVendorId } = ports[0].getInfo();
+          idSerialport.textContent="Serial supported n="+nports+" usbVendorId="+toHex(usbVendorId)+" usbProductId="+toHex(usbProductId);
       } 
     }
 
-  debuglevel=2000;
-   
     if ("serial" in navigator) {
   // The Web Serial API is supported.
       checkPorts();

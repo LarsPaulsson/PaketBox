@@ -60,16 +60,6 @@
         if (r==0)  logg(100, "sp connected");
         else logg(r, "sp not connected, try manual connect")
     }
-    
-  function toHex(number) {
-    // Ensure it's a number and return in hexadecimal format
-    try {
-		return '0x'+number.toString(16);
-	}
-	catch {
-		return 0;
-	}
-  }
 
     // Automatic reconnect if lost, like usb is pulled out and reinserted
     async function reconnectPort () {             // must be async because uses await
@@ -84,18 +74,8 @@
                 catch (error) {return 6; }       //Probably needs User gesture
                 // return 9;
             }
-            // if (nports==1) port=ports[0];      // No need to ask, try this
-            if(nports>0) {
-                for (var i=0; i<nports; i++) {
-					const { usbProductId, usbVendorId } = ports[i].getInfo();
-					logg(1020, i+" usbVendorId="+toHex(usbVendorId)+" usbProductId="+toHex(usbProductId));
-					// Controllino har VendorId=0x2341 usbProductId=0x43
-					if (usbVendorId==0x2341) {
-						port=ports[i];
-						logg(50,"Found Serialport Controllino");
-						break;
-					}
-				}
+            if(nports==1) {
+                port=ports[0];      // No need to ask, try this
             }
             if (port==null) {       // If still no port
                 logg(1010, 'port null:'+nports);

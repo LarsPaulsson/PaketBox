@@ -1,0 +1,7 @@
+{
+  "SerialAllowAllPortsForUrls": [
+    "https://localhost",
+    "file:///media/larsp/datapart/www",
+    "https://larspaulsson.github.io"
+  ]
+}

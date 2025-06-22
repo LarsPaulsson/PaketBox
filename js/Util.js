@@ -12,7 +12,8 @@ const MSG_LOADED=91;
 const MINPRICE=1;
 const MAXPRICE=10;
 
-let product1 = { number:1, name:"Vete", price:1.0, volume:1000, pulses: 4.48, image:"img/vete.jpg"};
+// product1 = { number:1, name:"Vete", price:1.0, volume:1000, pulses: 4.48, image:"img/vete.jpg"};
+let product1 = { number:1, name:"Vete", price:0.2, volume:1000, pulses: 2.00, image:"img/vete.jpg"};
 let product2 = { number:2, name:"Fågelfrö", price:5.5, volume:100, pulses: 6, image:"img/fågelfrö.jpg" };
 let product3 = { number:3, name:"Majs", price:3.8, volume:500, pulses: 5, image:"img/majs.jpg" };
 let product4 = { number:4, name:"Havre", price:3.9, volume:2000, pulses: 4.8, image:"img/havre.jpg" };

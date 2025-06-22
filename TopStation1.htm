@@ -353,7 +353,7 @@ logglines=0;
         idCounter.textContent=pcount;
         if (ManualPaidSignal==0 && spAinputs[4]) {
             ManualPaidSignal=spAinputs[4];
-            changePaid(10,"T1 Manual"); 
+            changePaid(1,"T1 Manual"); 
         }
         if (pumpstate>0 && pcount >= pulsespaid) {
             stopPump();
@@ -466,7 +466,7 @@ function socketOnmessage(event) {
             logg(80, `ws body: ${l3}`);             // !:80 ws body: Pålsson Viktor har swishat dig 5 kr. \n  “S1”
             switch (l1) {
                 case "Pushbullet":
-                    changePaid(10,"T1 Test");                    
+                    changePaid(1,"T1 Test");                    
                     logg(80, "ws Push");
                     // l3='Pålsson Viktor har swishat dig 5 kr.\n “S1”'
                 break;
